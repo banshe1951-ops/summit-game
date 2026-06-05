@@ -173,14 +173,33 @@
   .btn-menu:active { transform: scale(0.95); }
 
   /* ── Джойстик-оверлей (мобилка) ── */
-  #ctrl-left, #ctrl-right {
-    position: absolute; bottom: 0;
-    width: 50%; height: 35%;
-    z-index: 4; opacity: 0;
+  #ctrl-zone {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 35%; z-index: 4;
     -webkit-user-select: none; user-select: none;
   }
-  #ctrl-left { left: 0; }
-  #ctrl-right { right: 0; }
+
+  #joystick-base {
+    position: absolute;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.2);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    display: none;
+  }
+  #joystick-knob {
+    position: absolute;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    border: 2px solid rgba(255,255,255,0.6);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    display: none;
+    box-shadow: 0 0 12px rgba(255,255,255,0.3);
+  }
 
   .ctrl-hint {
     position: absolute; bottom: 20px;
@@ -232,9 +251,10 @@
   <!-- ══ КАНВАС ══ -->
   <canvas id="game-canvas"></canvas>
 
-  <!-- ══ УПРАВЛЕНИЕ ══ -->
-  <div id="ctrl-left"></div>
-  <div id="ctrl-right"></div>
+  <!-- ══ УПРАВЛЕНИЕ (джойстик) ══ -->
+  <div id="ctrl-zone"></div>
+  <div id="joystick-base"></div>
+  <div id="joystick-knob"></div>
   <div class="ctrl-hint" id="hint-left">◀</div>
   <div class="ctrl-hint" id="hint-right">▶</div>
 
@@ -320,6 +340,13 @@ const PLAYER_SPEED  = 5.5;
 const PLATFORM_W_BASE = 80;
 const PLATFORM_GAP  = 90;   // вертикальный шаг между платформами
 
+// Максимальная высота прыжка и горизонтальное расстояние при dt=1
+// jumpHeight = v²/(2g) = 13²/(2*0.45) ≈ 188px
+// jumpTime   = 2*v/g  = 2*13/0.45  ≈ 57 frames
+// maxHorizDist = speed * jumpTime  = 5.5 * 57 ≈ 315px
+const MAX_JUMP_HEIGHT = 170;  // с запасом
+const MAX_HORIZ_DIST  = 280;  // с запасом
+
 // ══════════════════════════════════════════════════════
 // СОСТОЯНИЕ ИГРЫ
 // ══════════════════════════════════════════════════════
@@ -340,26 +367,40 @@ function initGame() {
   score = 0; floor = 1; lives = 3; cameraY = 0; highestY = 0;
   particles = [];
 
-  // Игрок
+  // Платформы
+  platforms = [];
+
+  // Земля — широкая платформа на весь экран снизу
+  platforms.push({ x: 0, y: H - 40, w: W, type: 'ground', bounce: false, crumbling: false, crumbleTimer: 0 });
+
+  // Игрок стоит на земле
   player = {
-    x: W / 2 - 20, y: H - 200,
+    x: W / 2 - 20, y: H - 40 - 48,
     w: 40, h: 48,
     vx: 0, vy: 0,
-    onGround: false,
+    onGround: true,
     frame: 0, frameTimer: 0,
-    facing: 1,  // 1 = вправо, -1 = влево
+    facing: 1,
     trail: [],
   };
 
-  // Платформы
-  platforms = [];
-  // Стартовая
-  platforms.push({ x: W/2 - 60, y: H - 120, w: 120, type: 'normal', bounce: false });
-  // Генерим вверх
-  let py = H - 120;
-  for (let i = 0; i < 30; i++) {
-    py -= PLATFORM_GAP + Math.random() * 30;
-    spawnPlatform(py);
+  // Первые несколько платформ близко, чтобы легко запрыгнуть
+  let py = H - 40;
+  let lastPlat = platforms[0]; // земля
+  for (let i = 0; i < 5; i++) {
+    py -= 75 + i * 8;
+    const pw = 110 - i * 6;
+    const prevCx = lastPlat.x + lastPlat.w / 2;
+    const dx = (Math.random() * 2 - 1) * 80;
+    const newCx = Math.max(pw/2+20, Math.min(W-pw/2-20, prevCx + dx));
+    const plat = { x: newCx - pw/2, y: py, w: pw, type: 'normal', bounce: false, crumbling: false, crumbleTimer: 0 };
+    platforms.push(plat);
+    lastPlat = plat;
+  }
+  // Дальше обычная генерация
+  for (let i = 0; i < 25; i++) {
+    py -= PLATFORM_GAP + Math.random() * 20;
+    lastPlat = spawnPlatform(py, lastPlat);
   }
 
   // Звёзды
@@ -370,19 +411,39 @@ function initGame() {
   showHUD(true);
 }
 
-function spawnPlatform(py) {
-  const diff = Math.min(floor / 20, 1); // 0..1 сложность
-  const pw = PLATFORM_W_BASE + 40 - diff * 40;
-  const px = 20 + Math.random() * (W - pw - 40);
+function spawnPlatform(py, prevPlatform) {
+  const diff = Math.min(floor / 25, 1); // 0..1 сложность
+  const pw = Math.max(50, PLATFORM_W_BASE + 40 - diff * 30);
+
+  let px;
+  if (prevPlatform) {
+    // Центр предыдущей платформы
+    const prevCx = prevPlatform.x + prevPlatform.w / 2;
+    const dy = Math.abs(py - prevPlatform.y); // вертикальный gap
+
+    // Горизонтальное расстояние допустимо пропорционально высоте прыжка
+    const horizFactor = Math.max(0, 1 - dy / MAX_JUMP_HEIGHT);
+    const maxDx = MAX_HORIZ_DIST * horizFactor;
+
+    // Случайное смещение центра новой платформы от предыдущей
+    const dx = (Math.random() * 2 - 1) * maxDx;
+    const newCx = Math.max(pw / 2 + 20, Math.min(W - pw / 2 - 20, prevCx + dx));
+    px = newCx - pw / 2;
+  } else {
+    px = 20 + Math.random() * (W - pw - 40);
+  }
+
   const types = ['normal','normal','normal','bounce','crumble'];
   const typeIdx = Math.floor(Math.random() * (2 + Math.floor(diff * 3)));
-  platforms.push({
+  const plat = {
     x: px, y: py, w: pw,
     type: types[Math.min(typeIdx, types.length - 1)],
     bounce: false,
     crumbling: false, crumbleTimer: 0,
     spring: false,
-  });
+  };
+  platforms.push(plat);
+  return plat;
 }
 
 function spawnStar() {
@@ -415,12 +476,22 @@ function loop(ts) {
 // ══════════════════════════════════════════════════════
 function update(dt) {
   // Движение
-  if (keys.left)  { player.vx = -PLAYER_SPEED; player.facing = -1; }
-  if (keys.right) { player.vx =  PLAYER_SPEED; player.facing =  1; }
-  if (!keys.left && !keys.right) player.vx *= 0.75;
+  if (joystickActive) {
+    const dx = joystickCurX - joystickStartX;
+    if (dx < -DEAD_ZONE)     { player.vx = -PLAYER_SPEED; player.facing = -1; }
+    else if (dx > DEAD_ZONE) { player.vx =  PLAYER_SPEED; player.facing =  1; }
+    else player.vx *= 0.75;
+  } else {
+    if (keys.left)  { player.vx = -PLAYER_SPEED; player.facing = -1; }
+    if (keys.right) { player.vx =  PLAYER_SPEED; player.facing =  1; }
+    if (!keys.left && !keys.right) player.vx *= 0.75;
+  }
 
   player.vy += GRAVITY * dt;
   player.x += player.vx * dt;
+
+  // Запоминаем нижнюю границу ДО вертикального движения
+  const prevBottom = player.y + player.h;
   player.y += player.vy * dt;
 
   // Wrap по горизонтали
@@ -432,27 +503,24 @@ function update(dt) {
   if (player.trail.length > 8) player.trail.shift();
   player.trail.forEach(t => { t.life -= 0.12 * dt; });
 
-  // Коллизии с платформами
+  // Коллизии с платформами — используем мировые координаты (не экранные)
   player.onGround = false;
   if (player.vy > 0) {
+    const currBottom = player.y + player.h;
     for (const p of platforms) {
-      const py_world = p.y - cameraY;
-      const px = p.x, pw = p.w;
-      if (
-        player.x + player.w > px + 4 &&
-        player.x < px + pw - 4 &&
-        player.y + player.h >= py_world &&
-        player.y + player.h <= py_world + 18
-      ) {
-        if (p.type === 'crumble') {
-          p.crumbling = true;
-        }
+      const platTop = p.y; // мировая Y платформы (не - cameraY!)
+      // Горизонтальное перекрытие
+      const overlapX = player.x + player.w > p.x + 4 && player.x < p.x + p.w - 4;
+      // Swept: нижняя граница пересекла верх платформы за этот кадр
+      const crossed = prevBottom <= platTop + 2 && currBottom >= platTop;
+      if (overlapX && crossed) {
+        if (p.type === 'crumble') p.crumbling = true;
         if (!p.crumbling || p.crumbleTimer < 0.4) {
           const jumpMult = (p.type === 'bounce') ? 1.5 : 1.0;
           player.vy = JUMP_FORCE * jumpMult;
-          player.y = py_world - player.h;
+          player.y = platTop - player.h; // точно на платформу
           player.onGround = true;
-          if (p.type === 'bounce') spawnParticles(player.x + player.w/2, py_world, '#00FFCC', 8);
+          if (p.type === 'bounce') spawnParticles(player.x + player.w/2, platTop - cameraY, '#00FFCC', 8);
           break;
         }
       }
@@ -484,26 +552,28 @@ function update(dt) {
   // Генерим новые платформы выше
   const topPlatY = platforms.reduce((mn, p) => Math.min(mn, p.y), Infinity);
   if (topPlatY - cameraY > -H * 2) {
+    // Находим самую верхнюю платформу как опорную
+    let lastPlat = platforms.reduce((mn, p) => p.y < mn.y ? p : mn, platforms[0]);
     let py = topPlatY;
     for (let i = 0; i < 5; i++) {
-      py -= PLATFORM_GAP + Math.random() * 30;
-      spawnPlatform(py);
+      py -= PLATFORM_GAP + Math.random() * 20;
+      lastPlat = spawnPlatform(py, lastPlat);
     }
   }
-  // Удаляем старые платформы снизу
-  platforms = platforms.filter(p => p.y - cameraY < H + 200);
+  // Удаляем старые платформы снизу (но не землю)
+  platforms = platforms.filter(p => p.type === 'ground' || p.y - cameraY < H + 200);
 
   // Звёзды
   stars.forEach(s => {
     if (s.collected) return;
     s.angle += 0.05 * dt;
-    const sx = s.x, sy = s.y - cameraY;
-    const dx = player.x + player.w/2 - sx;
-    const dy = player.y + player.h/2 - sy;
+    const sx = s.x, sy = s.y; // мировые координаты
+    const px = player.x + player.w/2, py = player.y + player.h/2;
+    const dx = px - sx, dy = py - sy;
     if (Math.sqrt(dx*dx + dy*dy) < s.r + 20) {
       s.collected = true;
       score += s.value;
-      spawnParticles(sx, sy, '#FFD700', 12);
+      spawnParticles(sx - 0, sy - cameraY, '#FFD700', 12);
       updateHUD();
     }
   });
@@ -527,10 +597,13 @@ function update(dt) {
       triggerGameOver();
       return;
     }
-    // Возрождение на последней платформе
-    const lowest = platforms.reduce((mx, p) => p.y > mx.y ? p : mx, platforms[0]);
-    player.y = lowest.y - cameraY - 60;
-    player.x = lowest.x + lowest.w/2 - 20;
+    // Возрождение на ближайшей сверху платформе
+    const visiblePlats = platforms.filter(p => p.type !== 'ground' && p.y < player.y);
+    const nearest = visiblePlats.length > 0
+      ? visiblePlats.reduce((mx, p) => p.y > mx.y ? p : mx, visiblePlats[0])
+      : platforms.find(p => p.type === 'ground') || platforms[0];
+    player.y = nearest.y - player.h - 10;
+    player.x = nearest.x + nearest.w / 2 - player.w / 2;
     player.vy = JUMP_FORCE;
     cameraY = player.y - H * 0.5;
   }
@@ -554,29 +627,219 @@ function spawnParticles(x, y, color, count) {
 // ══════════════════════════════════════════════════════
 // DRAW
 // ══════════════════════════════════════════════════════
+
+// Статичные данные для фона (генерируются один раз)
+const bgStars = Array.from({length: 120}, () => ({
+  x: Math.random(), y: Math.random(),
+  r: Math.random() * 1.5 + 0.3,
+  bright: Math.random(),
+  twinkle: Math.random() * Math.PI * 2,
+}));
+
+const bgMountainsFar = generateMountainLine(12, 0.55, 0.85);
+const bgMountainsNear = generateMountainLine(8, 0.72, 1.0);
+
+function generateMountainLine(peaks, minH, maxH) {
+  const pts = [];
+  for (let i = 0; i <= peaks; i++) {
+    pts.push({
+      x: i / peaks,
+      y: minH + Math.random() * (maxH - minH),
+    });
+  }
+  return pts;
+}
+
+const cloudData = Array.from({length: 14}, () => ({
+  x: Math.random(),
+  y: 0.05 + Math.random() * 0.55,
+  w: 0.08 + Math.random() * 0.14,
+  speed: 0.00008 + Math.random() * 0.00012,
+  alpha: 0.25 + Math.random() * 0.35,
+  layer: Math.random() < 0.5 ? 0 : 1, // 0=дальние, 1=ближние
+}));
+
 function draw() {
-  // Фон — градиент неба, меняется с высотой
-  const skyProgress = Math.min(Math.max(-cameraY / 3000, 0), 1);
-  const skyTop    = lerpColor('#0d0022', '#001a4d', skyProgress);
-  const skyBottom = lerpColor('#1a0a3e', '#0a2266', skyProgress);
+  const skyProgress = Math.min(Math.max(-cameraY / 4000, 0), 1);
+
+  // ── Небо ──
+  const skyColors = [
+    // [низ] ночь → день → высь
+    lerpColor('#1a0838', '#0d2a6e', skyProgress),
+    lerpColor('#0d1540', '#0a1a55', skyProgress),
+    lerpColor('#060c28', '#050e38', skyProgress),
+  ];
   const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, skyTop);
-  grad.addColorStop(1, skyBottom);
+  grad.addColorStop(0, skyColors[2]);
+  grad.addColorStop(0.5, skyColors[1]);
+  grad.addColorStop(1, skyColors[0]);
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
-  // Облака
-  drawClouds();
+  // ── Звёзды (параллакс 0) ──
+  const starAlpha = Math.max(0, 1 - skyProgress * 1.5);
+  if (starAlpha > 0.01) {
+    const camOffY = (cameraY * 0.05) % H;
+    bgStars.forEach(s => {
+      const tw = Math.sin(Date.now() * 0.001 * (0.5 + s.twinkle) + s.twinkle) * 0.4 + 0.6;
+      ctx.save();
+      ctx.globalAlpha = starAlpha * tw * (0.4 + s.bright * 0.6);
+      ctx.fillStyle = s.bright > 0.8 ? '#fffbe8' : '#aac4ff';
+      ctx.beginPath();
+      ctx.arc(s.x * W, (s.y * H * 3 + camOffY) % H, s.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  // ── Луна ──
+  {
+    const moonX = W * 0.82;
+    const moonY = H * 0.12 - cameraY * 0.02;
+    const moonR = Math.min(W, H) * 0.055;
+    ctx.save();
+    // Свечение
+    const moonGlow = ctx.createRadialGradient(moonX, moonY, moonR * 0.5, moonX, moonY, moonR * 2.5);
+    moonGlow.addColorStop(0, `rgba(220,235,255,${0.18 - skyProgress * 0.15})`);
+    moonGlow.addColorStop(1, 'rgba(220,235,255,0)');
+    ctx.fillStyle = moonGlow;
+    ctx.beginPath(); ctx.arc(moonX, moonY, moonR * 2.5, 0, Math.PI * 2); ctx.fill();
+    // Диск
+    ctx.fillStyle = '#ddeeff';
+    ctx.beginPath(); ctx.arc(moonX, moonY, moonR, 0, Math.PI * 2); ctx.fill();
+    // Кратеры
+    ctx.globalAlpha = 0.18;
+    ctx.fillStyle = '#8899bb';
+    [[0.3, -0.2, 0.28], [-0.25, 0.35, 0.18], [0.1, 0.5, 0.12]].forEach(([dx, dy, dr]) => {
+      ctx.beginPath(); ctx.arc(moonX + dx * moonR, moonY + dy * moonR, dr * moonR, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  // ── Дальние горы (параллакс 0.08) ──
+  {
+    const offY = cameraY * 0.08;
+    ctx.save();
+    ctx.globalAlpha = 0.55 + skyProgress * 0.2;
+    const mGrad = ctx.createLinearGradient(0, H * 0.4, 0, H);
+    mGrad.addColorStop(0, lerpColor('#1a1050', '#1a3060', skyProgress));
+    mGrad.addColorStop(1, lerpColor('#0d0a30', '#0d1e50', skyProgress));
+    ctx.fillStyle = mGrad;
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    bgMountainsFar.forEach((pt, i) => {
+      const x = pt.x * W;
+      const y = pt.y * H + offY;
+      i === 0 ? ctx.lineTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+    // Снежные шапки
+    ctx.globalAlpha = 0.4;
+    ctx.fillStyle = '#c8d8f8';
+    bgMountainsFar.forEach((pt, i) => {
+      if (i === 0 || i === bgMountainsFar.length - 1) return;
+      const prev = bgMountainsFar[i - 1], next = bgMountainsFar[i + 1];
+      if (pt.y < prev.y && pt.y < next.y) {
+        const x = pt.x * W, y = pt.y * H + offY;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - 18, y + 22);
+        ctx.lineTo(x + 18, y + 22);
+        ctx.closePath(); ctx.fill();
+      }
+    });
+    ctx.restore();
+  }
+
+  // ── Ближние горы (параллакс 0.18) ──
+  {
+    const offY = cameraY * 0.18;
+    ctx.save();
+    ctx.globalAlpha = 0.85;
+    const mGrad = ctx.createLinearGradient(0, H * 0.5, 0, H);
+    mGrad.addColorStop(0, lerpColor('#0d0820', '#0d1a3a', skyProgress));
+    mGrad.addColorStop(1, lerpColor('#08060f', '#080f22', skyProgress));
+    ctx.fillStyle = mGrad;
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    bgMountainsNear.forEach((pt) => {
+      ctx.lineTo(pt.x * W, pt.y * H + offY);
+    });
+    ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+    // Снег
+    ctx.globalAlpha = 0.55;
+    ctx.fillStyle = '#e8f0ff';
+    bgMountainsNear.forEach((pt, i) => {
+      if (i === 0 || i === bgMountainsNear.length - 1) return;
+      const prev = bgMountainsNear[i - 1], next = bgMountainsNear[i + 1];
+      if (pt.y < prev.y && pt.y < next.y) {
+        const x = pt.x * W, y = pt.y * H + offY;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - 24, y + 30);
+        ctx.lineTo(x + 24, y + 30);
+        ctx.closePath(); ctx.fill();
+      }
+    });
+    ctx.restore();
+  }
+
+  // ── Облака (два слоя) ──
+  cloudData.forEach(c => {
+    const parallax = c.layer === 0 ? 0.1 : 0.25;
+    c.x += c.speed;
+    if (c.x > 1.2) c.x = -0.2;
+    const cx = c.x * W;
+    const cy = c.y * H - cameraY * parallax;
+    const cw = c.w * W;
+    ctx.save();
+    ctx.globalAlpha = c.alpha * (c.layer === 0 ? 0.6 : 0.9);
+    // Объёмное облако из нескольких кругов
+    const puffs = c.layer === 0
+      ? [[-0.4, 0, 0.55], [0, -0.35, 0.75], [0.4, 0, 0.55], [0, 0.1, 0.65]]
+      : [[-0.45, 0.05, 0.5], [0, -0.4, 0.8], [0.45, 0.05, 0.5], [-0.2, 0.15, 0.6], [0.2, 0.15, 0.6]];
+    const cloudGrad = ctx.createRadialGradient(cx, cy - cw * 0.1, 0, cx, cy, cw * 0.9);
+    cloudGrad.addColorStop(0, c.layer === 0 ? 'rgba(180,200,240,0.9)' : 'rgba(220,230,255,0.95)');
+    cloudGrad.addColorStop(1, 'rgba(140,170,220,0)');
+    ctx.fillStyle = cloudGrad;
+    puffs.forEach(([dx, dy, dr]) => {
+      ctx.beginPath();
+      ctx.arc(cx + dx * cw, cy + dy * cw * 0.5, dr * cw * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+  });
 
   if (gameState !== 'start') {
+    // ── Земля (если видна) ──
+    const groundY = H - 40 - cameraY;
+    if (groundY < H + 20) {
+      ctx.save();
+      const gGrad = ctx.createLinearGradient(0, groundY, 0, groundY + 40);
+      gGrad.addColorStop(0, '#2d5a27');
+      gGrad.addColorStop(0.3, '#1e3d1a');
+      gGrad.addColorStop(1, '#0f1f0d');
+      ctx.fillStyle = gGrad;
+      ctx.fillRect(0, groundY, W, 40);
+      // Трава поверху
+      ctx.fillStyle = '#4a8f3f';
+      ctx.fillRect(0, groundY, W, 6);
+      ctx.fillStyle = '#5da852';
+      for (let gx = 0; gx < W; gx += 8) {
+        const gh = 4 + Math.sin(gx * 0.3) * 2;
+        ctx.fillRect(gx, groundY - gh + 6, 3, gh);
+      }
+      ctx.restore();
+    }
+
     // Трейл игрока
-    player.trail.forEach((t, i) => {
+    player.trail.forEach((t) => {
       const a = t.life * 0.3;
       ctx.save();
       ctx.globalAlpha = a;
       ctx.fillStyle = '#A78BFA';
       ctx.beginPath();
-      ctx.ellipse(t.x, t.y - cameraY, 6 * t.life, 4 * t.life, 0, 0, Math.PI * 2);
+      ctx.ellipse(t.x, t.y - cameraY, Math.max(0.1, 6 * t.life), Math.max(0.1, 4 * t.life), 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     });
@@ -605,27 +868,10 @@ function draw() {
   }
 }
 
-const cloudData = Array.from({length: 8}, () => ({
-  x: Math.random() * 400, y: Math.random() * 600 - 300,
-  w: 60 + Math.random() * 80, speed: 0.2 + Math.random() * 0.3,
-}));
-
-function drawClouds() {
-  cloudData.forEach(c => {
-    c.x += c.speed * 0.3;
-    if (c.x > W + 100) c.x = -100;
-    const cy = c.y - (cameraY * 0.2) % H;
-    ctx.save();
-    ctx.globalAlpha = 0.12;
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.ellipse(c.x, cy, c.w, c.w * 0.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  });
-}
 
 function drawPlatform(p) {
+  // Земля рисуется отдельно в draw()
+  if (p.type === 'ground') return;
   const px = p.x, py = p.y - cameraY, pw = p.w, ph = 14;
   const alpha = p.crumbling ? Math.max(0, 1 - p.crumbleTimer) : 1;
   ctx.save();
@@ -636,9 +882,11 @@ function drawPlatform(p) {
     ctx.fillStyle = '#00E676';
     drawRoundRect(px, py, pw, ph, 7);
     ctx.fill();
-    ctx.fillStyle = '#69F0AE';
-    drawRoundRect(px + 4, py, pw - 8, 5, 4);
-    ctx.fill();
+    if (pw > 10) {
+      ctx.fillStyle = '#69F0AE';
+      drawRoundRect(px + 4, py, pw - 8, 5, 4);
+      ctx.fill();
+    }
     // Пружина
     ctx.strokeStyle = '#00C853';
     ctx.lineWidth = 2.5;
@@ -653,9 +901,11 @@ function drawPlatform(p) {
     ctx.fillStyle = '#FF5252';
     drawRoundRect(px, py, pw, ph, 7);
     ctx.fill();
-    ctx.fillStyle = '#FF8A80';
-    drawRoundRect(px + 4, py, pw - 8, 5, 4);
-    ctx.fill();
+    if (pw > 10) {
+      ctx.fillStyle = '#FF8A80';
+      drawRoundRect(px + 4, py, pw - 8, 5, 4);
+      ctx.fill();
+    }
     if (p.crumbling) {
       // Трещины
       ctx.strokeStyle = '#B71C1C';
@@ -671,18 +921,24 @@ function drawPlatform(p) {
     ctx.fillStyle = `hsl(${220 + shade}, 60%, 55%)`;
     drawRoundRect(px, py, pw, ph, 7);
     ctx.fill();
-    ctx.fillStyle = `hsl(${220 + shade}, 60%, 70%)`;
-    drawRoundRect(px + 4, py, pw - 8, 5, 4);
-    ctx.fill();
-    // Трава
-    ctx.fillStyle = '#66BB6A';
-    drawRoundRect(px + 2, py, pw - 4, 5, 4);
-    ctx.fill();
+    if (pw > 10) {
+      ctx.fillStyle = `hsl(${220 + shade}, 60%, 70%)`;
+      drawRoundRect(px + 4, py, pw - 8, 5, 4);
+      ctx.fill();
+    }
+    if (pw > 6) {
+      // Трава
+      ctx.fillStyle = '#66BB6A';
+      drawRoundRect(px + 2, py, pw - 4, 5, 4);
+      ctx.fill();
+    }
   }
   ctx.restore();
 }
 
 function drawRoundRect(x, y, w, h, r) {
+  r = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+  if (r < 0) r = 0;
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.lineTo(x + w - r, y);
@@ -807,8 +1063,7 @@ function updateHUD() {
 
 function showHUD(v) {
   document.getElementById('hud').classList.toggle('visible', v);
-  document.getElementById('ctrl-left').style.opacity  = v ? '1' : '0';
-  document.getElementById('ctrl-right').style.opacity = v ? '1' : '0';
+  document.getElementById('ctrl-zone').style.display  = v ? 'block' : 'none';
   document.getElementById('hint-left').style.opacity  = v ? '0.18' : '0';
   document.getElementById('hint-right').style.opacity = v ? '0.18' : '0';
 }
@@ -847,18 +1102,69 @@ window.addEventListener('keyup', e => {
   if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
 });
 
-// Тач
-function setTouch(el, key, val) {
-  el.addEventListener('touchstart', e => { e.preventDefault(); keys[key] = val; }, { passive: false });
-  el.addEventListener('touchend',   e => { e.preventDefault(); keys[key] = !val; }, { passive: false });
-  el.addEventListener('touchcancel',e => { e.preventDefault(); keys[key] = !val; }, { passive: false });
+// ── Джойстик: палец скользит по нижней зоне, герой тянется к нему ──
+const ctrlZone  = document.getElementById('ctrl-zone');
+const joyBase   = document.getElementById('joystick-base');
+const joyKnob   = document.getElementById('joystick-knob');
+
+let joystickActive = false;
+let joystickStartX = 0;   // X где приложили палец
+let joystickCurX   = 0;   // текущий X пальца
+const DEAD_ZONE    = 12;  // пиксели, до которых движения нет
+const MAX_KNOB     = 40;  // max смещение кружочка от центра
+
+function joystickShow(x, y) {
+  joyBase.style.left = x + 'px';
+  joyBase.style.top  = y + 'px';
+  joyBase.style.display = 'block';
+  joyKnob.style.display = 'block';
+  joystickMoveKnob(x, y);
 }
-setTouch(document.getElementById('ctrl-left'),  'left',  true);
-setTouch(document.getElementById('ctrl-right'), 'right', true);
+function joystickMoveKnob(bx, cx) {
+  const dx = Math.max(-MAX_KNOB, Math.min(MAX_KNOB, cx - joystickStartX));
+  joyKnob.style.left = (joystickStartX + dx) + 'px';
+  joyKnob.style.top  = joyBase.style.top;
+}
+function joystickHide() {
+  joyBase.style.display = 'none';
+  joyKnob.style.display = 'none';
+  keys.left = false;
+  keys.right = false;
+  joystickActive = false;
+}
+
+ctrlZone.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if (gameState !== 'playing') return;
+  const t = e.changedTouches[0];
+  joystickActive = true;
+  joystickStartX = t.clientX;
+  joystickCurX   = t.clientX;
+  joystickShow(t.clientX, t.clientY);
+}, { passive: false });
+
+ctrlZone.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!joystickActive) return;
+  const t = e.changedTouches[0];
+  joystickCurX = t.clientX;
+  const dx = joystickCurX - joystickStartX;
+  // Обновляем визуал кружочка
+  const clampDx = Math.max(-MAX_KNOB, Math.min(MAX_KNOB, dx));
+  joyKnob.style.left = (joystickStartX + clampDx) + 'px';
+  // Обновляем клавиши
+  if (dx < -DEAD_ZONE)       { keys.left = true;  keys.right = false; }
+  else if (dx > DEAD_ZONE)   { keys.right = true;  keys.left = false; }
+  else                        { keys.left = false; keys.right = false; }
+}, { passive: false });
+
+ctrlZone.addEventListener('touchend',    e => { e.preventDefault(); joystickHide(); }, { passive: false });
+ctrlZone.addEventListener('touchcancel', e => { e.preventDefault(); joystickHide(); }, { passive: false });
 
 // Наклон устройства (gyro)
 window.addEventListener('deviceorientation', e => {
   if (gameState !== 'playing') return;
+  if (joystickActive) return; // джойстик имеет приоритет
   const tilt = e.gamma; // -90..90
   if (tilt < -8) { keys.left = true; keys.right = false; }
   else if (tilt > 8) { keys.right = true; keys.left = false; }
