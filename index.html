@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Вершина 🏔️</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a1a; }
+
+  #app { width: 100%; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  canvas { display: block; image-rendering: pixelated; touch-action: none; }
+
+  /* ── Экран старта ── */
+  #screen-start {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, #1a0a3e 0%, #0d1b4b 40%, #0a2a1a 100%);
+    z-index: 10;
+  }
+  .stars-bg {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  }
+  .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle 2s infinite alternate; }
+  @keyframes twinkle { from { opacity: 0.2; transform: scale(1); } to { opacity: 1; transform: scale(1.4); } }
+
+  .mountain-silhouette {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 45%;
+  }
+
+  .logo-wrap {
+    position: relative; z-index: 2; text-align: center; margin-bottom: 12px;
+  }
+  .logo-emoji { font-size: 72px; display: block; margin-bottom: 0; filter: drop-shadow(0 0 20px rgba(255,200,50,0.6)); animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  .logo-title {
+    font-family: 'Arial Rounded MT Bold', 'Nunito', Arial, sans-serif;
+    font-size: 42px; font-weight: 900;
+    background: linear-gradient(135deg, #FFD700, #FF8C00, #FF4500);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 8px rgba(255,140,0,0.5));
+    letter-spacing: 2px;
+  }
+  .logo-sub {
+    font-family: Arial, sans-serif; font-size: 14px;
+    color: rgba(255,255,255,0.6); letter-spacing: 4px; text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .best-score {
+    position: relative; z-index: 2;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 8px 24px;
+    font-family: Arial, sans-serif; font-size: 14px; color: rgba(255,255,255,0.8);
+    margin-bottom: 32px;
+  }
+  .best-score span { color: #FFD700; font-weight: 700; font-size: 16px; }
+
+  .btn-play {
+    position: relative; z-index: 2;
+    background: linear-gradient(135deg, #FF6B35, #FF3CAC);
+    border: none; border-radius: 50px;
+    padding: 18px 64px; font-size: 22px; font-weight: 900;
+    color: #fff; letter-spacing: 2px;
+    cursor: pointer; font-family: Arial, sans-serif;
+    box-shadow: 0 8px 32px rgba(255,60,172,0.5), 0 0 0 0 rgba(255,60,172,0.4);
+    animation: pulse-btn 2s infinite;
+    transition: transform 0.1s;
+  }
+  .btn-play:active { transform: scale(0.95); }
+  @keyframes pulse-btn {
+    0%,100% { box-shadow: 0 8px 32px rgba(255,60,172,0.5), 0 0 0 0 rgba(255,60,172,0.4); }
+    50% { box-shadow: 0 8px 32px rgba(255,60,172,0.7), 0 0 0 12px rgba(255,60,172,0); }
+  }
+
+  .start-tips {
+    position: relative; z-index: 2;
+    display: flex; gap: 20px; margin-top: 28px;
+  }
+  .tip {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-family: Arial, sans-serif; font-size: 11px; color: rgba(255,255,255,0.5);
+  }
+  .tip-icon { font-size: 22px; }
+
+  /* ── HUD во время игры ── */
+  #hud {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: none; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+    z-index: 5; pointer-events: none;
+  }
+  #hud.visible { display: flex; }
+
+  .hud-score {
+    font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    font-size: 26px; font-weight: 900; color: #FFD700;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  }
+  .hud-floor {
+    font-family: Arial, sans-serif; font-size: 13px;
+    color: rgba(255,255,255,0.7); text-align: center;
+  }
+  .hud-floor span { color: #7DF9FF; font-weight: 700; }
+
+  .hud-lives { display: flex; gap: 4px; }
+  .life { font-size: 20px; }
+
+  /* ── Экран Game Over ── */
+  #screen-gameover {
+    position: absolute; inset: 0;
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(5, 0, 20, 0.92);
+    z-index: 10; backdrop-filter: blur(4px);
+  }
+  #screen-gameover.visible { display: flex; }
+
+  .go-title {
+    font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    font-size: 52px; font-weight: 900; color: #FF4444;
+    text-shadow: 0 0 30px rgba(255,68,68,0.6);
+    margin-bottom: 8px; animation: shake 0.4s ease;
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)}
+  }
+
+  .go-stats {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 20px 40px;
+    margin: 20px 0; text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  .go-stat-row { display: flex; justify-content: space-between; gap: 40px; margin: 6px 0; }
+  .go-stat-label { font-size: 13px; color: rgba(255,255,255,0.5); }
+  .go-stat-value { font-size: 16px; font-weight: 700; color: #fff; }
+  .go-stat-value.gold { color: #FFD700; }
+  .go-stat-value.new { color: #00FF88; }
+
+  .go-new-record {
+    font-family: Arial, sans-serif; font-size: 18px; color: #00FF88;
+    font-weight: 700; margin-bottom: 12px;
+    animation: glow 1s ease-in-out infinite alternate;
+  }
+  @keyframes glow { from { text-shadow: 0 0 5px #00FF88; } to { text-shadow: 0 0 20px #00FF88, 0 0 40px #00FF88; } }
+
+  .go-buttons { display: flex; flex-direction: column; gap: 12px; width: 220px; }
+
+  .btn-restart {
+    background: linear-gradient(135deg, #00C9FF, #92FE9D);
+    border: none; border-radius: 40px; padding: 16px;
+    font-size: 18px; font-weight: 900; color: #0a0a1a;
+    cursor: pointer; font-family: Arial, sans-serif;
+    transition: transform 0.1s;
+  }
+  .btn-restart:active { transform: scale(0.95); }
+
+  .btn-menu {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 40px; padding: 14px;
+    font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.8);
+    cursor: pointer; font-family: Arial, sans-serif;
+    transition: transform 0.1s;
+  }
+  .btn-menu:active { transform: scale(0.95); }
+
+  /* ── Джойстик-оверлей (мобилка) ── */
+  #ctrl-left, #ctrl-right {
+    position: absolute; bottom: 0;
+    width: 50%; height: 35%;
+    z-index: 4; opacity: 0;
+    -webkit-user-select: none; user-select: none;
+  }
+  #ctrl-left { left: 0; }
+  #ctrl-right { right: 0; }
+
+  .ctrl-hint {
+    position: absolute; bottom: 20px;
+    font-family: Arial, sans-serif; font-size: 32px;
+    opacity: 0.18; pointer-events: none; user-select: none;
+  }
+  #hint-left { left: 24px; }
+  #hint-right { right: 24px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ СТАРТ ══ -->
+  <div id="screen-start">
+    <div class="stars-bg" id="stars-bg"></div>
+
+    <svg class="mountain-silhouette" viewBox="0 0 400 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,200 80,80 160,130 200,40 240,100 320,60 400,130 400,200" fill="#0d1040" opacity="0.9"/>
+      <polygon points="0,200 60,110 120,150 200,60 280,120 360,80 400,140 400,200" fill="#0a0d35" opacity="0.7"/>
+      <circle cx="200" cy="58" r="5" fill="#FFD700" opacity="0.9"/>
+      <circle cx="200" cy="58" r="10" fill="none" stroke="#FFD700" stroke-width="1.5" opacity="0.4"/>
+    </svg>
+
+    <div class="logo-wrap">
+      <span class="logo-emoji">🏔️</span>
+      <div class="logo-title">ВЕРШИНА</div>
+      <div class="logo-sub">Бесконечный платформер</div>
+    </div>
+
+    <div class="best-score" id="start-best">Рекорд: <span id="best-display">0</span> 🏅</div>
+
+    <button class="btn-play" id="btn-play">▶ ИГРАТЬ</button>
+
+    <div class="start-tips">
+      <div class="tip"><span class="tip-icon">👆</span><span>Тап влево/<br>вправо</span></div>
+      <div class="tip"><span class="tip-icon">🌟</span><span>Собирай<br>звёзды</span></div>
+      <div class="tip"><span class="tip-icon">💎</span><span>Зарабатывай<br>TON</span></div>
+    </div>
+  </div>
+
+  <!-- ══ HUD ══ -->
+  <div id="hud">
+    <div class="hud-score" id="hud-score">0</div>
+    <div class="hud-floor">Этаж <span id="hud-floor">1</span></div>
+    <div class="hud-lives" id="hud-lives"></div>
+  </div>
+
+  <!-- ══ КАНВАС ══ -->
+  <canvas id="game-canvas"></canvas>
+
+  <!-- ══ УПРАВЛЕНИЕ ══ -->
+  <div id="ctrl-left"></div>
+  <div id="ctrl-right"></div>
+  <div class="ctrl-hint" id="hint-left">◀</div>
+  <div class="ctrl-hint" id="hint-right">▶</div>
+
+  <!-- ══ GAME OVER ══ -->
+  <div id="screen-gameover">
+    <div class="go-title">💀 УПАЛ!</div>
+    <div class="go-new-record" id="go-new-record" style="display:none">🏆 НОВЫЙ РЕКОРД!</div>
+    <div class="go-stats">
+      <div class="go-stat-row">
+        <span class="go-stat-label">Очки</span>
+        <span class="go-stat-value gold" id="go-score">0</span>
+      </div>
+      <div class="go-stat-row">
+        <span class="go-stat-label">Этаж</span>
+        <span class="go-stat-value" id="go-floor">1</span>
+      </div>
+      <div class="go-stat-row">
+        <span class="go-stat-label">Рекорд</span>
+        <span class="go-stat-value" id="go-best">0</span>
+      </div>
+    </div>
+    <div class="go-buttons">
+      <button class="btn-restart" id="btn-restart">🔄 Снова</button>
+      <button class="btn-menu" id="btn-menu">🏠 Меню</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// TELEGRAM INIT
+// ══════════════════════════════════════════════════════
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  tg.enableClosingConfirmation();
+}
+
+const userId = tg?.initDataUnsafe?.user?.id || 0;
+const userName = tg?.initDataUnsafe?.user?.first_name || 'Игрок';
+
+// Хранилище (localStorage как замена серверу для демо)
+let bestScore = parseInt(localStorage.getItem(`summit_best_${userId}`) || '0');
+let totalCoins = parseInt(localStorage.getItem(`summit_coins_${userId}`) || '0');
+document.getElementById('best-display').textContent = bestScore;
+
+// ══════════════════════════════════════════════════════
+// ЗВЁЗДЫ НА СТАРТЕ
+// ══════════════════════════════════════════════════════
+(function() {
+  const bg = document.getElementById('stars-bg');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s`;
+    bg.appendChild(s);
+  }
+})();
+
+// ══════════════════════════════════════════════════════
+// CANVAS SETUP
+// ══════════════════════════════════════════════════════
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); });
+
+// ══════════════════════════════════════════════════════
+// КОНСТАНТЫ ИГРЫ
+// ══════════════════════════════════════════════════════
+const GRAVITY       = 0.45;
+const JUMP_FORCE    = -13;
+const PLAYER_SPEED  = 5.5;
+const PLATFORM_W_BASE = 80;
+const PLATFORM_GAP  = 90;   // вертикальный шаг между платформами
+
+// ══════════════════════════════════════════════════════
+// СОСТОЯНИЕ ИГРЫ
+// ══════════════════════════════════════════════════════
+let gameState = 'start'; // start / playing / gameover
+let score = 0;
+let floor = 1;
+let lives = 3;
+let cameraY = 0;        // смещение камеры (растёт вверх)
+let highestY = 0;       // самая высокая точка игрока
+
+let player, platforms, stars, particles;
+let keys = { left: false, right: false };
+
+// ══════════════════════════════════════════════════════
+// INIT GAME
+// ══════════════════════════════════════════════════════
+function initGame() {
+  score = 0; floor = 1; lives = 3; cameraY = 0; highestY = 0;
+  particles = [];
+
+  // Игрок
+  player = {
+    x: W / 2 - 20, y: H - 200,
+    w: 40, h: 48,
+    vx: 0, vy: 0,
+    onGround: false,
+    frame: 0, frameTimer: 0,
+    facing: 1,  // 1 = вправо, -1 = влево
+    trail: [],
+  };
+
+  // Платформы
+  platforms = [];
+  // Стартовая
+  platforms.push({ x: W/2 - 60, y: H - 120, w: 120, type: 'normal', bounce: false });
+  // Генерим вверх
+  let py = H - 120;
+  for (let i = 0; i < 30; i++) {
+    py -= PLATFORM_GAP + Math.random() * 30;
+    spawnPlatform(py);
+  }
+
+  // Звёзды
+  stars = [];
+  for (let i = 0; i < 5; i++) spawnStar();
+
+  updateHUD();
+  showHUD(true);
+}
+
+function spawnPlatform(py) {
+  const diff = Math.min(floor / 20, 1); // 0..1 сложность
+  const pw = PLATFORM_W_BASE + 40 - diff * 40;
+  const px = 20 + Math.random() * (W - pw - 40);
+  const types = ['normal','normal','normal','bounce','crumble'];
+  const typeIdx = Math.floor(Math.random() * (2 + Math.floor(diff * 3)));
+  platforms.push({
+    x: px, y: py, w: pw,
+    type: types[Math.min(typeIdx, types.length - 1)],
+    bounce: false,
+    crumbling: false, crumbleTimer: 0,
+    spring: false,
+  });
+}
+
+function spawnStar() {
+  const minY = cameraY - H * 4;
+  const maxY = cameraY - 80;
+  stars.push({
+    x: 30 + Math.random() * (W - 60),
+    y: maxY - Math.random() * (H * 3),
+    r: 8 + Math.random() * 6,
+    collected: false,
+    angle: Math.random() * Math.PI * 2,
+    value: Math.floor(Math.random() * 3 + 1) * 10,
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// MAIN LOOP
+// ══════════════════════════════════════════════════════
+let lastTime = 0;
+function loop(ts) {
+  const dt = Math.min((ts - lastTime) / 16.67, 3);
+  lastTime = ts;
+  if (gameState === 'playing') update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+// ══════════════════════════════════════════════════════
+// UPDATE
+// ══════════════════════════════════════════════════════
+function update(dt) {
+  // Движение
+  if (keys.left)  { player.vx = -PLAYER_SPEED; player.facing = -1; }
+  if (keys.right) { player.vx =  PLAYER_SPEED; player.facing =  1; }
+  if (!keys.left && !keys.right) player.vx *= 0.75;
+
+  player.vy += GRAVITY * dt;
+  player.x += player.vx * dt;
+  player.y += player.vy * dt;
+
+  // Wrap по горизонтали
+  if (player.x + player.w < 0) player.x = W;
+  if (player.x > W) player.x = -player.w;
+
+  // Трейл
+  player.trail.push({ x: player.x + player.w/2, y: player.y + player.h, life: 1 });
+  if (player.trail.length > 8) player.trail.shift();
+  player.trail.forEach(t => { t.life -= 0.12 * dt; });
+
+  // Коллизии с платформами
+  player.onGround = false;
+  if (player.vy > 0) {
+    for (const p of platforms) {
+      const py_world = p.y - cameraY;
+      const px = p.x, pw = p.w;
+      if (
+        player.x + player.w > px + 4 &&
+        player.x < px + pw - 4 &&
+        player.y + player.h >= py_world &&
+        player.y + player.h <= py_world + 18
+      ) {
+        if (p.type === 'crumble') {
+          p.crumbling = true;
+        }
+        if (!p.crumbling || p.crumbleTimer < 0.4) {
+          const jumpMult = (p.type === 'bounce') ? 1.5 : 1.0;
+          player.vy = JUMP_FORCE * jumpMult;
+          player.y = py_world - player.h;
+          player.onGround = true;
+          if (p.type === 'bounce') spawnParticles(player.x + player.w/2, py_world, '#00FFCC', 8);
+          break;
+        }
+      }
+    }
+  }
+
+  // Crumble таймер
+  platforms.forEach(p => {
+    if (p.crumbling) p.crumbleTimer += 0.04 * dt;
+  });
+  platforms = platforms.filter(p => p.crumbleTimer < 1);
+
+  // Камера — следим чтобы игрок был в верхней трети
+  const targetCamY = player.y - H * 0.35;
+  if (targetCamY < cameraY) {
+    cameraY = targetCamY;
+  }
+
+  // Высота → очки
+  const playerWorldY = cameraY + player.y;
+  if (playerWorldY < highestY) {
+    const diff = highestY - playerWorldY;
+    score += Math.floor(diff * 0.1);
+    highestY = playerWorldY;
+    floor = Math.floor(-highestY / PLATFORM_GAP) + 1;
+    updateHUD();
+  }
+
+  // Генерим новые платформы выше
+  const topPlatY = platforms.reduce((mn, p) => Math.min(mn, p.y), Infinity);
+  if (topPlatY - cameraY > -H * 2) {
+    let py = topPlatY;
+    for (let i = 0; i < 5; i++) {
+      py -= PLATFORM_GAP + Math.random() * 30;
+      spawnPlatform(py);
+    }
+  }
+  // Удаляем старые платформы снизу
+  platforms = platforms.filter(p => p.y - cameraY < H + 200);
+
+  // Звёзды
+  stars.forEach(s => {
+    if (s.collected) return;
+    s.angle += 0.05 * dt;
+    const sx = s.x, sy = s.y - cameraY;
+    const dx = player.x + player.w/2 - sx;
+    const dy = player.y + player.h/2 - sy;
+    if (Math.sqrt(dx*dx + dy*dy) < s.r + 20) {
+      s.collected = true;
+      score += s.value;
+      spawnParticles(sx, sy, '#FFD700', 12);
+      updateHUD();
+    }
+  });
+  stars = stars.filter(s => !s.collected && s.y - cameraY < H + 100);
+  while (stars.length < 6) spawnStar();
+
+  // Частицы
+  particles.forEach(p => {
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    p.vy += 0.15 * dt;
+    p.life -= 0.04 * dt;
+    p.r *= 0.95;
+  });
+  particles = particles.filter(p => p.life > 0);
+
+  // Смерть — упал ниже экрана
+  if (player.y - cameraY > H + 100) {
+    lives--;
+    updateHUD();
+    if (lives <= 0) {
+      triggerGameOver();
+      return;
+    }
+    // Возрождение на последней платформе
+    const lowest = platforms.reduce((mx, p) => p.y > mx.y ? p : mx, platforms[0]);
+    player.y = lowest.y - cameraY - 60;
+    player.x = lowest.x + lowest.w/2 - 20;
+    player.vy = JUMP_FORCE;
+    cameraY = player.y - H * 0.5;
+  }
+
+  // Анимация персонажа
+  player.frameTimer += dt;
+  if (player.frameTimer > 8) { player.frame = (player.frame + 1) % 2; player.frameTimer = 0; }
+}
+
+function spawnParticles(x, y, color, count) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 4;
+    particles.push({
+      x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 2,
+      r: 3 + Math.random() * 4, color, life: 1,
+    });
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// DRAW
+// ══════════════════════════════════════════════════════
+function draw() {
+  // Фон — градиент неба, меняется с высотой
+  const skyProgress = Math.min(Math.max(-cameraY / 3000, 0), 1);
+  const skyTop    = lerpColor('#0d0022', '#001a4d', skyProgress);
+  const skyBottom = lerpColor('#1a0a3e', '#0a2266', skyProgress);
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, skyTop);
+  grad.addColorStop(1, skyBottom);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Облака
+  drawClouds();
+
+  if (gameState !== 'start') {
+    // Трейл игрока
+    player.trail.forEach((t, i) => {
+      const a = t.life * 0.3;
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.fillStyle = '#A78BFA';
+      ctx.beginPath();
+      ctx.ellipse(t.x, t.y - cameraY, 6 * t.life, 4 * t.life, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Платформы
+    platforms.forEach(p => drawPlatform(p));
+
+    // Звёзды
+    stars.forEach(s => {
+      if (!s.collected) drawStar(s.x, s.y - cameraY, s.r, s.angle);
+    });
+
+    // Частицы
+    particles.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Игрок
+    drawPlayer();
+  }
+}
+
+const cloudData = Array.from({length: 8}, () => ({
+  x: Math.random() * 400, y: Math.random() * 600 - 300,
+  w: 60 + Math.random() * 80, speed: 0.2 + Math.random() * 0.3,
+}));
+
+function drawClouds() {
+  cloudData.forEach(c => {
+    c.x += c.speed * 0.3;
+    if (c.x > W + 100) c.x = -100;
+    const cy = c.y - (cameraY * 0.2) % H;
+    ctx.save();
+    ctx.globalAlpha = 0.12;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(c.x, cy, c.w, c.w * 0.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+}
+
+function drawPlatform(p) {
+  const px = p.x, py = p.y - cameraY, pw = p.w, ph = 14;
+  const alpha = p.crumbling ? Math.max(0, 1 - p.crumbleTimer) : 1;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+
+  if (p.type === 'bounce') {
+    // Зелёная пружинящая
+    ctx.fillStyle = '#00E676';
+    drawRoundRect(px, py, pw, ph, 7);
+    ctx.fill();
+    ctx.fillStyle = '#69F0AE';
+    drawRoundRect(px + 4, py, pw - 8, 5, 4);
+    ctx.fill();
+    // Пружина
+    ctx.strokeStyle = '#00C853';
+    ctx.lineWidth = 2.5;
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo(px + pw * 0.35, py + ph + i*5);
+      ctx.lineTo(px + pw * 0.65, py + ph + i*5);
+      ctx.stroke();
+    }
+  } else if (p.type === 'crumble') {
+    // Красная рассыпающаяся
+    ctx.fillStyle = '#FF5252';
+    drawRoundRect(px, py, pw, ph, 7);
+    ctx.fill();
+    ctx.fillStyle = '#FF8A80';
+    drawRoundRect(px + 4, py, pw - 8, 5, 4);
+    ctx.fill();
+    if (p.crumbling) {
+      // Трещины
+      ctx.strokeStyle = '#B71C1C';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(px + pw*0.3, py); ctx.lineTo(px + pw*0.5, py + ph);
+      ctx.moveTo(px + pw*0.6, py); ctx.lineTo(px + pw*0.4, py + ph);
+      ctx.stroke();
+    }
+  } else {
+    // Обычная
+    const shade = Math.sin(p.y * 0.01) * 20;
+    ctx.fillStyle = `hsl(${220 + shade}, 60%, 55%)`;
+    drawRoundRect(px, py, pw, ph, 7);
+    ctx.fill();
+    ctx.fillStyle = `hsl(${220 + shade}, 60%, 70%)`;
+    drawRoundRect(px + 4, py, pw - 8, 5, 4);
+    ctx.fill();
+    // Трава
+    ctx.fillStyle = '#66BB6A';
+    drawRoundRect(px + 2, py, pw - 4, 5, 4);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawRoundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawPlayer() {
+  const px = player.x;
+  const py = player.y - cameraY;
+  const facing = player.facing;
+  const frame = player.frame;
+
+  ctx.save();
+  ctx.translate(px + player.w/2, py + player.h/2);
+  if (facing < 0) ctx.scale(-1, 1);
+
+  // Тело
+  const bodyGrad = ctx.createLinearGradient(-18, -20, 18, 20);
+  bodyGrad.addColorStop(0, '#A78BFA');
+  bodyGrad.addColorStop(1, '#7C3AED');
+  ctx.fillStyle = bodyGrad;
+  ctx.beginPath();
+  ctx.ellipse(0, 4, 18, 22, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ботинки
+  ctx.fillStyle = '#4CAF50';
+  const legOff = frame === 0 ? 4 : -2;
+  ctx.beginPath(); ctx.ellipse(-8, 20 + legOff, 7, 6, -0.3, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(8, 20 - legOff, 7, 6, 0.3, 0, Math.PI * 2); ctx.fill();
+
+  // Глаза
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.ellipse(6, -6, 8, 9, 0.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#1a0a3e';
+  ctx.beginPath(); ctx.ellipse(8, -5, 4, 5, 0.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fff'; // блик
+  ctx.beginPath(); ctx.arc(10, -8, 1.5, 0, Math.PI*2); ctx.fill();
+
+  // Шапка
+  ctx.fillStyle = '#FF6B35';
+  ctx.beginPath();
+  ctx.moveTo(-14, -14); ctx.lineTo(14, -14);
+  ctx.lineTo(10, -28); ctx.lineTo(-10, -28);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#FF8C5A';
+  ctx.fillRect(-14, -16, 28, 5);
+
+  // Руки
+  ctx.strokeStyle = '#A78BFA'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+  const armAngle = frame === 0 ? -0.4 : 0.4;
+  ctx.save();
+  ctx.rotate(armAngle);
+  ctx.beginPath(); ctx.moveTo(-18, 0); ctx.lineTo(-30, 8); ctx.stroke();
+  ctx.restore();
+  ctx.save();
+  ctx.rotate(-armAngle);
+  ctx.beginPath(); ctx.moveTo(18, 0); ctx.lineTo(30, 8); ctx.stroke();
+  ctx.restore();
+
+  ctx.restore();
+}
+
+function drawStar(x, y, r, angle) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  const spikes = 5;
+  const outerR = r;
+  const innerR = r * 0.45;
+  ctx.beginPath();
+  for (let i = 0; i < spikes * 2; i++) {
+    const a = (i * Math.PI) / spikes;
+    const radius = i % 2 === 0 ? outerR : innerR;
+    if (i === 0) ctx.moveTo(Math.cos(a) * radius, Math.sin(a) * radius);
+    else ctx.lineTo(Math.cos(a) * radius, Math.sin(a) * radius);
+  }
+  ctx.closePath();
+  // Glow
+  ctx.shadowColor = '#FFD700';
+  ctx.shadowBlur = 12;
+  ctx.fillStyle = '#FFD700';
+  ctx.fill();
+  ctx.strokeStyle = '#FFF';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function lerpColor(a, b, t) {
+  const ah = parseInt(a.slice(1), 16), bh = parseInt(b.slice(1), 16);
+  const ar = (ah >> 16) & 0xFF, ag = (ah >> 8) & 0xFF, ab = ah & 0xFF;
+  const br = (bh >> 16) & 0xFF, bg = (bh >> 8) & 0xFF, bb = bh & 0xFF;
+  const rr = Math.round(ar + (br - ar) * t);
+  const rg = Math.round(ag + (bg - ag) * t);
+  const rb = Math.round(ab + (bb - ab) * t);
+  return `rgb(${rr},${rg},${rb})`;
+}
+
+// ══════════════════════════════════════════════════════
+// HUD / SCREENS
+// ══════════════════════════════════════════════════════
+function updateHUD() {
+  document.getElementById('hud-score').textContent = score;
+  document.getElementById('hud-floor').textContent = floor;
+  const livesEl = document.getElementById('hud-lives');
+  livesEl.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const span = document.createElement('span');
+    span.className = 'life';
+    span.textContent = i < lives ? '❤️' : '🖤';
+    livesEl.appendChild(span);
+  }
+}
+
+function showHUD(v) {
+  document.getElementById('hud').classList.toggle('visible', v);
+  document.getElementById('ctrl-left').style.opacity  = v ? '1' : '0';
+  document.getElementById('ctrl-right').style.opacity = v ? '1' : '0';
+  document.getElementById('hint-left').style.opacity  = v ? '0.18' : '0';
+  document.getElementById('hint-right').style.opacity = v ? '0.18' : '0';
+}
+
+function triggerGameOver() {
+  gameState = 'gameover';
+  showHUD(false);
+  const isNew = score > bestScore;
+  if (isNew) {
+    bestScore = score;
+    localStorage.setItem(`summit_best_${userId}`, bestScore);
+    document.getElementById('best-display').textContent = bestScore;
+  }
+  document.getElementById('go-score').textContent = score;
+  document.getElementById('go-floor').textContent = floor;
+  document.getElementById('go-best').textContent = bestScore;
+  document.getElementById('go-new-record').style.display = isNew ? 'block' : 'none';
+  document.getElementById('screen-gameover').classList.add('visible');
+
+  // Отправляем результат боту
+  if (tg) {
+    tg.sendData(JSON.stringify({ action: 'game_over', score, floor, best: bestScore }));
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// УПРАВЛЕНИЕ
+// ══════════════════════════════════════════════════════
+// Клавиатура
+window.addEventListener('keydown', e => {
+  if (e.code === 'ArrowLeft'  || e.code === 'KeyA') keys.left  = true;
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+});
+window.addEventListener('keyup', e => {
+  if (e.code === 'ArrowLeft'  || e.code === 'KeyA') keys.left  = false;
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+});
+
+// Тач
+function setTouch(el, key, val) {
+  el.addEventListener('touchstart', e => { e.preventDefault(); keys[key] = val; }, { passive: false });
+  el.addEventListener('touchend',   e => { e.preventDefault(); keys[key] = !val; }, { passive: false });
+  el.addEventListener('touchcancel',e => { e.preventDefault(); keys[key] = !val; }, { passive: false });
+}
+setTouch(document.getElementById('ctrl-left'),  'left',  true);
+setTouch(document.getElementById('ctrl-right'), 'right', true);
+
+// Наклон устройства (gyro)
+window.addEventListener('deviceorientation', e => {
+  if (gameState !== 'playing') return;
+  const tilt = e.gamma; // -90..90
+  if (tilt < -8) { keys.left = true; keys.right = false; }
+  else if (tilt > 8) { keys.right = true; keys.left = false; }
+  else { keys.left = false; keys.right = false; }
+});
+
+// ══════════════════════════════════════════════════════
+// КНОПКИ
+// ══════════════════════════════════════════════════════
+document.getElementById('btn-play').addEventListener('click', () => {
+  document.getElementById('screen-start').style.display = 'none';
+  gameState = 'playing';
+  initGame();
+});
+
+document.getElementById('btn-restart').addEventListener('click', () => {
+  document.getElementById('screen-gameover').classList.remove('visible');
+  gameState = 'playing';
+  initGame();
+});
+
+document.getElementById('btn-menu').addEventListener('click', () => {
+  document.getElementById('screen-gameover').classList.remove('visible');
+  gameState = 'start';
+  showHUD(false);
+  document.getElementById('screen-start').style.display = 'flex';
+});
+
+// ══════════════════════════════════════════════════════
+// СТАРТ
+// ══════════════════════════════════════════════════════
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
