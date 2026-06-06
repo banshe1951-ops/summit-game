@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Вершина 🏔️</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html,body { width:100%; height:100%; overflow:hidden; background:#0a0a1a; }
@@ -148,6 +149,52 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   z-index:99; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
 #shop-toast.show { opacity:1; }
 #shop-toast.err { background:rgba(220,50,50,0.92); }
+/* TON Connect / Wallet */
+.btn-wallet-connect { position:relative;z-index:2;display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#0098EA,#0066bb);border:none;border-radius:40px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:Arial,sans-serif;transition:transform 0.1s;box-shadow:0 4px 14px rgba(0,152,234,0.4); }
+.btn-wallet-connect:active{transform:scale(0.95);}
+.wallet-address-badge{position:relative;z-index:2;display:flex;align-items:center;gap:6px;background:rgba(0,152,234,0.12);border:1px solid rgba(0,152,234,0.3);border-radius:20px;padding:6px 14px;font-family:Arial,sans-serif;font-size:12px;color:#0098EA;font-weight:600;cursor:pointer;}
+.wallet-address-badge .wdot{width:7px;height:7px;border-radius:50%;background:#00d4ff;animation:pulse-dot 2s infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+#screen-wallet{position:absolute;inset:0;display:none;flex-direction:column;background:linear-gradient(180deg,#050018 0%,#0a0a1a 100%);z-index:20;overflow:hidden;}
+#screen-wallet.visible{display:flex;}
+.wallet-header{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
+.wallet-title{font-family:'Arial Rounded MT Bold',Arial,sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,#0098EA,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.btn-close-wallet{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.18);border-radius:50%;width:32px;height:32px;font-size:15px;color:#fff;cursor:pointer;}
+.wallet-body{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+.wallet-balance-card{background:linear-gradient(135deg,rgba(0,152,234,0.18),rgba(0,66,187,0.1));border:1px solid rgba(0,152,234,0.28);border-radius:20px;padding:20px;text-align:center;margin-bottom:16px;}
+.wallet-balance-label{font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:4px;}
+.wallet-balance-amount{font-family:'Arial Rounded MT Bold',Arial,sans-serif;font-size:36px;font-weight:900;color:#0098EA;text-shadow:0 0 20px rgba(0,152,234,0.5);}
+.wallet-balance-sub{font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;}
+.wallet-addr-row{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:9px;font-family:Arial,sans-serif;font-size:11px;color:rgba(0,212,255,0.65);}
+.wallet-addr-row .gdot{width:6px;height:6px;border-radius:50%;background:#00ff88;flex-shrink:0;}
+.wallet-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.wact{border:none;border-radius:16px;padding:14px 8px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:Arial,sans-serif;transition:transform 0.1s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.wact:active{transform:scale(0.95);}
+.wact-icon{font-size:22px;}
+.wact.dep{background:linear-gradient(135deg,#00c853,#00897b);box-shadow:0 4px 14px rgba(0,200,83,0.3);}
+.wact.wd{background:linear-gradient(135deg,#0098EA,#0066bb);box-shadow:0 4px 14px rgba(0,152,234,0.3);}
+.wact:disabled{background:rgba(255,255,255,0.09);box-shadow:none;color:rgba(255,255,255,0.3);cursor:not-allowed;}
+.wallet-panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;margin-bottom:12px;display:none;}
+.wallet-panel.open{display:block;}
+.wallet-panel-title{font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;}
+.winfo{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.25);border-radius:9px;padding:7px 11px;margin-bottom:7px;}
+.winfo-key{font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.4);}
+.winfo-val{font-family:Arial,sans-serif;font-size:11px;color:#fff;font-weight:600;word-break:break-all;text-align:right;max-width:175px;}
+.wcopy{background:rgba(0,152,234,0.18);border:1px solid rgba(0,152,234,0.28);border-radius:7px;padding:3px 9px;font-size:11px;color:#0098EA;cursor:pointer;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;}
+.winput-row{display:flex;gap:7px;margin-bottom:8px;}
+.winput{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:11px;padding:10px 13px;font-size:16px;color:#fff;font-family:Arial,sans-serif;outline:none;}
+.winput:focus{border-color:rgba(0,152,234,0.5);}
+.wsubmit{background:linear-gradient(135deg,#0098EA,#0066bb);border:none;border-radius:11px;padding:10px 16px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;}
+.wsubmit:disabled{background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.3);cursor:not-allowed;}
+.wnote{font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.32);line-height:1.4;}
+.btn-disconnect{width:100%;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.22);border-radius:11px;padding:10px;font-size:13px;font-weight:700;color:rgba(255,100,100,0.75);cursor:pointer;font-family:Arial,sans-serif;margin-top:6px;}
+.wallet-section-title{font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:4px;}
+.tx-list{display:flex;flex-direction:column;gap:6px;}
+.tx-item{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border-radius:9px;padding:8px 11px;}
+.tx-type{font-family:Arial,sans-serif;font-size:12px;color:#fff;font-weight:600;}
+.tx-date{font-family:Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.3);}
+.tx-amt{font-family:Arial,sans-serif;font-size:13px;font-weight:700;}
+.tx-amt.pos{color:#00ff88;}.tx-amt.neg{color:#ff6b6b;}
 </style>
 </head>
 <body>
@@ -177,6 +224,10 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   <button class="btn-play" id="btn-play">▶ ИГРАТЬ</button>
   <div class="start-btns-row">
     <button class="btn-shop-open" id="btn-open-shop">🛍 Магазин</button>
+    <button class="btn-wallet-connect" id="btn-wallet-start">
+      <img src="https://ton.org/download/ton_symbol.svg" onerror="this.style.display='none'">
+      <span id="wallet-btn-label">Подключить кошелёк</span>
+    </button>
   </div>
   <div class="start-tips">
     <div class="tip"><span class="tip-icon">👆</span><span>Тап влево/<br>вправо</span></div>
@@ -241,6 +292,85 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   </div>
 </div>
 
+<!-- ══ КОШЕЛЁК ══ -->
+<div id="screen-wallet">
+  <div class="wallet-header">
+    <div class="wallet-title">👛 Кошелёк TON</div>
+    <button class="btn-close-wallet" id="btn-close-wallet">✕</button>
+  </div>
+  <div class="wallet-body">
+
+    <!-- Баланс -->
+    <div class="wallet-balance-card">
+      <div class="wallet-balance-label">Игровой баланс TON</div>
+      <div class="wallet-balance-amount" id="wbal-amount">0.000000</div>
+      <div class="wallet-balance-sub">≈ <span id="wbal-usd">0.00</span> USD</div>
+      <div class="wallet-addr-row" id="waddr-row" style="display:none">
+        <span class="gdot"></span>
+        <span id="waddr-short">Не подключён</span>
+      </div>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="wallet-actions">
+      <button class="wact dep" id="wbtn-deposit">
+        <span class="wact-icon">💳</span>Пополнить
+      </button>
+      <button class="wact wd" id="wbtn-withdraw" disabled>
+        <span class="wact-icon">💸</span>Вывести
+      </button>
+    </div>
+
+    <!-- Панель пополнения -->
+    <div class="wallet-panel" id="panel-deposit">
+      <div class="wallet-panel-title">💳 Пополнение через TON Connect</div>
+      <div class="winfo">
+        <span class="winfo-key">Адрес</span>
+        <span class="winfo-val" id="dep-address">—</span>
+        <button class="wcopy" onclick="copyText('dep-address')">Копировать</button>
+      </div>
+      <div class="winfo">
+        <span class="winfo-key">Комментарий (обязательно!)</span>
+        <span class="winfo-val" id="dep-memo">—</span>
+        <button class="wcopy" onclick="copyText('dep-memo')">Копировать</button>
+      </div>
+      <div class="winput-row">
+        <input class="winput" id="dep-amount" type="number" placeholder="Сумма TON" min="0.01" step="0.01">
+        <button class="wsubmit" id="dep-submit">Отправить</button>
+      </div>
+      <div class="wnote">Транзакция откроется в твоём TON кошельке для подтверждения.</div>
+    </div>
+
+    <!-- Панель вывода -->
+    <div class="wallet-panel" id="panel-withdraw">
+      <div class="wallet-panel-title">💸 Вывод TON</div>
+      <div class="winfo">
+        <span class="winfo-key">Кошелёк подключён</span>
+        <span class="winfo-val" id="wd-wallet-addr">—</span>
+      </div>
+      <div class="winput-row">
+        <input class="winput" id="wd-amount" type="number" placeholder="Сумма TON" min="0.05" step="0.01">
+        <button class="wsubmit" id="wd-submit">Вывести</button>
+      </div>
+      <div class="wnote" id="wd-note">Минимум 0.05 TON. Транзакция подпишется в кошельке.</div>
+    </div>
+
+    <!-- Отключить -->
+    <div id="wallet-connected-block" style="display:none">
+      <button class="btn-disconnect" id="btn-disconnect">🔌 Отключить кошелёк</button>
+    </div>
+
+    <!-- История -->
+    <div class="wallet-section-title" style="margin-top:16px">История</div>
+    <div class="tx-list" id="tx-list">
+      <div style="font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.3);text-align:center;padding:16px">
+        История пуста
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <div id="shop-toast"></div>
 </div>
 
@@ -251,6 +381,246 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); tg.enableClosingConfirmation(); }
 const userId = tg?.initDataUnsafe?.user?.id || 'demo';
+
+// ═══════════════════════════════════════
+// TON CONNECT
+// ═══════════════════════════════════════
+// TON_CONNECT_MANIFEST — создай файл tonconnect-manifest.json на своём сервере
+// и укажи URL ниже. Пример манифеста в конце скрипта.
+const TC_MANIFEST_URL = 'https://YOUR_SERVER/tonconnect-manifest.json';
+const HOT_WALLET      = 'EQxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // адрес горячего кошелька
+const TON_PRICE_USD   = 5.5; // обновляй периодически или подтягивай с API
+
+let tonConnectUI = null;
+let connectedWallet = null; // { address, chain }
+
+async function initTonConnect() {
+  if (!window.TON_CONNECT_UI) return; // SDK не загрузился
+  try {
+    tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: TC_MANIFEST_URL,
+      // Без buttonRootId — управляем вручную
+    });
+
+    // Подписываемся на изменения статуса
+    tonConnectUI.onStatusChange(wallet => {
+      connectedWallet = wallet;
+      updateWalletUI();
+    });
+
+    // Восстанавливаем сессию если была
+    await tonConnectUI.connectionRestored;
+    connectedWallet = tonConnectUI.wallet;
+    updateWalletUI();
+  } catch(e) {
+    console.warn('TON Connect init error:', e);
+  }
+}
+
+function walletAddrShort(addr) {
+  if (!addr) return '';
+  return addr.slice(0, 6) + '…' + addr.slice(-4);
+}
+
+function updateWalletUI() {
+  const connected = !!connectedWallet;
+  const addr = connectedWallet?.account?.address || '';
+
+  // Кнопка на старт-экране
+  const label = document.getElementById('wallet-btn-label');
+  const btn   = document.getElementById('btn-wallet-start');
+  if (connected) {
+    label.textContent = walletAddrShort(addr);
+    btn.style.background = 'linear-gradient(135deg,#00c853,#00897b)';
+  } else {
+    label.textContent = 'Подключить кошелёк';
+    btn.style.background = '';
+  }
+
+  // Экран кошелька
+  const d = API.load();
+  document.getElementById('wbal-amount').textContent = d.tonBalance.toFixed(6);
+  document.getElementById('wbal-usd').textContent    = (d.tonBalance * TON_PRICE_USD).toFixed(2);
+
+  const addrRow = document.getElementById('waddr-row');
+  document.getElementById('waddr-short').textContent = connected ? walletAddrShort(addr) : 'Не подключён';
+  addrRow.style.display = connected ? 'flex' : 'none';
+
+  document.getElementById('wbtn-withdraw').disabled = !connected || d.tonBalance < 0.05;
+  document.getElementById('wallet-connected-block').style.display = connected ? 'block' : 'none';
+  document.getElementById('wd-wallet-addr').textContent = connected ? walletAddrShort(addr) : '—';
+
+  // История
+  renderTxHistory();
+}
+
+// Копировать текст
+function copyText(elementId) {
+  const text = document.getElementById(elementId).textContent;
+  navigator.clipboard?.writeText(text).then(() => showToast('✅ Скопировано!'));
+}
+
+// ── Подключение / отключение ──────────────────────────
+document.getElementById('btn-wallet-start').onclick = async () => {
+  if (!tonConnectUI) { showToast('❌ TON Connect не загружен', true); return; }
+  if (connectedWallet) {
+    openWalletScreen();
+  } else {
+    try {
+      await tonConnectUI.openModal();
+    } catch(e) { showToast('❌ Ошибка подключения', true); }
+  }
+};
+
+document.getElementById('btn-disconnect').onclick = async () => {
+  await tonConnectUI?.disconnect();
+  connectedWallet = null;
+  updateWalletUI();
+  showToast('Кошелёк отключён');
+};
+
+// ── Открыть / закрыть экран кошелька ─────────────────
+function openWalletScreen() {
+  // Заполняем данные для депозита
+  document.getElementById('dep-address').textContent = HOT_WALLET;
+  document.getElementById('dep-memo').textContent    = String(userId);
+  updateWalletUI();
+  document.getElementById('screen-wallet').classList.add('visible');
+}
+document.getElementById('btn-close-wallet').onclick = () => {
+  document.getElementById('screen-wallet').classList.remove('visible');
+  document.getElementById('panel-deposit').classList.remove('open');
+  document.getElementById('panel-withdraw').classList.remove('open');
+};
+
+// Кнопка кошелька в магазине (если нужно добавить позже)
+// Открыть кошелёк из game over
+document.getElementById('btn-go-shop').insertAdjacentHTML('afterend',
+  '<button class="btn-go-shop" id="btn-go-wallet" style="background:linear-gradient(135deg,#0098EA,#0066bb)">👛 Вывести TON</button>'
+);
+document.getElementById('btn-go-wallet').onclick = () => {
+  document.getElementById('screen-gameover').classList.remove('visible');
+  openWalletScreen();
+};
+
+// ── Кнопки пополнить / вывести ────────────────────────
+document.getElementById('wbtn-deposit').onclick = () => {
+  document.getElementById('panel-deposit').classList.toggle('open');
+  document.getElementById('panel-withdraw').classList.remove('open');
+};
+document.getElementById('wbtn-withdraw').onclick = () => {
+  document.getElementById('panel-withdraw').classList.toggle('open');
+  document.getElementById('panel-deposit').classList.remove('open');
+};
+
+// ── ПОПОЛНЕНИЕ: отправить транзакцию через TON Connect ─
+document.getElementById('dep-submit').onclick = async () => {
+  if (!connectedWallet) {
+    try { await tonConnectUI.openModal(); } catch(e) {}
+    return;
+  }
+  const amount = parseFloat(document.getElementById('dep-amount').value);
+  if (!amount || amount < 0.01) { showToast('❌ Минимум 0.01 TON', true); return; }
+
+  const btn = document.getElementById('dep-submit');
+  btn.disabled = true; btn.textContent = '…';
+
+  try {
+    // TON Connect транзакция
+    const NANO = 1_000_000_000n;
+    const nanoAmount = BigInt(Math.round(amount * 1e9)).toString();
+
+    const tx = {
+      validUntil: Math.floor(Date.now() / 1000) + 300, // 5 минут
+      messages: [{
+        address: HOT_WALLET,
+        amount:  nanoAmount,
+        payload: btoa(String(userId)), // base64(memo)
+      }]
+    };
+
+    const result = await tonConnectUI.sendTransaction(tx);
+    showToast(`✅ Отправлено! Зачислим за ~1 мин`);
+
+    // Локально добавляем в историю (реальное зачисление — на бэкенде)
+    addLocalTx('deposit', amount, result.boc?.slice(0, 16) + '…');
+    document.getElementById('panel-deposit').classList.remove('open');
+    document.getElementById('dep-amount').value = '';
+  } catch(e) {
+    if (e?.message?.includes('User rejects')) showToast('Отменено', false);
+    else showToast('❌ Ошибка транзакции', true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Отправить';
+  }
+};
+
+// ── ВЫВОД: запрос к бэкенду, подпись через TON Connect ─
+document.getElementById('wd-submit').onclick = async () => {
+  if (!connectedWallet) { showToast('❌ Подключи кошелёк', true); return; }
+  const amount = parseFloat(document.getElementById('wd-amount').value);
+  const d = API.load();
+  if (!amount || amount < 0.05) { showToast('❌ Минимум 0.05 TON', true); return; }
+  if (amount > d.tonBalance) { showToast('❌ Недостаточно TON', true); return; }
+
+  const btn = document.getElementById('wd-submit');
+  btn.disabled = true; btn.textContent = '…';
+
+  try {
+    // TODO: заменить на реальный API-запрос:
+    // const res = await fetch('/api/wallet/withdraw', { method:'POST',
+    //   headers:{'Content-Type':'application/json','X-Init-Data': tg?.initData},
+    //   body: JSON.stringify({ amount, to_address: connectedWallet.account.address }) });
+
+    // Mock: списываем локально
+    const newBal = Math.round((d.tonBalance - amount) * 1e9) / 1e9;
+    const upd = { ...d, tonBalance: newBal };
+    API.save(upd);
+    addLocalTx('withdraw', amount, connectedWallet.account.address.slice(0,12)+'…');
+    updateWalletUI();
+    updateStartScreen();
+    showToast(`✅ Вывод ${amount} TON отправлен!`);
+    document.getElementById('panel-withdraw').classList.remove('open');
+    document.getElementById('wd-amount').value = '';
+  } catch(e) {
+    showToast('❌ Ошибка вывода', true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Вывести';
+  }
+};
+
+// ── История транзакций ────────────────────────────────
+function addLocalTx(type, amount, ref) {
+  const d = API.load();
+  if (!d.txHistory) d.txHistory = [];
+  d.txHistory.unshift({ type, amount, ref, date: Date.now() });
+  if (d.txHistory.length > 30) d.txHistory = d.txHistory.slice(0, 30);
+  API.save(d);
+  renderTxHistory();
+}
+
+function renderTxHistory() {
+  const d = API.load();
+  const el = document.getElementById('tx-list');
+  const txs = d.txHistory || [];
+  if (!txs.length) {
+    el.innerHTML = '<div style="font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.3);text-align:center;padding:16px">История пуста</div>';
+    return;
+  }
+  const icons = { deposit:'💳', withdraw:'💸', earn:'🎮' };
+  el.innerHTML = txs.slice(0, 15).map(t => {
+    const sign  = t.type === 'withdraw' ? '-' : '+';
+    const cls   = t.type === 'withdraw' ? 'neg' : 'pos';
+    const date  = new Date(t.date).toLocaleDateString('ru', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    return `<div class="tx-item">
+      <div><div class="tx-type">${icons[t.type]||'•'} ${t.type==='deposit'?'Пополнение':t.type==='withdraw'?'Вывод':'Игра'}</div>
+      <div class="tx-date">${date} · ${t.ref||''}</div></div>
+      <div class="tx-amt ${cls}">${sign}${t.amount.toFixed(4)} TON</div>
+    </div>`;
+  }).join('');
+}
+
+// Инициализируем TON Connect при загрузке
+initTonConnect();
 
 // ═══════════════════════════════════════
 // API LAYER (mock → заменить на реальный)
@@ -709,6 +1079,7 @@ async function triggerGameOver(){
   document.getElementById('btn-restart').disabled=att<=0;
   document.getElementById('screen-gameover').classList.add('visible');
   if(tg)tg.sendData(JSON.stringify({action:'game_over',score,floor,tonEarned:sessionTon,coins:sessionCoins}));
+  if (sessionTon > 0) addLocalTx('earn', sessionTon, `этаж ${floor}`);
 }
 
 // ═══════════════════════════════════════
