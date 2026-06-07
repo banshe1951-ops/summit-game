@@ -283,11 +283,13 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   <div class="shop-tabs">
     <div class="shop-tab active" data-tab="skins">👤 Скины</div>
     <div class="shop-tab" data-tab="boosters">⚡ Бустеры</div>
+    <div class="shop-tab" data-tab="maps">🗺️ Карты</div>
     <div class="shop-tab" data-tab="attempts">❤️ Попытки</div>
   </div>
   <div class="shop-content">
     <div class="shop-section active" id="section-skins"><div class="shop-grid" id="skins-grid"></div></div>
     <div class="shop-section" id="section-boosters"><div class="shop-grid" id="boosters-grid"></div></div>
+    <div class="shop-section" id="section-maps"><div class="shop-grid" id="maps-grid"></div></div>
     <div class="shop-section" id="section-attempts"><div class="shop-grid" id="attempts-grid"></div></div>
   </div>
 </div>
@@ -348,11 +350,23 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
         <span class="winfo-key">Кошелёк подключён</span>
         <span class="winfo-val" id="wd-wallet-addr">—</span>
       </div>
+      <div class="winfo" style="background:rgba(0,152,234,0.1);border:1px solid rgba(0,152,234,0.2)">
+        <span class="winfo-key">Минимум вывода</span>
+        <span class="winfo-val" style="color:#0098EA">0.05 TON</span>
+      </div>
+      <div class="winfo">
+        <span class="winfo-key">Комиссия сети</span>
+        <span class="winfo-val" style="color:rgba(255,255,255,0.5)">~0.01 TON</span>
+      </div>
+      <div class="winfo">
+        <span class="winfo-key">Ваш баланс</span>
+        <span class="winfo-val" style="color:#00ff88" id="wd-cur-balance">0.000000 TON</span>
+      </div>
       <div class="winput-row">
-        <input class="winput" id="wd-amount" type="number" placeholder="Сумма TON" min="0.05" step="0.01">
+        <input class="winput" id="wd-amount" type="number" placeholder="Сумма (мин. 0.05)" min="0.05" step="0.01">
         <button class="wsubmit" id="wd-submit">Вывести</button>
       </div>
-      <div class="wnote" id="wd-note">Минимум 0.05 TON. Транзакция подпишется в кошельке.</div>
+      <div class="wnote" id="wd-note">Итого спишется: сумма + 0.01 TON комиссия</div>
     </div>
 
     <!-- Отключить -->
@@ -387,7 +401,7 @@ const userId = tg?.initDataUnsafe?.user?.id || 'demo';
 // ═══════════════════════════════════════
 // TON_CONNECT_MANIFEST — создай файл tonconnect-manifest.json на своём сервере
 // и укажи URL ниже. Пример манифеста в конце скрипта.
-const TC_MANIFEST_URL = 'https://banshe1951-ops.github.io/summit-game/tonconnect-manifest.json';
+const TC_MANIFEST_URL = 'https://YOUR_SERVER/tonconnect-manifest.json';
 const HOT_WALLET      = 'EQxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // адрес горячего кошелька
 const TON_PRICE_USD   = 5.5; // обновляй периодически или подтягивай с API
 
@@ -449,6 +463,7 @@ function updateWalletUI() {
   document.getElementById('wbtn-withdraw').disabled = !connected || d.tonBalance < 0.05;
   document.getElementById('wallet-connected-block').style.display = connected ? 'block' : 'none';
   document.getElementById('wd-wallet-addr').textContent = connected ? walletAddrShort(addr) : '—';
+  document.getElementById('wd-cur-balance').textContent = d.tonBalance.toFixed(6) + ' TON';
 
   // История
   renderTxHistory();
@@ -630,7 +645,8 @@ const API = {
   load() {
     try { const r = localStorage.getItem(this._key()); if (r) return JSON.parse(r); } catch(e){}
     return { bestScore:0, coins:0, tonBalance:0, attempts:5, lastAttemptTime:Date.now(),
-             ownedSkins:['skin_default'], activeSkin:'skin_default', ownedBoosters:{} };
+             ownedSkins:['skin_default'], activeSkin:'skin_default', ownedBoosters:{},
+             ownedMaps:['map_default'], activeMap:'map_default' };
   },
   save(d) { try { localStorage.setItem(this._key(), JSON.stringify(d)); } catch(e){} },
   async submitGameResult(score, floor, tonEarned, coinsEarned) {
@@ -657,6 +673,12 @@ const API = {
       d.activeSkin = itemId;
     } else if (itemId.startsWith('boost_')) {
       d.ownedBoosters[itemId] = (d.ownedBoosters[itemId]||0) + 1;
+    } else if (itemId.startsWith('map_')) {
+      if (!d.ownedMaps) d.ownedMaps = ['map_default'];
+      if (!d.ownedMaps.includes(itemId)) d.ownedMaps.push(itemId);
+      d.activeMap = itemId;
+    } else if (itemId === 'attempt_unlim') {
+      d.unlimExpiry = Date.now() + 60*60*1000;
     } else if (itemId.startsWith('attempt_')) {
       d.attempts = Math.min(5, d.attempts + 1);
     }
@@ -704,20 +726,70 @@ const API = {
 // КАТАЛОГ
 // ═══════════════════════════════════════
 const SKINS = [
-  { id:'skin_default',    name:'Альпинист', icon:'🧗', desc:'Стандартный',        price:0,    cur:'coins', colors:{body:'#A78BFA',hat:'#FF6B35'} },
-  { id:'skin_ninja',      name:'Ниндзя',    icon:'🥷', desc:'Быстрый и тихий',    price:500,  cur:'coins', colors:{body:'#2a2a2a',hat:'#111'} },
-  { id:'skin_robot',      name:'Робот',     icon:'🤖', desc:'Стальные ноги',      price:1200, cur:'coins', colors:{body:'#78909C',hat:'#37474F'} },
-  { id:'skin_astronaut',  name:'Астронавт', icon:'👨‍🚀', desc:'Прыгает выше',      price:0.1,  cur:'ton',   colors:{body:'#E3F2FD',hat:'#1565C0'} },
+  { id:'skin_default',   name:'Альпинист',  icon:'🧗',  desc:'Стандартный герой',       price:0,    cur:'coins', colors:{body:'#A78BFA',hat:'#FF6B35'} },
+  { id:'skin_ninja',     name:'Ниндзя',     icon:'🥷',  desc:'Тёмный как ночь',          price:500,  cur:'coins', colors:{body:'#2a2a2a',hat:'#111'} },
+  { id:'skin_robot',     name:'Робот',      icon:'🤖',  desc:'Стальные ноги',            price:1200, cur:'coins', colors:{body:'#78909C',hat:'#37474F'} },
+  { id:'skin_fire',      name:'Огонь',      icon:'🔥',  desc:'Горячий характер',         price:800,  cur:'coins', colors:{body:'#FF5722',hat:'#BF360C'} },
+  { id:'skin_ghost',     name:'Призрак',    icon:'👻',  desc:'Невидимый для врагов',     price:600,  cur:'coins', colors:{body:'#E0E0E0',hat:'#9E9E9E'} },
+  { id:'skin_viking',    name:'Викинг',     icon:'🪖',  desc:'Северная сила',            price:1500, cur:'coins', colors:{body:'#8D6E63',hat:'#4E342E'} },
+  { id:'skin_astronaut', name:'Астронавт',  icon:'👨‍🚀', desc:'Прыгает как в невесомости', price:0.1,  cur:'ton',   colors:{body:'#E3F2FD',hat:'#1565C0'} },
+  { id:'skin_dragon',    name:'Дракон',     icon:'🐲',  desc:'Огненный прыжок x1.2',     price:0.15, cur:'ton',   colors:{body:'#2E7D32',hat:'#1B5E20'}, jumpBonus:1.2 },
+  { id:'skin_angel',     name:'Ангел',      icon:'👼',  desc:'Плавное падение',           price:0.2,  cur:'ton',   colors:{body:'#FFF9C4',hat:'#F9A825'}, lowGravity:true },
 ];
+
 const BOOSTERS = [
-  { id:'boost_x2',     name:'x2 монеты', icon:'🪙', desc:'Двойные монеты',       price:300,  cur:'coins' },
-  { id:'boost_shield', name:'Щит',        icon:'🛡️', desc:'Пережить одно падение',price:400,  cur:'coins' },
-  { id:'boost_magnet', name:'Магнит',     icon:'🧲', desc:'Притягивает награды',  price:350,  cur:'coins' },
-  { id:'boost_ton2x',  name:'x2 TON',     icon:'💎', desc:'Двойной TON за игру', price:0.05, cur:'ton' },
+  { id:'boost_x2',      name:'x2 монеты',  icon:'🪙',  desc:'Двойные монеты за игру',   price:300,  cur:'coins' },
+  { id:'boost_shield',  name:'Щит',         icon:'🛡️',  desc:'Пережить одно падение',    price:400,  cur:'coins' },
+  { id:'boost_magnet',  name:'Магнит',      icon:'🧲',  desc:'Притягивает монеты и TON', price:350,  cur:'coins' },
+  { id:'boost_speed',   name:'Ускорение',   icon:'⚡',  desc:'Скорость бега x1.5',       price:450,  cur:'coins' },
+  { id:'boost_small',   name:'Мини-режим',  icon:'🔽',  desc:'Игрок меньше — легче прыгать', price:300, cur:'coins' },
+  { id:'boost_ton2x',   name:'x2 TON',      icon:'💎',  desc:'Двойной TON за игру',      price:0.05, cur:'ton' },
+  { id:'boost_ton3x',   name:'x3 TON',      icon:'💎💎', desc:'Тройной TON за игру',      price:0.1,  cur:'ton' },
+  { id:'boost_unlim',   name:'Безлимит TON',icon:'♾️',  desc:'Без лимита TON за игру',   price:0.25, cur:'ton' },
 ];
+
 const ATTEMPTS_ITEMS = [
-  { id:'attempt_coins', name:'+1 Попытка', icon:'❤️',  desc:'Добавить попытку', price:200,  cur:'coins' },
-  { id:'attempt_ton',   name:'+1 Попытка', icon:'💎',  desc:'За TON',           price:0.02, cur:'ton' },
+  { id:'attempt_coins', name:'+1 Попытка',  icon:'❤️',  desc:'Добавить попытку',         price:200,  cur:'coins' },
+  { id:'attempt_ton',   name:'+1 Попытка',  icon:'💎',  desc:'За TON — мгновенно',       price:0.02, cur:'ton' },
+  { id:'attempt_unlim', name:'Безлимит 1ч', icon:'⏰',  desc:'Бесконечные попытки на 1 час', price:0.1, cur:'ton' },
+];
+
+const MAPS = [
+  {
+    id: 'map_default',
+    name: 'Горы',       icon: '🏔️',
+    desc: 'Стандартная карта',
+    price: 0, cur: 'coins',
+    sky:   ['#060c28','#050e38','#1a0838','#0d2a6e'],
+    platColors: { normal:'hsl(220,60%,55%)', bounce:'#00E676', crumble:'#FF5252', grass:'#66BB6A' },
+    groundColor: ['#2d5a27','#1e3d1a','#0f1f0d'],
+    gravity: 0.45,
+    playerSpeed: 5.5,
+  },
+  {
+    id: 'map_winter',
+    name: 'Зима',       icon: '❄️',
+    desc: 'Скользкие платформы, снегопад',
+    price: 800, cur: 'coins',
+    sky:   ['#0a1628','#0d1f3c','#1a2a4a','#0a1220'],
+    platColors: { normal:'hsl(200,50%,65%)', bounce:'#80DEEA', crumble:'#EF9A9A', grass:'#B3E5FC' },
+    groundColor: ['#e0f0ff','#b0d0f0','#8aaed0'],
+    gravity: 0.42,
+    playerSpeed: 4.8,
+    snow: true,
+  },
+  {
+    id: 'map_volcano',
+    name: 'Вулкан',     icon: '🌋',
+    desc: 'Горячие платформы, высокая гравитация',
+    price: 0.12, cur: 'ton',
+    sky:   ['#1a0000','#2d0a00','#3d1500','#1a0800'],
+    platColors: { normal:'hsl(15,70%,40%)', bounce:'#FF6F00', crumble:'#B71C1C', grass:'#FF3D00' },
+    groundColor: ['#4a1000','#2d0800','#1a0400'],
+    gravity: 0.52,
+    playerSpeed: 6.2,
+    lava: true,
+  },
 ];
 
 // ═══════════════════════════════════════
@@ -830,12 +902,33 @@ function showToast(msg,err=false){
 function initGame(){
   score=0;floor=1;cameraY=0;highestY=0;sessionCoins=0;sessionTon=0;gameTimeMs=0;nextTonSpawn=30000;
   particles=[];tonCoins=[];
+
+  // Применяем активную карту
+  const d0=API.load();
+  const mapId=d0.activeMap||'map_default';
+  const activeMap=MAPS.find(m=>m.id===mapId)||MAPS[0];
+  window.CURRENT_MAP=activeMap;
+  window.MAP_GRAVITY=activeMap.gravity||0.45;
+  window.MAP_SPEED=activeMap.playerSpeed||5.5;
+  window._snowflakes=null; window._sparks=null;
+
+  // Бонусы скина
+  const skinId=d0.activeSkin||'skin_default';
+  const activeSkin=SKINS.find(s=>s.id===skinId)||SKINS[0];
+  if(activeSkin.lowGravity) window.MAP_GRAVITY*=0.85;
+  if(activeSkin.jumpBonus)  window._jumpBonus=activeSkin.jumpBonus||1;
+  else window._jumpBonus=1;
+
   activeBoosts={x2:false,shield:false,magnet:false,ton2x:false}; shieldHp=0;
   const inv=API.load().ownedBoosters;
   if((inv['boost_x2']||0)>0){activeBoosts.x2=true;API.useBooster('boost_x2');}
   if((inv['boost_shield']||0)>0){activeBoosts.shield=true;shieldHp=1;API.useBooster('boost_shield');}
   if((inv['boost_magnet']||0)>0){activeBoosts.magnet=true;API.useBooster('boost_magnet');}
   if((inv['boost_ton2x']||0)>0){activeBoosts.ton2x=true;API.useBooster('boost_ton2x');}
+  if((inv['boost_ton3x']||0)>0){activeBoosts.ton3x=true;API.useBooster('boost_ton3x');}
+  if((inv['boost_unlim']||0)>0){activeBoosts.unlim=true;API.useBooster('boost_unlim');}
+  if((inv['boost_speed']||0)>0){activeBoosts.speed=true;API.useBooster('boost_speed');}
+  if((inv['boost_small']||0)>0){activeBoosts.small=true;API.useBooster('boost_small');}
 
   platforms=[];
   platforms.push({x:0,y:H-40,w:W,type:'ground',crumbling:false,crumbleTimer:0});
@@ -928,22 +1021,26 @@ function loop(ts){
 // UPDATE
 // ═══════════════════════════════════════
 function update(dt){
+  const MAP_G = window.MAP_GRAVITY||GRAVITY;
+  const MAP_S = window.MAP_SPEED||PLAYER_SPEED;
+
   gameTimeMs+=16.67*dt;
-  if(gameTimeMs>nextTonSpawn&&sessionTon<TON_MAX){ spawnTonCoin(); nextTonSpawn=gameTimeMs+28000+Math.random()*8000; }
+  if(gameTimeMs>nextTonSpawn&&sessionTon<(activeBoosts.unlim?999:TON_MAX)){ spawnTonCoin(); nextTonSpawn=gameTimeMs+28000+Math.random()*8000; }
 
   // Движение
+  const spd = MAP_S * (activeBoosts.speed?1.5:1);
   if(joystickActive){
     const dx=joystickCurX-joystickStartX;
-    if(dx<-DEAD_ZONE){player.vx=-PLAYER_SPEED;player.facing=-1;}
-    else if(dx>DEAD_ZONE){player.vx=PLAYER_SPEED;player.facing=1;}
+    if(dx<-DEAD_ZONE){player.vx=-spd;player.facing=-1;}
+    else if(dx>DEAD_ZONE){player.vx=spd;player.facing=1;}
     else player.vx*=0.75;
   } else {
-    if(keys.left){player.vx=-PLAYER_SPEED;player.facing=-1;}
-    else if(keys.right){player.vx=PLAYER_SPEED;player.facing=1;}
+    if(keys.left){player.vx=-spd;player.facing=-1;}
+    else if(keys.right){player.vx=spd;player.facing=1;}
     else player.vx*=0.75;
   }
 
-  player.vy+=GRAVITY*dt;
+  player.vy+=MAP_G*dt;
   player.x+=player.vx*dt;
   const prevBot=player.y+player.h;
   player.y+=player.vy*dt;
@@ -964,7 +1061,7 @@ function update(dt){
       if(ov&&cr){
         if(p.type==='crumble')p.crumbling=true;
         if(!p.crumbling||p.crumbleTimer<0.4){
-          player.vy=JUMP_FORCE*(p.type==='bounce'?1.5:1);
+          player.vy=JUMP_FORCE*(p.type==='bounce'?1.5:1)*(window._jumpBonus||1);
           player.y=p.y-player.h; player.onGround=true;
           if(p.type==='bounce')spawnParticles(player.x+player.w/2,p.y-cameraY,'#00FFCC',8);
           break;
@@ -1034,8 +1131,10 @@ function update(dt){
     if(tc.collected)return; tc.angle+=0.04*dt; tc.y+=Math.sin(tc.angle+tc.bob)*0.4;
     const dx=player.x+player.w/2-tc.x, dy=player.y+player.h/2-tc.y, dist=Math.sqrt(dx*dx+dy*dy);
     if(activeBoosts.magnet&&dist<130){tc.x+=dx/dist*3*dt;tc.y+=dy/dist*3*dt;}
-    if(dist<tc.r+22){tc.collected=true;const mult=activeBoosts.ton2x?2:1;
-      sessionTon=Math.min(TON_MAX,+((sessionTon+TON_PER_COIN*mult).toFixed(9)));
+    if(dist<tc.r+22){tc.collected=true;
+      const mult=activeBoosts.unlim?1:(activeBoosts.ton3x?3:activeBoosts.ton2x?2:1);
+      const tonLimit=activeBoosts.unlim?999:TON_MAX;
+      sessionTon=Math.min(tonLimit,+((sessionTon+TON_PER_COIN*mult).toFixed(9)));
       spawnParticles(tc.x,tc.y-cameraY,'#0098EA',14);updateHUD();}
   });
   tonCoins=tonCoins.filter(tc=>!tc.collected&&tc.y-cameraY<H+100);
@@ -1118,11 +1217,13 @@ function shadeHex(hex,n){
 }
 
 function draw(){
+  const map=window.CURRENT_MAP||MAPS[0];
   const sp=Math.min(Math.max(-cameraY/4000,0),1);
+  const skyC=map.sky||['#060c28','#050e38','#1a0838','#0d2a6e'];
   const g=ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,lerpColor('#060c28','#050e38',sp));
-  g.addColorStop(0.5,lerpColor('#0d1540','#0a1a55',sp));
-  g.addColorStop(1,lerpColor('#1a0838','#0d2a6e',sp));
+  g.addColorStop(0,lerpColor(skyC[0],skyC[1],sp));
+  g.addColorStop(0.5,lerpColor(skyC[2],skyC[3],sp));
+  g.addColorStop(1,lerpColor(skyC[0],skyC[2],sp));
   ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
 
   // Звёзды
@@ -1176,16 +1277,41 @@ function draw(){
     ctx.restore();});
 
   if(gameState!=='start'){
-    // Земля
+  // Земля
+    const map2=window.CURRENT_MAP||MAPS[0];
+    const gc=map2.groundColor||['#2d5a27','#1e3d1a','#0f1f0d'];
     const gy=H-40-cameraY;
     if(gy<H+20){ctx.save();
       const gg=ctx.createLinearGradient(0,gy,0,gy+40);
-      gg.addColorStop(0,'#2d5a27');gg.addColorStop(0.3,'#1e3d1a');gg.addColorStop(1,'#0f1f0d');
+      gg.addColorStop(0,gc[0]);gg.addColorStop(0.3,gc[1]);gg.addColorStop(1,gc[2]);
       ctx.fillStyle=gg;ctx.fillRect(0,gy,W,40);
-      ctx.fillStyle='#4a8f3f';ctx.fillRect(0,gy,W,6);
-      ctx.fillStyle='#5da852';
-      for(let gx=0;gx<W;gx+=8){const gh=4+Math.sin(gx*0.3)*2;ctx.fillRect(gx,gy-gh+6,3,gh);}
+      // Лава
+      if(map2.lava){
+        ctx.fillStyle='#FF3D00';
+        for(let lx=0;lx<W;lx+=20){const lh=3+Math.sin((lx+Date.now()*0.005)*0.3)*3;ctx.fillRect(lx,gy,18,lh);}
+      }
+      if(map2.snow){ctx.fillStyle='#e8f4ff';ctx.fillRect(0,gy,W,6);}
+      else{ctx.fillStyle='#4a8f3f';ctx.fillRect(0,gy,W,6);ctx.fillStyle='#5da852';
+        for(let gx=0;gx<W;gx+=8){const gh=4+Math.sin(gx*0.3)*2;ctx.fillRect(gx,gy-gh+6,3,gh);}}
       ctx.restore();}
+
+    // Снег
+    if(map2.snow){
+      if(!window._snowflakes){window._snowflakes=Array.from({length:60},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+0.5,spd:0.5+Math.random()*1.5,dx:Math.random()*0.4-0.2}));}
+      ctx.save();ctx.fillStyle='rgba(200,230,255,0.8)';
+      window._snowflakes.forEach(s=>{s.y+=s.spd;s.x+=s.dx;if(s.y>H)s.y=0;if(s.x>W)s.x=0;if(s.x<0)s.x=W;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();});
+      ctx.restore();
+    }
+    // Искры вулкана
+    if(map2.lava){
+      if(!window._sparks){window._sparks=Array.from({length:20},()=>({x:Math.random()*W,y:H,vy:-2-Math.random()*3,vx:Math.random()*2-1,life:1}));}
+      ctx.save();
+      window._sparks.forEach(s=>{s.y+=s.vy;s.x+=s.vx;s.life-=0.02;s.vy+=0.08;
+        if(s.life<=0||s.y<0){s.x=Math.random()*W;s.y=H-50-cameraY;s.vy=-2-Math.random()*4;s.vx=Math.random()*2-1;s.life=1;}
+        ctx.globalAlpha=s.life*0.8;ctx.fillStyle=s.life>0.5?'#FF6F00':'#FF3D00';
+        ctx.beginPath();ctx.arc(s.x,s.y,2,0,Math.PI*2);ctx.fill();});
+      ctx.restore();
+    }
 
     // Трейл
     player.trail.forEach(t=>{ctx.save();ctx.globalAlpha=t.life*0.3;ctx.fillStyle='#A78BFA';
@@ -1229,25 +1355,27 @@ function draw(){
 
 function drawPlatform(p){
   if(p.type==='ground')return;
+  const map=window.CURRENT_MAP||MAPS[0];
+  const pc=map.platColors||{};
   const px=p.x,py=p.y-cameraY,pw=p.w,ph=14;
   const alpha=p.crumbling?Math.max(0,1-p.crumbleTimer):1;
   ctx.save();ctx.globalAlpha=alpha;
   if(p.type==='bounce'){
-    ctx.fillStyle='#00E676';drawRR(px,py,pw,ph,7);ctx.fill();
+    ctx.fillStyle=pc.bounce||'#00E676';drawRR(px,py,pw,ph,7);ctx.fill();
     if(pw>10){ctx.fillStyle='#69F0AE';drawRR(px+4,py,pw-8,5,4);ctx.fill();}
     ctx.strokeStyle='#00C853';ctx.lineWidth=2;
     for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(px+pw*0.35,py+ph+i*5);ctx.lineTo(px+pw*0.65,py+ph+i*5);ctx.stroke();}
   } else if(p.type==='crumble'){
-    ctx.fillStyle='#FF5252';drawRR(px,py,pw,ph,7);ctx.fill();
+    ctx.fillStyle=pc.crumble||'#FF5252';drawRR(px,py,pw,ph,7);ctx.fill();
     if(pw>10){ctx.fillStyle='#FF8A80';drawRR(px+4,py,pw-8,5,4);ctx.fill();}
     if(p.crumbling){ctx.strokeStyle='#B71C1C';ctx.lineWidth=1.5;
       ctx.beginPath();ctx.moveTo(px+pw*0.3,py);ctx.lineTo(px+pw*0.5,py+ph);
       ctx.moveTo(px+pw*0.6,py);ctx.lineTo(px+pw*0.4,py+ph);ctx.stroke();}
   } else {
     const shade=Math.sin(p.y*0.01)*20;
-    ctx.fillStyle=`hsl(${220+shade},60%,55%)`;drawRR(px,py,pw,ph,7);ctx.fill();
+    ctx.fillStyle=pc.normal||`hsl(${220+shade},60%,55%)`;drawRR(px,py,pw,ph,7);ctx.fill();
     if(pw>10){ctx.fillStyle=`hsl(${220+shade},60%,70%)`;drawRR(px+4,py,pw-8,5,4);ctx.fill();}
-    if(pw>6){ctx.fillStyle='#66BB6A';drawRR(px+2,py,pw-4,5,4);ctx.fill();}
+    if(pw>6){ctx.fillStyle=pc.grass||'#66BB6A';drawRR(px+2,py,pw-4,5,4);ctx.fill();}
   }
   // Стрелки на движущихся платформах
   if (p.moving) {
@@ -1383,8 +1511,25 @@ function renderShop(){
       <button class="btn-buy ${item.cur}-buy" data-id="${item.id}" data-price="${item.price}" data-cur="${item.cur}" ${d.attempts>=5?'disabled':''}>Купить</button>`;
     ag.appendChild(el);
   });
-  // Клики
-  document.querySelectorAll('#screen-shop .btn-buy').forEach(btn=>{
+  // Карты
+  const mg2 = document.getElementById('maps-grid'); mg2.innerHTML='';
+  MAPS.forEach(item=>{
+    const d2=API.load();
+    if(!d2.ownedMaps)d2.ownedMaps=['map_default'];
+    const owned=d2.ownedMaps.includes(item.id)||item.price===0;
+    const isAct=d2.activeMap===item.id;
+    const el=document.createElement('div');
+    el.className='shop-item'+(isAct?' active-item':owned?' owned':'');
+    el.innerHTML=`<div class="shop-item-icon">${item.icon}</div>
+      <div class="shop-item-name">${item.name}</div>
+      <div class="shop-item-desc">${item.desc}</div>
+      ${!owned?`<div class="shop-item-price ${item.cur}-price">${item.price} ${item.cur==='ton'?'TON':'🪙'}</div>`:''}
+      <button class="btn-buy ${isAct?'active-btn':owned?'owned-btn':item.cur+'-buy'}"
+        data-id="${item.id}" data-price="${item.price}" data-cur="${item.cur}">
+        ${isAct?'✓ Активна':owned?'▶ Выбрать':'Купить'}</button>`;
+    mg2.appendChild(el);
+  });
+
     if(btn.disabled)return;
     btn.onclick=async()=>{
       const id=btn.dataset.id,price=parseFloat(btn.dataset.price),cur=btn.dataset.cur;
