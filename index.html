@@ -1550,7 +1550,7 @@ document.querySelectorAll('.shop-tab').forEach(tab=>{
     document.getElementById('section-'+tab.dataset.tab).classList.add('active');
   };
 });
-
+document.querySelectorAll('#screen-shop .btn-buy').forEach(btn=>{
 function openShop(){renderShop();document.getElementById('screen-shop').classList.add('visible');}
 function closeShop(){document.getElementById('screen-shop').classList.remove('visible');}
 
