@@ -1530,11 +1530,17 @@ function renderShop(){
     mg2.appendChild(el);
   });
 
+  // Клики
+  document.querySelectorAll('#screen-shop .btn-buy').forEach(btn=>{
     if(btn.disabled)return;
     btn.onclick=async()=>{
       const id=btn.dataset.id,price=parseFloat(btn.dataset.price),cur=btn.dataset.cur;
       if(btn.classList.contains('active-btn'))return;
-      if(btn.classList.contains('owned-btn')){API.selectSkin(id);renderShop();return;}
+      if(btn.classList.contains('owned-btn')){
+        if(id.startsWith('map_')){const d3=API.load();if(!d3.ownedMaps)d3.ownedMaps=['map_default'];d3.activeMap=id;API.save(d3);renderShop();}
+        else{API.selectSkin(id);renderShop();}
+        return;
+      }
       const r=await API.buyItem(id,cur,price);
       if(r.ok){userData=r.data;showToast('✅ Куплено!');renderShop();updateStartScreen();}
       else showToast('❌ '+r.reason,true);
@@ -1550,7 +1556,7 @@ document.querySelectorAll('.shop-tab').forEach(tab=>{
     document.getElementById('section-'+tab.dataset.tab).classList.add('active');
   };
 });
-document.querySelectorAll('#screen-shop .btn-buy').forEach(btn=>{
+
 function openShop(){renderShop();document.getElementById('screen-shop').classList.add('visible');}
 function closeShop(){document.getElementById('screen-shop').classList.remove('visible');}
 
