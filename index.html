@@ -149,7 +149,53 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   z-index:99; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
 #shop-toast.show { opacity:1; }
 #shop-toast.err { background:rgba(220,50,50,0.92); }
-/* TON Connect / Wallet */
+/* Чекпоинт */
+#checkpoint-banner {
+  position:absolute; left:50%; transform:translateX(-50%);
+  top:80px; z-index:8; pointer-events:none;
+  display:none; flex-direction:column; align-items:center; gap:4px;
+}
+#checkpoint-banner.show { display:flex; animation:cp-pop 2.5s ease forwards; }
+@keyframes cp-pop {
+  0%   { opacity:0; transform:translateX(-50%) scale(0.6) translateY(20px); }
+  15%  { opacity:1; transform:translateX(-50%) scale(1.1) translateY(0); }
+  30%  { transform:translateX(-50%) scale(1.0); }
+  70%  { opacity:1; }
+  100% { opacity:0; transform:translateX(-50%) translateY(-30px); }
+}
+.cp-title {
+  background:linear-gradient(135deg,#FFD700,#FF8C00);
+  border-radius:20px; padding:8px 24px;
+  font-family:'Arial Rounded MT Bold',Arial,sans-serif;
+  font-size:20px; font-weight:900; color:#fff;
+  box-shadow:0 4px 20px rgba(255,180,0,0.6);
+  text-shadow:0 2px 4px rgba(0,0,0,0.3);
+}
+.cp-sub {
+  font-family:Arial,sans-serif; font-size:13px;
+  color:rgba(255,255,255,0.9);
+  background:rgba(0,0,0,0.4); border-radius:10px; padding:3px 14px;
+}
+/* Планка чекпоинта снизу экрана */
+#cp-barrier {
+  position:absolute; left:0; right:0; height:4px;
+  background:linear-gradient(90deg,transparent,#FFD700,#FF8C00,#FFD700,transparent);
+  z-index:6; pointer-events:none; display:none;
+  box-shadow:0 0 12px rgba(255,200,0,0.8);
+}
+#cp-barrier-warn {
+  position:absolute; left:0; right:0; bottom:0; height:60px;
+  background:linear-gradient(0deg,rgba(255,150,0,0.25),transparent);
+  z-index:5; pointer-events:none; display:none;
+}
+#cp-label {
+  position:absolute; left:50%; transform:translateX(-50%);
+  font-family:Arial,sans-serif; font-size:11px; font-weight:700;
+  color:#FFD700; white-space:nowrap; pointer-events:none;
+  text-shadow:0 1px 4px rgba(0,0,0,0.8);
+  z-index:7;
+}
+
 .btn-wallet-connect { position:relative;z-index:2;display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#0098EA,#0066bb);border:none;border-radius:40px;padding:10px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:Arial,sans-serif;transition:transform 0.1s;box-shadow:0 4px 14px rgba(0,152,234,0.4); }
 .btn-wallet-connect:active{transform:scale(0.95);}
 .wallet-address-badge{position:relative;z-index:2;display:flex;align-items:center;gap:6px;background:rgba(0,152,234,0.12);border:1px solid rgba(0,152,234,0.3);border-radius:20px;padding:6px 14px;font-family:Arial,sans-serif;font-size:12px;color:#0098EA;font-weight:600;cursor:pointer;}
@@ -195,6 +241,36 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .tx-date{font-family:Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.3);}
 .tx-amt{font-family:Arial,sans-serif;font-size:13px;font-weight:700;}
 .tx-amt.pos{color:#00ff88;}.tx-amt.neg{color:#ff6b6b;}
+/* ══ НАСТРОЙКИ ══ */
+#screen-settings{position:absolute;inset:0;display:none;flex-direction:column;background:linear-gradient(180deg,#0d0028 0%,#0a0a1a 100%);z-index:20;overflow:hidden;}
+#screen-settings.visible{display:flex;}
+.settings-header{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
+.settings-title{font-family:'Arial Rounded MT Bold',Arial,sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,#7DF9FF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.btn-close-settings{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.18);border-radius:50%;width:32px;height:32px;font-size:15px;color:#fff;cursor:pointer;}
+.settings-body{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+.settings-section{margin-bottom:24px;}
+.settings-section-title{font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;}
+.control-options{display:flex;flex-direction:column;gap:10px;}
+.control-option{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px 16px;cursor:pointer;transition:all 0.2s;}
+.control-option.selected{border-color:rgba(125,249,255,0.5);background:rgba(125,249,255,0.08);box-shadow:0 0 16px rgba(125,249,255,0.15);}
+.control-option:active{transform:scale(0.98);}
+.control-icon{font-size:28px;flex-shrink:0;}
+.control-info{flex:1;}
+.control-name{font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;}
+.control-desc{font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.4);line-height:1.4;}
+.control-check{width:22px;height:22px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.2s;}
+.control-option.selected .control-check{background:linear-gradient(135deg,#7DF9FF,#A78BFA);border-color:transparent;color:#0a0a1a;font-weight:900;}
+.control-preview{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:14px;margin-top:10px;text-align:center;}
+.control-preview-text{font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.8;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 16px;margin-bottom:8px;}
+.settings-row-left{display:flex;align-items:center;gap:12px;}
+.settings-row-icon{font-size:22px;}
+.settings-row-name{font-family:Arial,sans-serif;font-size:14px;color:#fff;font-weight:600;}
+.settings-row-desc{font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.4);}
+.toggle{width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,0.15);position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+.toggle.on{background:linear-gradient(135deg,#7DF9FF,#A78BFA);}
+.toggle-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
+.toggle.on .toggle-knob{transform:translateX(20px);}
 </style>
 </head>
 <body>
@@ -228,6 +304,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
       <img src="https://ton.org/download/ton_symbol.svg" onerror="this.style.display='none'">
       <span id="wallet-btn-label">Подключить кошелёк</span>
     </button>
+    <button class="btn-shop-open" id="btn-open-settings" style="background:rgba(125,249,255,0.1);border-color:rgba(125,249,255,0.25)">⚙️</button>
   </div>
   <div class="start-tips">
     <div class="tip"><span class="tip-icon">👆</span><span>Тап влево/<br>вправо</span></div>
@@ -245,6 +322,14 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   <div class="hud-attempts" id="hud-attempts"></div>
 </div>
 <div id="hud-boosters"></div>
+
+<div id="checkpoint-banner">
+  <div class="cp-title" id="cp-title">🏁 ЧЕКПОИНТ!</div>
+  <div class="cp-sub" id="cp-sub">Этаж 200 сохранён</div>
+</div>
+<div id="cp-barrier"></div>
+<div id="cp-barrier-warn"></div>
+<div id="cp-label"></div>
 
 <canvas id="game-canvas"></canvas>
 <div id="ctrl-zone"></div>
@@ -382,6 +467,100 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ══ НАСТРОЙКИ ══ -->
+<div id="screen-settings">
+  <div class="settings-header">
+    <div class="settings-title">⚙️ Настройки</div>
+    <button class="btn-close-settings" id="btn-close-settings">✕</button>
+  </div>
+  <div class="settings-body">
+
+    <!-- Управление -->
+    <div class="settings-section">
+      <div class="settings-section-title">🕹️ Управление</div>
+      <div class="control-options" id="control-options">
+
+        <div class="control-option" data-ctrl="joystick">
+          <div class="control-icon">👆</div>
+          <div class="control-info">
+            <div class="control-name">Джойстик</div>
+            <div class="control-desc">Касаешься нижней части экрана — появляется джойстик. Двигай палец влево/вправо.</div>
+          </div>
+          <div class="control-check">✓</div>
+        </div>
+
+        <div class="control-option" data-ctrl="gyro">
+          <div class="control-icon">📱</div>
+          <div class="control-info">
+            <div class="control-name">Акселерометр</div>
+            <div class="control-desc">Наклоняй телефон влево/вправо для управления персонажем.</div>
+          </div>
+          <div class="control-check">✓</div>
+        </div>
+
+        <div class="control-option" data-ctrl="both">
+          <div class="control-icon">🎮</div>
+          <div class="control-info">
+            <div class="control-name">Оба варианта</div>
+            <div class="control-desc">Работают одновременно джойстик и акселерометр. Используй что удобнее.</div>
+          </div>
+          <div class="control-check">✓</div>
+        </div>
+
+      </div>
+
+      <!-- Превью -->
+      <div class="control-preview">
+        <div class="control-preview-text" id="ctrl-preview-text">Выбери вариант управления выше</div>
+      </div>
+
+      <!-- Чувствительность акселерометра -->
+      <div id="gyro-sensitivity-row" style="margin-top:12px;display:none;">
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-icon">📐</div>
+            <div>
+              <div class="settings-row-name">Чувствительность</div>
+              <div class="settings-row-desc" id="gyro-sens-label">Угол наклона: 8°</div>
+            </div>
+          </div>
+          <input type="range" id="gyro-sens-input" min="4" max="20" value="8"
+            style="width:90px;accent-color:#7DF9FF;cursor:pointer;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Дополнительно (заглушка для будущих настроек) -->
+    <div class="settings-section">
+      <div class="settings-section-title">🔔 Прочее</div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">📳</div>
+          <div>
+            <div class="settings-row-name">Вибрация</div>
+            <div class="settings-row-desc">При прыжке и сборе монет</div>
+          </div>
+        </div>
+        <div class="toggle on" id="toggle-vibro"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">👣</div>
+          <div>
+            <div class="settings-row-name">Трейл персонажа</div>
+            <div class="settings-row-desc">Фиолетовый след при прыжке</div>
+          </div>
+        </div>
+        <div class="toggle on" id="toggle-trail"><div class="toggle-knob"></div></div>
+      </div>
+    </div>
+
+    <div style="font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.2);text-align:center;padding:8px">
+      Вершина v1.0 · Настройки сохраняются автоматически
+    </div>
   </div>
 </div>
 
@@ -902,6 +1081,13 @@ function showToast(msg,err=false){
 function initGame(){
   score=0;floor=1;cameraY=0;highestY=0;sessionCoins=0;sessionTon=0;gameTimeMs=0;nextTonSpawn=30000;
   particles=[];tonCoins=[];
+  // Чекпоинты
+  window.checkpointFloor = 0;       // последний чекпоинт (этаж)
+  window.checkpointY = H - 40;      // мировая Y чекпоинта (земля = старт)
+  window.nextCheckpoint = 200;      // следующий чекпоинт на этаже
+  document.getElementById('cp-barrier').style.display = 'none';
+  document.getElementById('cp-barrier-warn').style.display = 'none';
+  document.getElementById('cp-label').style.display = 'none';
 
   // Применяем активную карту
   const d0=API.load();
@@ -1063,6 +1249,7 @@ function update(dt){
         if(!p.crumbling||p.crumbleTimer<0.4){
           player.vy=JUMP_FORCE*(p.type==='bounce'?1.5:1)*(window._jumpBonus||1);
           player.y=p.y-player.h; player.onGround=true;
+          if(gameSettings.vibro && navigator.vibrate) navigator.vibrate(p.type==='bounce'?[15,5,15]:8);
           if(p.type==='bounce')spawnParticles(player.x+player.w/2,p.y-cameraY,'#00FFCC',8);
           break;
         }
@@ -1142,7 +1329,62 @@ function update(dt){
   particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=0.15*dt;p.life-=0.04*dt;p.r*=0.96;});
   particles=particles.filter(p=>p.life>0);
 
-  // Смерть
+  // Чекпоинт — проверка
+  if (floor >= window.nextCheckpoint) {
+    window.checkpointFloor = floor;
+    window.checkpointY = player.y;
+    window.nextCheckpoint = floor + 200;
+    // Баннер
+    const banner = document.getElementById('checkpoint-banner');
+    document.getElementById('cp-title').textContent = `🏁 ЧЕКПОИНТ! Этаж ${window.checkpointFloor}`;
+    document.getElementById('cp-sub').textContent = `Следующий на ${window.nextCheckpoint} этаже`;
+    banner.classList.remove('show');
+    void banner.offsetWidth; // reflow
+    banner.classList.add('show');
+    setTimeout(() => banner.classList.remove('show'), 2600);
+    // Частицы салюта
+    for (let i = 0; i < 5; i++) setTimeout(() => {
+      spawnParticles(Math.random()*W, H*0.3, ['#FFD700','#FF8C00','#00FF88','#0098EA'][Math.floor(Math.random()*4)], 12);
+    }, i * 150);
+  }
+
+  // Планка чекпоинта — не даём упасть ниже
+  if (window.checkpointFloor > 0) {
+    const barrierScreenY = window.checkpointY - cameraY + 30;
+    const barrier = document.getElementById('cp-barrier');
+    const warn    = document.getElementById('cp-barrier-warn');
+    const label   = document.getElementById('cp-label');
+
+    if (barrierScreenY < H + 60) {
+      barrier.style.display = 'block';
+      barrier.style.top = Math.min(H - 4, barrierScreenY) + 'px';
+      label.style.display = 'block';
+      label.style.top = (Math.min(H - 20, barrierScreenY) - 16) + 'px';
+      label.textContent = `🏁 Чекпоинт ${window.checkpointFloor} эт.`;
+
+      // Предупреждение когда близко к планке
+      const distToBarrier = barrierScreenY - (player.y - cameraY + player.h);
+      if (distToBarrier < 150) {
+        warn.style.display = 'block';
+        warn.style.opacity = Math.max(0, 1 - distToBarrier / 150);
+      } else {
+        warn.style.display = 'none';
+      }
+    } else {
+      barrier.style.display = 'none';
+      warn.style.display = 'none';
+      label.style.display = 'none';
+    }
+
+    // Блокируем падение ниже чекпоинта
+    if (player.y > window.checkpointY + 20) {
+      player.y = window.checkpointY + 20;
+      player.vy = JUMP_FORCE * 0.8;
+      spawnParticles(player.x + player.w/2, player.y - cameraY, '#FFD700', 8);
+    }
+  }
+
+  // Смерть — только если нет чекпоинта
   if(player.y-cameraY>H+100){
     if(activeBoosts.shield&&shieldHp>0){
       shieldHp=0; activeBoosts.shield=false;
@@ -1358,8 +1600,10 @@ function draw(){
     }
 
     // Трейл
-    player.trail.forEach(t=>{ctx.save();ctx.globalAlpha=t.life*0.3;ctx.fillStyle='#A78BFA';
-      ctx.beginPath();ctx.ellipse(t.x,t.y-cameraY,Math.max(0.1,6*t.life),Math.max(0.1,4*t.life),0,0,Math.PI*2);ctx.fill();ctx.restore();});
+    if(gameSettings.trail){
+      player.trail.forEach(t=>{ctx.save();ctx.globalAlpha=t.life*0.3;ctx.fillStyle='#A78BFA';
+        ctx.beginPath();ctx.ellipse(t.x,t.y-cameraY,Math.max(0.1,6*t.life),Math.max(0.1,4*t.life),0,0,Math.PI*2);ctx.fill();ctx.restore();});
+    }
 
     platforms.forEach(drawPlatform);
     stars.forEach(s=>{if(!s.collected)drawStar(s.x,s.y-cameraY,s.r,s.angle);});
@@ -1529,7 +1773,10 @@ let joystickActive=false,joystickStartX=0,joystickCurX=0;
 const DEAD_ZONE=12,MAX_KNOB=40;
 
 ctrlZone.addEventListener('touchstart',e=>{
-  e.preventDefault();if(gameState!=='playing')return;
+  e.preventDefault();
+  if(gameState!=='playing') return;
+  // Джойстик работает только если не выбран режим только гироскоп
+  if(gameSettings.ctrl==='gyro') return;
   const t=e.changedTouches[0];joystickActive=true;joystickStartX=joystickCurX=t.clientX;
   joyBase.style.left=t.clientX+'px';joyBase.style.top=t.clientY+'px';
   joyBase.style.display='block';joyKnob.style.display='block';
@@ -1550,10 +1797,14 @@ ctrlZone.addEventListener('touchmove',e=>{
 },{passive:false}));
 
 window.addEventListener('deviceorientation',e=>{
-  if(gameState!=='playing'||joystickActive)return;
+  if(gameState!=='playing') return;
+  // Акселерометр работает только если выбран соответствующий режим
+  if(gameSettings.ctrl==='joystick') return;
+  if(joystickActive && gameSettings.ctrl==='both') return; // джойстик имеет приоритет
+  const threshold = gameSettings.gyroSens || 8;
   const tilt=e.gamma;
-  if(tilt<-8){keys.left=true;keys.right=false;}
-  else if(tilt>8){keys.right=true;keys.left=false;}
+  if(tilt<-threshold){keys.left=true;keys.right=false;}
+  else if(tilt>threshold){keys.right=true;keys.left=false;}
   else{keys.left=false;keys.right=false;}
 });
 
@@ -1677,6 +1928,63 @@ document.getElementById('btn-menu').onclick=()=>{
   document.getElementById('screen-start').style.display='flex';
   updateStartScreen();
 };
+
+// ═══════════════════════════════════════
+// ═══════════════════════════════════════
+// НАСТРОЙКИ
+// ═══════════════════════════════════════
+const CTRL_PREVIEWS = {
+  joystick: '👆 Коснись нижней части экрана\n🕹️ Появится джойстик\n↔️ Двигай палец для управления',
+  gyro:     '📱 Держи телефон вертикально\n↩️ Наклони влево — герой идёт влево\n↪️ Наклони вправо — герой идёт вправо',
+  both:     '🎮 Оба способа работают вместе\n👆 Джойстик — пальцем по экрану\n📱 Акселерометр — наклон телефона',
+};
+
+function loadSettings() {
+  try { const s=localStorage.getItem('summit_settings'); return s?JSON.parse(s):{ctrl:'both',gyroSens:8,vibro:true,trail:true}; }
+  catch(e){ return {ctrl:'both',gyroSens:8,vibro:true,trail:true}; }
+}
+function saveSettings(s) { try{localStorage.setItem('summit_settings',JSON.stringify(s));}catch(e){} }
+
+let gameSettings = loadSettings();
+
+function applySettings() {
+  document.querySelectorAll('.control-option').forEach(el=>{
+    el.classList.toggle('selected', el.dataset.ctrl===gameSettings.ctrl);
+  });
+  const prev = document.getElementById('ctrl-preview-text');
+  if(prev) prev.textContent = CTRL_PREVIEWS[gameSettings.ctrl]||'';
+  const sensRow = document.getElementById('gyro-sensitivity-row');
+  if(sensRow) sensRow.style.display=(gameSettings.ctrl==='gyro'||gameSettings.ctrl==='both')?'block':'none';
+  const sensInput = document.getElementById('gyro-sens-input');
+  if(sensInput) sensInput.value=gameSettings.gyroSens;
+  const sensLabel = document.getElementById('gyro-sens-label');
+  if(sensLabel) sensLabel.textContent=`Угол наклона: ${gameSettings.gyroSens}°`;
+  const tv=document.getElementById('toggle-vibro');
+  const tt=document.getElementById('toggle-trail');
+  if(tv) tv.classList.toggle('on',gameSettings.vibro);
+  if(tt) tt.classList.toggle('on',gameSettings.trail);
+}
+
+document.querySelectorAll('.control-option').forEach(el=>{
+  el.onclick=()=>{
+    gameSettings.ctrl=el.dataset.ctrl; saveSettings(gameSettings); applySettings();
+    if((gameSettings.ctrl==='gyro'||gameSettings.ctrl==='both')&&typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
+      DeviceMotionEvent.requestPermission().catch(()=>{});
+    }
+  };
+});
+
+const gyroInput=document.getElementById('gyro-sens-input');
+if(gyroInput) gyroInput.oninput=function(){
+  gameSettings.gyroSens=parseInt(this.value);
+  document.getElementById('gyro-sens-label').textContent=`Угол наклона: ${gameSettings.gyroSens}°`;
+  saveSettings(gameSettings);
+};
+
+document.getElementById('toggle-vibro').onclick=function(){gameSettings.vibro=!gameSettings.vibro;saveSettings(gameSettings);applySettings();};
+document.getElementById('toggle-trail').onclick=function(){gameSettings.trail=!gameSettings.trail;saveSettings(gameSettings);applySettings();};
+document.getElementById('btn-open-settings').onclick=()=>{applySettings();document.getElementById('screen-settings').classList.add('visible');};
+document.getElementById('btn-close-settings').onclick=()=>{document.getElementById('screen-settings').classList.remove('visible');};
 
 // ═══════════════════════════════════════
 // START
