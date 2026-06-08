@@ -14,8 +14,8 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .stars-bg { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
 .star { position:absolute; border-radius:50%; background:#fff; animation:twinkle 2s infinite alternate; }
 @keyframes twinkle { from{opacity:0.2;transform:scale(1)} to{opacity:1;transform:scale(1.4)} }
-#screen-start { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  background:linear-gradient(180deg,#1a0a3e 0%,#0d1b4b 40%,#0a2a1a 100%); z-index:10; }
+#screen-start { position:absolute; top:0; left:0; right:0; bottom:60px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:linear-gradient(180deg,#1a0a3e 0%,#0d1b4b 40%,#0a2a1a 100%); z-index:10; overflow:hidden; }
 .mountain-silhouette { position:absolute; bottom:0; left:0; right:0; height:45%; }
 .logo-wrap { position:relative; z-index:2; text-align:center; margin-bottom:8px; }
 .logo-emoji { font-size:60px; display:block; filter:drop-shadow(0 0 20px rgba(255,200,50,0.6)); animation:float 3s ease-in-out infinite; }
@@ -67,7 +67,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .booster-badge { background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.18); border-radius:9px;
   padding:2px 7px; font-size:10px; font-family:Arial,sans-serif; }
 /* Game Over */
-#screen-gameover { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center;
+#screen-gameover { position:absolute; top:0; left:0; right:0; bottom:60px; display:none; flex-direction:column; align-items:center; justify-content:center;
   background:rgba(5,0,20,0.93); z-index:10; backdrop-filter:blur(4px); }
 #screen-gameover.visible { display:flex; }
 .go-title { font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:44px; font-weight:900; color:#FF4444;
@@ -271,6 +271,221 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .toggle.on{background:linear-gradient(135deg,#7DF9FF,#A78BFA);}
 .toggle-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
 .toggle.on .toggle-knob{transform:translateX(20px);}
+
+/* ══ НИЖНЕЕ МЕНЮ ══ */
+#bottom-nav {
+  position:absolute; bottom:0; left:0; right:0; z-index:25;
+  display:none; align-items:center; justify-content:space-around;
+  background:rgba(10,8,26,0.97); border-top:1px solid rgba(255,255,255,0.12);
+  padding:8px 0 env(safe-area-inset-bottom, 12px); backdrop-filter:blur(10px);
+  min-height:60px;
+}
+#bottom-nav.visible { display:flex; }
+.nav-btn {
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  background:none; border:none; cursor:pointer; padding:4px 12px;
+  transition:transform 0.15s;
+}
+.nav-btn:active { transform:scale(0.9); }
+.nav-icon { font-size:22px; }
+.nav-label { font-family:Arial,sans-serif; font-size:10px; color:rgba(255,255,255,0.5); }
+.nav-btn.active .nav-label { color:#7DF9FF; }
+.nav-btn.active .nav-icon { filter:drop-shadow(0 0 6px rgba(125,249,255,0.8)); }
+.nav-badge {
+  position:absolute; top:-2px; right:4px;
+  background:#FF3CAC; border-radius:8px; padding:1px 5px;
+  font-size:9px; font-weight:700; color:#fff; font-family:Arial,sans-serif;
+}
+
+/* ══ ДОСТИЖЕНИЯ ══ */
+#screen-achievements{position:absolute;inset:0;display:none;flex-direction:column;background:linear-gradient(180deg,#0d0028 0%,#0a0a1a 100%);z-index:26;}
+#screen-achievements.visible{display:flex;}
+.ach-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px; border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0;
+}
+.ach-title {
+  font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:20px; font-weight:900;
+  background:linear-gradient(135deg,#FFD700,#FF8C00); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.btn-close-ach {
+  background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.18);
+  border-radius:50%; width:32px; height:32px; font-size:15px; color:#fff; cursor:pointer;
+}
+.ach-progress-bar-wrap {
+  padding:10px 16px 6px; flex-shrink:0;
+}
+.ach-progress-info {
+  display:flex; justify-content:space-between; font-family:Arial,sans-serif;
+  font-size:11px; color:rgba(255,255,255,0.45); margin-bottom:5px;
+}
+.ach-progress-track {
+  height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;
+}
+.ach-progress-fill {
+  height:100%; background:linear-gradient(90deg,#FFD700,#FF8C00);
+  border-radius:3px; transition:width 0.5s ease;
+}
+.ach-body { flex:1; overflow-y:auto; padding:10px 16px 80px; -webkit-overflow-scrolling:touch; }
+.ach-section-title {
+  font-family:Arial,sans-serif; font-size:11px; font-weight:700;
+  color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:2px;
+  margin:14px 0 8px;
+}
+.ach-item {
+  display:flex; align-items:center; gap:12px;
+  background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.08);
+  border-radius:16px; padding:12px 14px; margin-bottom:8px; position:relative;
+  overflow:hidden; transition:border-color 0.3s;
+}
+.ach-item.done {
+  border-color:rgba(255,215,0,0.35);
+  background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,140,0,0.04));
+}
+.ach-item.claimed {
+  border-color:rgba(255,255,255,0.08);
+  opacity:0.6;
+}
+.ach-icon-wrap {
+  width:48px; height:48px; border-radius:14px; display:flex; align-items:center;
+  justify-content:center; font-size:26px; flex-shrink:0;
+  background:rgba(255,255,255,0.06);
+}
+.ach-item.done .ach-icon-wrap {
+  background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,140,0,0.1));
+  box-shadow:0 0 12px rgba(255,215,0,0.2);
+}
+.ach-info { flex:1; min-width:0; }
+.ach-name { font-family:Arial,sans-serif; font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
+.ach-desc { font-family:Arial,sans-serif; font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:5px; }
+.ach-bar-wrap { height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden; }
+.ach-bar { height:100%; border-radius:2px; background:linear-gradient(90deg,#A78BFA,#7DF9FF); transition:width 0.4s; }
+.ach-item.done .ach-bar { background:linear-gradient(90deg,#FFD700,#FF8C00); width:100% !important; }
+.ach-progress-text {
+  font-family:Arial,sans-serif; font-size:10px; color:rgba(255,255,255,0.35); margin-top:3px;
+}
+.ach-reward {
+  display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0;
+}
+.ach-reward-val {
+  font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#FFD700;
+  white-space:nowrap;
+}
+.ach-reward-val.ton-clr { color:#0098EA; }
+.btn-ach-claim {
+  background:linear-gradient(135deg,#FFD700,#FF8C00); border:none; border-radius:12px;
+  padding:5px 12px; font-size:11px; font-weight:700; color:#0a0a1a; cursor:pointer;
+  font-family:Arial,sans-serif; white-space:nowrap;
+}
+.ach-done-badge {
+  font-size:18px; filter:drop-shadow(0 0 6px rgba(255,215,0,0.6));
+}
+
+/* ══ УВЕДОМЛЕНИЕ О ДОСТИЖЕНИИ ══ */
+#ach-notify {
+  position:absolute; top:-100px; left:50%; transform:translateX(-50%);
+  z-index:30; pointer-events:none; width:min(340px, 90vw);
+  transition:top 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+#ach-notify.show { top:16px; }
+.ach-notify-card {
+  background:linear-gradient(135deg,#1a0a3e,#0d1a4a);
+  border:1.5px solid rgba(255,215,0,0.4);
+  border-radius:20px; padding:12px 16px;
+  display:flex; align-items:center; gap:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(255,215,0,0.2);
+}
+.ach-notify-icon {
+  font-size:32px; flex-shrink:0;
+  filter:drop-shadow(0 0 8px rgba(255,215,0,0.6));
+  animation:ach-icon-pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes ach-icon-pop {
+  0%{transform:scale(0) rotate(-20deg)} 100%{transform:scale(1) rotate(0)}
+}
+.ach-notify-text { flex:1; }
+.ach-notify-label {
+  font-family:Arial,sans-serif; font-size:10px; font-weight:700;
+  color:#FFD700; text-transform:uppercase; letter-spacing:2px; margin-bottom:2px;
+}
+.ach-notify-name {
+  font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:15px; font-weight:900; color:#fff;
+}
+.ach-notify-reward {
+  font-family:Arial,sans-serif; font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px;
+}
+.ach-notify-shine {
+  position:absolute; inset:0; border-radius:20px; overflow:hidden; pointer-events:none;
+}
+.ach-notify-shine::after {
+  content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+  animation:shine-sweep 1s ease 0.3s forwards;
+}
+@keyframes shine-sweep { to{left:160%} }
+
+/* ══ ЕЖЕДНЕВНЫЕ НАГРАДЫ ══ */
+#screen-daily{position:absolute;inset:0;display:none;flex-direction:column;background:linear-gradient(180deg,#0d1a0a 0%,#0a0a1a 100%);z-index:26;}
+#screen-daily.visible{display:flex;}
+.daily-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px; border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0;
+}
+.daily-title {
+  font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:20px; font-weight:900;
+  background:linear-gradient(135deg,#00FF88,#00C9FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.btn-close-daily {
+  background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.18);
+  border-radius:50%; width:32px; height:32px; font-size:15px; color:#fff; cursor:pointer;
+}
+.daily-body { flex:1; overflow-y:auto; padding:16px 16px 80px; -webkit-overflow-scrolling:touch; }
+.daily-streak {
+  background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,201,255,0.1));
+  border:1px solid rgba(0,255,136,0.2); border-radius:20px;
+  padding:16px; text-align:center; margin-bottom:16px;
+}
+.daily-streak-fire { font-size:40px; display:block; animation:fire-pulse 1s ease-in-out infinite alternate; }
+@keyframes fire-pulse { from{transform:scale(1)} to{transform:scale(1.1)} }
+.daily-streak-count {
+  font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:32px; font-weight:900; color:#00FF88;
+  text-shadow:0 0 20px rgba(0,255,136,0.5);
+}
+.daily-streak-label { font-family:Arial,sans-serif; font-size:13px; color:rgba(255,255,255,0.6); }
+.daily-streak-timer { font-family:Arial,sans-serif; font-size:11px; color:rgba(255,255,255,0.4); margin-top:4px; }
+.daily-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+.daily-day {
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.08);
+  border-radius:14px; padding:10px 6px;
+}
+.daily-day.today {
+  border-color:rgba(0,255,136,0.5);
+  background:rgba(0,255,136,0.08);
+  box-shadow:0 0 14px rgba(0,255,136,0.15);
+}
+.daily-day.claimed {
+  border-color:rgba(255,215,0,0.3);
+  background:rgba(255,215,0,0.06);
+  opacity:0.7;
+}
+.daily-day.locked { opacity:0.35; }
+.daily-day-num { font-family:Arial,sans-serif; font-size:10px; color:rgba(255,255,255,0.4); }
+.daily-day-icon { font-size:22px; }
+.daily-day-val { font-family:Arial,sans-serif; font-size:10px; font-weight:700; color:#FFD700; }
+.daily-day.today .daily-day-val { color:#00FF88; }
+.daily-day-check { font-size:16px; }
+.btn-claim-daily {
+  width:100%; background:linear-gradient(135deg,#00FF88,#00C9FF); border:none;
+  border-radius:20px; padding:16px; font-size:17px; font-weight:900; color:#0a0a1a;
+  cursor:pointer; font-family:Arial,sans-serif; transition:transform 0.1s;
+  box-shadow:0 6px 20px rgba(0,255,136,0.4);
+}
+.btn-claim-daily:active { transform:scale(0.97); }
+.btn-claim-daily:disabled {
+  background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.3);
+  cursor:not-allowed; box-shadow:none;
+}
 </style>
 </head>
 <body>
@@ -304,7 +519,6 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
       <img src="https://ton.org/download/ton_symbol.svg" onerror="this.style.display='none'">
       <span id="wallet-btn-label">Подключить кошелёк</span>
     </button>
-    <button class="btn-shop-open" id="btn-open-settings" style="background:rgba(125,249,255,0.1);border-color:rgba(125,249,255,0.25)">⚙️</button>
   </div>
   <div class="start-tips">
     <div class="tip"><span class="tip-icon">👆</span><span>Тап влево/<br>вправо</span></div>
@@ -564,6 +778,74 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   </div>
 </div>
 
+<!-- ══ НИЖНЕЕ МЕНЮ ══ -->
+<div id="bottom-nav">
+  <button class="nav-btn active" id="nav-play" onclick="showTab('play')">
+    <span class="nav-icon">🏔️</span><span class="nav-label">Игра</span>
+  </button>
+  <button class="nav-btn" id="nav-daily" onclick="showTab('daily')" style="position:relative">
+    <span class="nav-icon">🎁</span><span class="nav-label">Награды</span>
+    <span class="nav-badge" id="daily-badge" style="display:none">!</span>
+  </button>
+  <button class="nav-btn" id="nav-ach" onclick="showTab('achievements')">
+    <span class="nav-icon">🏆</span><span class="nav-label">Достижения</span>
+    <span class="nav-badge" id="ach-badge" style="display:none">0</span>
+  </button>
+  <button class="nav-btn" id="nav-shop" onclick="showTab('shop')">
+    <span class="nav-icon">🛍️</span><span class="nav-label">Магазин</span>
+  </button>
+  <button class="nav-btn" id="nav-settings" onclick="showTab('settings')">
+    <span class="nav-icon">⚙️</span><span class="nav-label">Настройки</span>
+  </button>
+</div>
+
+<!-- ══ УВЕДОМЛЕНИЕ О ДОСТИЖЕНИИ ══ -->
+<div id="ach-notify">
+  <div class="ach-notify-card">
+    <div class="ach-notify-shine"></div>
+    <div class="ach-notify-icon" id="ach-notify-icon">🏆</div>
+    <div class="ach-notify-text">
+      <div class="ach-notify-label">🎉 Достижение разблокировано!</div>
+      <div class="ach-notify-name" id="ach-notify-name">Первый шаг</div>
+      <div class="ach-notify-reward" id="ach-notify-reward">+100 монет</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ДОСТИЖЕНИЯ ══ -->
+<div id="screen-achievements">
+  <div class="ach-header">
+    <div class="ach-title">🏆 Достижения</div>
+    <button class="btn-close-ach" id="btn-close-ach">✕</button>
+  </div>
+  <div class="ach-progress-bar-wrap">
+    <div class="ach-progress-info">
+      <span id="ach-done-count">0 выполнено</span>
+      <span id="ach-total-count">из 0</span>
+    </div>
+    <div class="ach-progress-track"><div class="ach-progress-fill" id="ach-progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="ach-body" id="ach-body"></div>
+</div>
+
+<!-- ══ ЕЖЕДНЕВНЫЕ НАГРАДЫ ══ -->
+<div id="screen-daily">
+  <div class="daily-header">
+    <div class="daily-title">🎁 Ежедневные награды</div>
+    <button class="btn-close-daily" id="btn-close-daily">✕</button>
+  </div>
+  <div class="daily-body">
+    <div class="daily-streak">
+      <span class="daily-streak-fire">🔥</span>
+      <div class="daily-streak-count" id="streak-count">0</div>
+      <div class="daily-streak-label">дней подряд</div>
+      <div class="daily-streak-timer" id="streak-timer"></div>
+    </div>
+    <div class="daily-grid" id="daily-grid"></div>
+    <button class="btn-claim-daily" id="btn-claim-daily">🎁 Получить награду!</button>
+  </div>
+</div>
+
 <div id="shop-toast"></div>
 </div>
 
@@ -571,6 +853,8 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 // ═══════════════════════════════════════
 // TELEGRAM
 // ═══════════════════════════════════════
+let gameState = 'start'; // объявляем заранее — используется в resize()
+
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); tg.enableClosingConfirmation(); }
 const userId = tg?.initDataUnsafe?.user?.id || 'demo';
@@ -999,7 +1283,11 @@ let nextTonSpawn = 0;
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 let W, H;
-function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+function resize(){
+  const navH = (typeof gameState !== 'undefined' && gameState === 'playing') ? 0 : 60;
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight - navH;
+}
 resize(); window.addEventListener('resize', resize);
 
 // ═══════════════════════════════════════
@@ -1013,7 +1301,7 @@ const TON_PER_COIN=0.0003, TON_MAX=0.005;
 // ═══════════════════════════════════════
 // GAME STATE
 // ═══════════════════════════════════════
-let gameState='start', score=0, floor=1, cameraY=0, highestY=0;
+let score=0, floor=1, cameraY=0, highestY=0;
 let player, platforms, stars, tonCoins, particles;
 let keys={left:false,right:false};
 let lastTime=0;
@@ -1421,6 +1709,17 @@ async function triggerGameOver(){
   document.getElementById('screen-gameover').classList.add('visible');
   if(tg)tg.sendData(JSON.stringify({action:'game_over',score,floor,tonEarned:sessionTon,coins:sessionCoins}));
   if (sessionTon > 0) addLocalTx('earn', sessionTon, `этаж ${floor}`);
+  // Проверяем достижения
+  checkAchievements({
+    floor,
+    coins:    sessionCoins,
+    ton:      sessionTon,
+    games:    1,
+    tonCoins: (tonCoins||[]).filter(t=>t.collected).length,
+    checkpoint: window.checkpointFloor > 0 ? Math.floor(window.checkpointFloor / 200) : 0,
+  });
+  // Показываем нижнее меню на экране game over
+  document.getElementById('bottom-nav').classList.add('visible');
 }
 
 // ═══════════════════════════════════════
@@ -1885,7 +2184,15 @@ function renderShop(){
         return;
       }
       const r=await API.buyItem(id,cur,price);
-      if(r.ok){userData=r.data;showToast('✅ Куплено!');renderShop();updateStartScreen();}
+      if(r.ok){
+        userData=r.data;
+        showToast('✅ Куплено!');
+        renderShop();
+        updateStartScreen();
+        // Достижения за покупки
+        if(id.startsWith('skin_'))    checkAchievements({skins:1});
+        if(id.startsWith('boost_'))   checkAchievements({boosters:1});
+      }
       else showToast('❌ '+r.reason,true);
     };
   });
@@ -1931,8 +2238,320 @@ document.getElementById('btn-menu').onclick=()=>{
 
 // ═══════════════════════════════════════
 // ═══════════════════════════════════════
-// НАСТРОЙКИ
+// ДОСТИЖЕНИЯ
 // ═══════════════════════════════════════
+const ACHIEVEMENTS = [
+  // Прыжки / высота
+  { id:'first_jump',   cat:'Начало',      icon:'👟', name:'Первый шаг',        desc:'Начни первую игру',                  type:'games',    target:1,    reward:{coins:50} },
+  { id:'floor_10',     cat:'Высота',       icon:'🏠', name:'До небес',          desc:'Достигни 10 этажа',                  type:'floor',    target:10,   reward:{coins:100} },
+  { id:'floor_50',     cat:'Высота',       icon:'🏙️', name:'Городской горизонт',desc:'Достигни 50 этажа',                  type:'floor',    target:50,   reward:{coins:300} },
+  { id:'floor_200',    cat:'Высота',       icon:'⛰️', name:'Альпинист',         desc:'Достигни 200 этажа',                 type:'floor',    target:200,  reward:{coins:500} },
+  { id:'floor_500',    cat:'Высота',       icon:'🌤️', name:'Облака',            desc:'Достигни 500 этажа',                 type:'floor',    target:500,  reward:{coins:1000} },
+  { id:'floor_1000',   cat:'Высота',       icon:'🚀', name:'Космос',            desc:'Достигни 1000 этажа',                type:'floor',    target:1000, reward:{coins:3000, ton:0.01} },
+  // Монеты
+  { id:'coins_100',    cat:'Монеты',       icon:'🪙', name:'Копилка',           desc:'Собери 100 монет за одну игру',       type:'session_coins', target:100,  reward:{coins:150} },
+  { id:'coins_500',    cat:'Монеты',       icon:'💰', name:'Богач',             desc:'Собери 500 монет за одну игру',       type:'session_coins', target:500,  reward:{coins:300} },
+  { id:'coins_total_1000', cat:'Монеты',   icon:'🏦', name:'Банкир',            desc:'Накопи 1000 монет всего',            type:'total_coins', target:1000, reward:{coins:200} },
+  { id:'coins_total_10000',cat:'Монеты',   icon:'💎', name:'Миллионер',         desc:'Накопи 10000 монет всего',           type:'total_coins', target:10000,reward:{coins:1000, ton:0.02} },
+  // TON
+  { id:'ton_first',    cat:'TON',          icon:'💎', name:'TON охотник',       desc:'Собери первую TON монетку',           type:'ton_coins', target:1,    reward:{coins:200} },
+  { id:'ton_005',      cat:'TON',          icon:'🌊', name:'TON волна',         desc:'Заработай 0.005 TON за игру',        type:'session_ton', target:0.005, reward:{coins:500} },
+  { id:'ton_total',    cat:'TON',          icon:'🔷', name:'TON коллекционер',  desc:'Заработай 0.05 TON суммарно',        type:'total_ton', target:0.05, reward:{coins:1000} },
+  // Игры
+  { id:'games_5',      cat:'Игры',         icon:'🎮', name:'Игрок',             desc:'Сыграй 5 игр',                       type:'games',    target:5,    reward:{coins:100} },
+  { id:'games_50',     cat:'Игры',         icon:'🎯', name:'Ветеран',           desc:'Сыграй 50 игр',                      type:'games',    target:50,   reward:{coins:500} },
+  { id:'streak_3',     cat:'Игры',         icon:'🔥', name:'На разогреве',      desc:'3 дня подряд',                       type:'streak',   target:3,    reward:{coins:300} },
+  { id:'streak_7',     cat:'Игры',         icon:'⚡', name:'Неделя',            desc:'7 дней подряд',                      type:'streak',   target:7,    reward:{coins:700, ton:0.01} },
+  // Чекпоинты
+  { id:'checkpoint_1', cat:'Чекпоинты',    icon:'🏁', name:'Первый рубеж',      desc:'Достигни первого чекпоинта (200 эт.)',type:'checkpoint', target:1,  reward:{coins:400} },
+  { id:'checkpoint_3', cat:'Чекпоинты',    icon:'🎌', name:'Марафонец',         desc:'Достигни 3 чекпоинтов',              type:'checkpoint', target:3,  reward:{coins:1000, ton:0.02} },
+  // Магазин
+  { id:'buy_skin',     cat:'Магазин',      icon:'👗', name:'Модник',            desc:'Купи любой скин',                    type:'skins_owned', target:2, reward:{coins:200} },
+  { id:'buy_booster',  cat:'Магазин',      icon:'⚡', name:'Прокачка',          desc:'Купи любой бустер',                  type:'boosters_bought', target:1, reward:{coins:150} },
+];
+
+const DAILY_REWARDS = [
+  { day:1,  icon:'🪙', val:'100',   type:'coins', amount:100 },
+  { day:2,  icon:'🪙', val:'200',   type:'coins', amount:200 },
+  { day:3,  icon:'⚡', val:'Бустер',type:'booster',amount:1 },
+  { day:4,  icon:'🪙', val:'300',   type:'coins', amount:300 },
+  { day:5,  icon:'🪙', val:'500',   type:'coins', amount:500 },
+  { day:6,  icon:'💎', val:'0.005', type:'ton',   amount:0.005 },
+  { day:7,  icon:'🎁', val:'1000+💎',type:'big',  amount:1000 },
+];
+
+function loadAchData() {
+  try {
+    const s = localStorage.getItem(`summit_ach_${userId}`);
+    const d = s ? JSON.parse(s) : {};
+    // Гарантируем все поля
+    return {
+      progress:  d.progress  || {},
+      claimed:   Array.isArray(d.claimed) ? d.claimed : [],
+      totalGames:d.totalGames || 0,
+      totalCoins:d.totalCoins || 0,
+      totalTon:  d.totalTon   || 0,
+      checkpoints:d.checkpoints || 0,
+      boosters:  d.boosters   || 0,
+      tonCoinsCollected: d.tonCoinsCollected || 0,
+    };
+  } catch(e) {
+    return {progress:{},claimed:[],totalGames:0,totalCoins:0,totalTon:0,checkpoints:0,boosters:0,tonCoinsCollected:0};
+  }
+}
+function saveAchData(d){ try{localStorage.setItem(`summit_ach_${userId}`,JSON.stringify(d));}catch(e){} }
+
+function loadDailyData() {
+  try { const s=localStorage.getItem(`summit_daily_${userId}`); return s?JSON.parse(s):{streak:0,lastClaim:0,lastDay:0}; }
+  catch(e){ return {streak:0,lastClaim:0,lastDay:0}; }
+}
+function saveDailyData(d){ try{localStorage.setItem(`summit_daily_${userId}`,JSON.stringify(d));}catch(e){} }
+
+// Проверить и выдать достижения
+function checkAchievements(stats) {
+  const achData = loadAchData();
+  if (!Array.isArray(achData.claimed)) achData.claimed = [];
+  if (!achData.progress) achData.progress = {};
+  const d = API.load();
+  // Обновляем глобальные счётчики
+  if (stats.games)       achData.totalGames += stats.games;
+  if (stats.coins)       achData.totalCoins += stats.coins;
+  if (stats.ton)         achData.totalTon   = +((achData.totalTon + stats.ton).toFixed(9));
+  if (stats.tonCoins)    achData.tonCoinsCollected += stats.tonCoins;
+  if (stats.checkpoint)  achData.checkpoints += stats.checkpoint;
+  if (stats.boosters)    achData.boosters += stats.boosters;
+
+  ACHIEVEMENTS.forEach(ach => {
+    if (achData.claimed.includes(ach.id)) return;
+    let cur = 0;
+    if (ach.type === 'floor')          cur = stats.floor || 0;
+    if (ach.type === 'session_coins')  cur = stats.coins || 0;
+    if (ach.type === 'session_ton')    cur = stats.ton || 0;
+    if (ach.type === 'total_coins')    cur = achData.totalCoins;
+    if (ach.type === 'total_ton')      cur = achData.totalTon;
+    if (ach.type === 'games')          cur = achData.totalGames;
+    if (ach.type === 'ton_coins')      cur = achData.tonCoinsCollected;
+    if (ach.type === 'checkpoint')     cur = achData.checkpoints;
+    if (ach.type === 'boosters_bought')cur = achData.boosters;
+    if (ach.type === 'streak')         cur = loadDailyData().streak;
+    if (ach.type === 'skins_owned')    cur = (d.ownedSkins||[]).length;
+
+    // Прогресс
+    achData.progress[ach.id] = Math.min(cur, ach.target);
+
+    if (cur >= ach.target && !achData.claimed.includes(ach.id)) {
+      // Выдаём награду
+      achData.claimed.push(ach.id);
+      const dUser = API.load();
+      if (ach.reward.coins) dUser.coins += ach.reward.coins;
+      if (ach.reward.ton)   dUser.tonBalance = +((dUser.tonBalance + ach.reward.ton).toFixed(9));
+      API.save(dUser);
+      // Показываем уведомление
+      showAchNotify(ach);
+    }
+  });
+  saveAchData(achData);
+  updateAchBadge();
+}
+
+let notifyQueue = [];
+let notifyShowing = false;
+function showAchNotify(ach) {
+  notifyQueue.push(ach);
+  if (!notifyShowing) processNotifyQueue();
+}
+function processNotifyQueue() {
+  if (!notifyQueue.length) { notifyShowing = false; return; }
+  notifyShowing = true;
+  const ach = notifyQueue.shift();
+  document.getElementById('ach-notify-icon').textContent = ach.icon;
+  document.getElementById('ach-notify-name').textContent = ach.name;
+  const r = ach.reward;
+  document.getElementById('ach-notify-reward').textContent =
+    (r.coins ? `+${r.coins} монет` : '') + (r.ton ? ` +${r.ton} TON` : '');
+  const el = document.getElementById('ach-notify');
+  el.classList.add('show');
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(processNotifyQueue, 500);
+  }, 3500);
+}
+
+function updateAchBadge() {
+  const achData = loadAchData();
+  // Посчитать выполненные но не собранные (у нас авто-выдача, просто считаем готовые)
+  const ready = ACHIEVEMENTS.filter(a => !achData.claimed.includes(a.id) && (achData.progress[a.id]||0) >= a.target).length;
+  const badge = document.getElementById('ach-badge');
+  if (badge) { badge.textContent = ready; badge.style.display = ready > 0 ? 'block' : 'none'; }
+}
+
+function renderAchievements() {
+  const achData = loadAchData();
+  const done = achData.claimed.length;
+  const total = ACHIEVEMENTS.length;
+  document.getElementById('ach-done-count').textContent = `${done} выполнено`;
+  document.getElementById('ach-total-count').textContent = `из ${total}`;
+  document.getElementById('ach-progress-fill').style.width = `${Math.round(done/total*100)}%`;
+
+  // Группируем по категориям
+  const cats = {};
+  ACHIEVEMENTS.forEach(a => { if(!cats[a.cat]) cats[a.cat]=[]; cats[a.cat].push(a); });
+
+  const body = document.getElementById('ach-body');
+  body.innerHTML = '';
+  Object.entries(cats).forEach(([cat, list]) => {
+    const title = document.createElement('div');
+    title.className = 'ach-section-title'; title.textContent = cat;
+    body.appendChild(title);
+    list.forEach(ach => {
+      const claimed = achData.claimed.includes(ach.id);
+      const prog = achData.progress[ach.id] || 0;
+      const pct = Math.min(100, Math.round(prog / ach.target * 100));
+      const el = document.createElement('div');
+      el.className = `ach-item${claimed?' claimed':''}`;
+      el.innerHTML = `
+        <div class="ach-icon-wrap">${ach.icon}</div>
+        <div class="ach-info">
+          <div class="ach-name">${ach.name}</div>
+          <div class="ach-desc">${ach.desc}</div>
+          <div class="ach-bar-wrap"><div class="ach-bar" style="width:${pct}%"></div></div>
+          <div class="ach-progress-text">${prog} / ${ach.target}${typeof ach.target==='number'&&ach.target<1?' TON':''}</div>
+        </div>
+        <div class="ach-reward">
+          ${ach.reward.coins?`<div class="ach-reward-val">+${ach.reward.coins}🪙</div>`:''}
+          ${ach.reward.ton?`<div class="ach-reward-val ton-clr">+${ach.reward.ton}💎</div>`:''}
+          ${claimed?'<div class="ach-done-badge">✅</div>':''}
+        </div>`;
+      body.appendChild(el);
+    });
+  });
+}
+
+// ═══════════════════════════════════════
+// ЕЖЕДНЕВНЫЕ НАГРАДЫ
+// ═══════════════════════════════════════
+function renderDaily() {
+  const dd = loadDailyData();
+  const now = Date.now();
+  const msDay = 24*60*60*1000;
+  const today = Math.floor(now / msDay);
+  const lastDay = dd.lastDay || 0;
+  const canClaim = today > lastDay;
+  const isMissed = today > lastDay + 1 && lastDay > 0;
+  if (isMissed) { dd.streak = 0; saveDailyData(dd); }
+
+  document.getElementById('streak-count').textContent = dd.streak;
+
+  // Таймер до следующей награды
+  if (!canClaim) {
+    const nextMs = (lastDay + 1) * msDay - now;
+    const h = Math.floor(nextMs/3600000), m = Math.floor((nextMs%3600000)/60000);
+    document.getElementById('streak-timer').textContent = `Следующая через ${h}ч ${m}м`;
+  } else {
+    document.getElementById('streak-timer').textContent = '🎁 Награда доступна!';
+  }
+
+  // Сетка дней
+  const grid = document.getElementById('daily-grid');
+  grid.innerHTML = '';
+  const curStreak = dd.streak;
+  DAILY_REWARDS.forEach(r => {
+    const el = document.createElement('div');
+    const isClaimed = r.day <= curStreak;
+    const isToday = r.day === curStreak + 1 && canClaim;
+    const isLocked = r.day > curStreak + 1;
+    el.className = `daily-day${isToday?' today':isClaimed?' claimed':isLocked?' locked':''}`;
+    el.innerHTML = `
+      <div class="daily-day-num">День ${r.day}</div>
+      <div class="daily-day-icon">${r.icon}</div>
+      <div class="daily-day-val">${r.val}</div>
+      <div class="daily-day-check">${isClaimed?'✅':isToday?'🎁':''}</div>`;
+    grid.appendChild(el);
+  });
+
+  // Кнопка
+  const btn = document.getElementById('btn-claim-daily');
+  const dayReward = DAILY_REWARDS[(curStreak) % DAILY_REWARDS.length];
+  btn.disabled = !canClaim;
+  btn.textContent = canClaim ? `🎁 Получить: ${dayReward.val} ${dayReward.icon}` : '⏰ Приходи завтра';
+
+  // Бейдж
+  const badge = document.getElementById('daily-badge');
+  if (badge) badge.style.display = canClaim ? 'block' : 'none';
+}
+
+document.getElementById('btn-claim-daily').onclick = () => {
+  const dd = loadDailyData();
+  const now = Date.now();
+  const msDay = 24*60*60*1000;
+  const today = Math.floor(now / msDay);
+  if (today <= dd.lastDay) return;
+
+  dd.streak = (today === dd.lastDay + 1 || dd.lastDay === 0) ? dd.streak + 1 : 1;
+  dd.lastDay = today;
+  dd.lastClaim = now;
+  saveDailyData(dd);
+
+  const dayReward = DAILY_REWARDS[(dd.streak - 1) % DAILY_REWARDS.length];
+  const dUser = API.load();
+  if (dayReward.type === 'coins' || dayReward.type === 'big') {
+    dUser.coins += dayReward.amount;
+    if (dayReward.type === 'big') dUser.coins += 1000;
+  }
+  if (dayReward.type === 'ton') dUser.tonBalance = +((dUser.tonBalance + dayReward.amount).toFixed(9));
+  if (dayReward.type === 'booster') {
+    const inv = JSON.parse(dUser.ownedBoosters||'{}');
+    inv['boost_x2'] = (inv['boost_x2']||0) + 1;
+    dUser.ownedBoosters = JSON.stringify(inv);
+  }
+  API.save(dUser);
+  // Проверяем достижение серии
+  checkAchievements({ streak: dd.streak });
+  showToast(`✅ +${dayReward.val} получено!`);
+  updateStartScreen();
+  renderDaily();
+  spawnParticles && spawnParticles(W/2, H/2, '#00FF88', 20);
+};
+
+// ═══════════════════════════════════════
+// НАВИГАЦИЯ (ТАБЫ)
+// ═══════════════════════════════════════
+function showTab(tab) {
+  document.getElementById('screen-achievements').classList.remove('visible');
+  document.getElementById('screen-daily').classList.remove('visible');
+  document.getElementById('screen-shop').classList.remove('visible');
+  document.getElementById('screen-settings').classList.remove('visible');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+
+  if (tab === 'play') {
+    document.getElementById('nav-play').classList.add('active');
+  } else if (tab === 'daily') {
+    renderDaily();
+    document.getElementById('screen-daily').classList.add('visible');
+    document.getElementById('nav-daily').classList.add('active');
+  } else if (tab === 'achievements') {
+    renderAchievements();
+    document.getElementById('screen-achievements').classList.add('visible');
+    document.getElementById('nav-ach').classList.add('active');
+  } else if (tab === 'shop') {
+    renderShop();
+    document.getElementById('screen-shop').classList.add('visible');
+    document.getElementById('nav-shop').classList.add('active');
+  } else if (tab === 'settings') {
+    applySettings();
+    document.getElementById('screen-settings').classList.add('visible');
+    document.getElementById('nav-settings').classList.add('active');
+  }
+}
+
+// Закрыть экраны через кнопки
+document.getElementById('btn-close-ach').onclick   = () => showTab('play');
+document.getElementById('btn-close-daily').onclick = () => showTab('play');
+// Переподключаем старые кнопки к tabам
+document.getElementById('btn-open-shop').onclick = () => showTab('shop');
+document.getElementById('btn-close-settings').onclick = () => showTab('play');
+
+
 const CTRL_PREVIEWS = {
   joystick: '👆 Коснись нижней части экрана\n🕹️ Появится джойстик\n↔️ Двигай палец для управления',
   gyro:     '📱 Держи телефон вертикально\n↩️ Наклони влево — герой идёт влево\n↪️ Наклони вправо — герой идёт вправо',
@@ -1983,14 +2602,54 @@ if(gyroInput) gyroInput.oninput=function(){
 
 document.getElementById('toggle-vibro').onclick=function(){gameSettings.vibro=!gameSettings.vibro;saveSettings(gameSettings);applySettings();};
 document.getElementById('toggle-trail').onclick=function(){gameSettings.trail=!gameSettings.trail;saveSettings(gameSettings);applySettings();};
-document.getElementById('btn-open-settings').onclick=()=>{applySettings();document.getElementById('screen-settings').classList.add('visible');};
-document.getElementById('btn-close-settings').onclick=()=>{document.getElementById('screen-settings').classList.remove('visible');};
+// btn-open-settings теперь через нижнее меню — но оставим на случай прямого вызова
+document.getElementById('btn-close-settings').onclick=()=>showTab('play');
+
+// ═══════════════════════════════════════
+// ИНИЦИАЛИЗАЦИЯ НИЖНЕГО МЕНЮ
+// ═══════════════════════════════════════
+function initBottomNav() {
+  // Показываем нижнее меню на старт-экране
+  document.getElementById('bottom-nav').classList.add('visible');
+  // Проверяем доступность ежедневной награды
+  const dd = loadDailyData();
+  const msDay = 24*60*60*1000;
+  const today = Math.floor(Date.now()/msDay);
+  const canClaim = today > (dd.lastDay||0);
+  const badge = document.getElementById('daily-badge');
+  if (badge) badge.style.display = canClaim ? 'block' : 'none';
+  updateAchBadge();
+}
+
+// Скрываем нижнее меню во время игры
+const origShowHUD = showHUD;
+showHUD = function(v) {
+  origShowHUD(v);
+  const nav = document.getElementById('bottom-nav');
+  if (v) {
+    nav.classList.remove('visible'); // во время игры меню скрыто
+  } else {
+    if (gameState !== 'playing') nav.classList.add('visible');
+  }
+};
+
+// Показываем меню когда возвращаемся в главный экран
+document.getElementById('btn-menu').addEventListener('click', () => {
+  setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 50);
+});
+document.getElementById('btn-go-shop').addEventListener('click', () => {
+  setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 50);
+});
 
 // ═══════════════════════════════════════
 // START
 // ═══════════════════════════════════════
 updateStartScreen();
 startAttemptTimer();
+initBottomNav();
+applySettings();
+renderDaily();
+updateAchBadge();
 requestAnimationFrame(loop);
 </script>
 </body>
