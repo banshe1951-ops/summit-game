@@ -1201,10 +1201,29 @@ initTonConnect();
 const API = {
   _key() { return `summit_v2_${userId}`; },
   load() {
-    try { const r = localStorage.getItem(this._key()); if (r) return JSON.parse(r); } catch(e){}
-    return { bestScore:0, coins:0, tonBalance:0, attempts:5, lastAttemptTime:Date.now(),
-             ownedSkins:['skin_default'], activeSkin:'skin_default', ownedBoosters:{},
-             ownedMaps:['map_default'], activeMap:'map_default' };
+    try {
+      const r = localStorage.getItem(this._key());
+      const d = r ? JSON.parse(r) : {};
+      // Нормализуем — гарантируем все поля
+      return {
+        bestScore:      d.bestScore      || 0,
+        coins:          d.coins          || 0,
+        tonBalance:     d.tonBalance     || 0,
+        attempts:       d.attempts       !== undefined ? d.attempts : 5,
+        lastAttemptTime:d.lastAttemptTime|| Date.now(),
+        ownedSkins:     Array.isArray(d.ownedSkins)  ? d.ownedSkins  : ['skin_default'],
+        activeSkin:     d.activeSkin     || 'skin_default',
+        ownedBoosters:  (d.ownedBoosters && typeof d.ownedBoosters === 'object') ? d.ownedBoosters : {},
+        ownedMaps:      Array.isArray(d.ownedMaps)   ? d.ownedMaps   : ['map_default'],
+        activeMap:      d.activeMap      || 'map_default',
+        txHistory:      Array.isArray(d.txHistory)   ? d.txHistory   : [],
+        unlimExpiry:    d.unlimExpiry    || 0,
+      };
+    } catch(e) {
+      return { bestScore:0, coins:0, tonBalance:0, attempts:5, lastAttemptTime:Date.now(),
+               ownedSkins:['skin_default'], activeSkin:'skin_default', ownedBoosters:{},
+               ownedMaps:['map_default'], activeMap:'map_default', txHistory:[], unlimExpiry:0 };
+    }
   },
   save(d) { try { localStorage.setItem(this._key(), JSON.stringify(d)); } catch(e){} },
   async submitGameResult(score, floor, tonEarned, coinsEarned) {
@@ -1528,17 +1547,19 @@ function spawnPlatform(py, prev) {
   const maxW = Math.max(minW + 20, 140 - diff * 50);
   const pw = minW + Math.random() * (maxW - minW);
 
-  // Горизонтальная позиция — гарантируем достижимость
+  // Горизонтальная позиция — гарантируем достижимость и не выходим за экран
   let px;
   if (prev) {
     const cx = prev.x + prev.w / 2;
     const dy = Math.abs(py - prev.y);
     const maxDx = MAX_HORIZ * Math.max(0.1, 1 - dy / MAX_JUMP_H);
-    const ncx = Math.max(pw/2+20, Math.min(W-pw/2-20, cx + (Math.random()*2-1)*maxDx));
+    const ncx = Math.max(pw/2 + 10, Math.min(W - pw/2 - 10, cx + (Math.random()*2-1)*maxDx));
     px = ncx - pw/2;
   } else {
-    px = 20 + Math.random() * (W - pw - 40);
+    px = 10 + Math.random() * (W - pw - 20);
   }
+  // Финальная защита — платформа всегда полностью на экране
+  px = Math.max(4, Math.min(W - pw - 4, px));
 
   // Тип
   const types = ['normal','normal','normal','bounce','crumble'];
@@ -1646,6 +1667,9 @@ function update(dt){
     if (p.moving && !p.crumbling) {
       p.x += p.moveSpeed * p.moveDir * dt;
       const cx = p.x + p.w / 2;
+      // Не выходим за границы экрана
+      if (p.x < 4)         { p.x = 4;         p.moveDir =  1; p.moveOrigin = p.x + p.w/2; }
+      if (p.x + p.w > W-4) { p.x = W-4-p.w;  p.moveDir = -1; p.moveOrigin = p.x + p.w/2; }
       if (cx > p.moveOrigin + p.moveRange) { p.moveDir = -1; }
       if (cx < p.moveOrigin - p.moveRange) { p.moveDir =  1; }
       // Игрок стоит на платформе — тащим его вместе
