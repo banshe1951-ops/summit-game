@@ -272,6 +272,45 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .toggle-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
 .toggle.on .toggle-knob{transform:translateX(20px);}
 
+/* ══ ДРУЗЬЯ / РЕФЕРАЛЫ ══ */
+#screen-friends{position:absolute;top:0;left:0;right:0;bottom:60px;display:none;flex-direction:column;background:linear-gradient(180deg,#001a0d 0%,#0a0a1a 100%);z-index:26;}
+#screen-friends.visible{display:flex;}
+.friends-header{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
+.friends-title{font-family:'Arial Rounded MT Bold',Arial,sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,#00FF88,#00C9FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.btn-close-friends{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.18);border-radius:50%;width:32px;height:32px;font-size:15px;color:#fff;cursor:pointer;}
+.friends-body{flex:1;overflow-y:auto;padding:14px 16px 20px;-webkit-overflow-scrolling:touch;}
+.ref-card{background:linear-gradient(135deg,rgba(0,255,136,0.12),rgba(0,201,255,0.08));border:1.5px solid rgba(0,255,136,0.25);border-radius:20px;padding:18px;margin-bottom:16px;text-align:center;}
+.ref-card-title{font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+.ref-link-wrap{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.3);border-radius:12px;padding:10px 14px;margin-bottom:12px;}
+.ref-link{flex:1;font-family:'Courier New',monospace;font-size:12px;color:#00FF88;word-break:break-all;text-align:left;}
+.btn-copy-ref{background:rgba(0,255,136,0.2);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;color:#00FF88;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.btn-share-ref{width:100%;background:linear-gradient(135deg,#00FF88,#00C9FF);border:none;border-radius:14px;padding:13px;font-size:15px;font-weight:900;color:#0a0a1a;cursor:pointer;font-family:Arial,sans-serif;transition:transform 0.1s;}
+.btn-share-ref:active{transform:scale(0.97);}
+.ref-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.ref-stat-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:12px;text-align:center;}
+.ref-stat-val{font-family:'Arial Rounded MT Bold',Arial,sans-serif;font-size:24px;font-weight:900;color:#00FF88;}
+.ref-stat-label{font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.ref-rewards-title{font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;}
+.ref-reward-row{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:11px 14px;margin-bottom:7px;}
+.ref-reward-row.reached{border-color:rgba(255,215,0,0.4);background:rgba(255,215,0,0.06);}
+.ref-reward-row.claimed-ref{opacity:0.5;}
+.ref-milestone{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;font-size:13px;font-weight:900;color:#fff;flex-shrink:0;}
+.ref-reward-row.reached .ref-milestone{background:linear-gradient(135deg,#FFD700,#FF8C00);color:#0a0a1a;}
+.ref-reward-info{flex:1;}
+.ref-reward-name{font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:#fff;}
+.ref-reward-desc{font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.btn-claim-ref{background:linear-gradient(135deg,#FFD700,#FF8C00);border:none;border-radius:10px;padding:6px 14px;font-size:11px;font-weight:700;color:#0a0a1a;cursor:pointer;font-family:Arial,sans-serif;white-space:nowrap;}
+.ref-done-icon{font-size:20px;}
+.ref-progress-row{display:flex;align-items:center;gap:8px;margin-top:5px;}
+.ref-progress-track{flex:1;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;}
+.ref-progress-fill{height:100%;background:linear-gradient(90deg,#FFD700,#FF8C00);border-radius:2px;}
+.friends-list-title{font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:2px;margin:14px 0 8px;}
+.friend-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border-radius:12px;padding:10px 12px;margin-bottom:6px;}
+.friend-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,#7DF9FF);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.friend-name{flex:1;font-family:Arial,sans-serif;font-size:13px;color:#fff;font-weight:600;}
+.friend-date{font-family:Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.35);}
+.friends-empty{text-align:center;padding:24px;font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,0.35);line-height:1.6;}
+
 /* ══ НИЖНЕЕ МЕНЮ ══ */
 #bottom-nav {
   position:absolute; bottom:0; left:0; right:0; z-index:25;
@@ -788,8 +827,12 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
     <span class="nav-badge" id="daily-badge" style="display:none">!</span>
   </button>
   <button class="nav-btn" id="nav-ach" onclick="showTab('achievements')">
-    <span class="nav-icon">🏆</span><span class="nav-label">Достижения</span>
+    <span class="nav-icon">🏆</span><span class="nav-label">Успехи</span>
     <span class="nav-badge" id="ach-badge" style="display:none">0</span>
+  </button>
+  <button class="nav-btn" id="nav-friends" onclick="showTab('friends')" style="position:relative">
+    <span class="nav-icon">👥</span><span class="nav-label">Друзья</span>
+    <span class="nav-badge" id="friends-badge" style="display:none">!</span>
   </button>
   <button class="nav-btn" id="nav-shop" onclick="showTab('shop')">
     <span class="nav-icon">🛍️</span><span class="nav-label">Магазин</span>
@@ -843,6 +886,58 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
     </div>
     <div class="daily-grid" id="daily-grid"></div>
     <button class="btn-claim-daily" id="btn-claim-daily">🎁 Получить награду!</button>
+  </div>
+</div>
+
+<!-- ══ ДРУЗЬЯ ══ -->
+<div id="screen-friends">
+  <div class="friends-header">
+    <div class="friends-title">👥 Друзья</div>
+    <button class="btn-close-friends" id="btn-close-friends">✕</button>
+  </div>
+  <div class="friends-body">
+
+    <!-- Реферальная ссылка -->
+    <div class="ref-card">
+      <div class="ref-card-title">🔗 Твоя реферальная ссылка</div>
+      <div class="ref-link-wrap">
+        <div class="ref-link" id="ref-link-text">Загрузка...</div>
+        <button class="btn-copy-ref" onclick="copyRefLink()">📋 Копировать</button>
+      </div>
+      <button class="btn-share-ref" onclick="shareRefLink()">📤 Поделиться в Telegram</button>
+    </div>
+
+    <!-- Статистика -->
+    <div class="ref-stats">
+      <div class="ref-stat-box">
+        <div class="ref-stat-val" id="ref-count">0</div>
+        <div class="ref-stat-label">Друзей приглашено</div>
+      </div>
+      <div class="ref-stat-box">
+        <div class="ref-stat-val" style="color:#FFD700" id="ref-earned-coins">0</div>
+        <div class="ref-stat-label">Монет заработано</div>
+      </div>
+    </div>
+
+    <!-- Таблица наград -->
+    <div class="ref-rewards-title">🎁 Награды за приглашённых друзей</div>
+    <div id="ref-rewards-list"></div>
+
+    <!-- Бонус новому игроку -->
+    <div class="ref-rewards-title" style="margin-top:16px">🎉 Бонус новому игроку</div>
+    <div class="ref-reward-row reached">
+      <div class="ref-milestone">🆕</div>
+      <div class="ref-reward-info">
+        <div class="ref-reward-name">Добро пожаловать!</div>
+        <div class="ref-reward-desc">Ты получил бонус за вход по ссылке друга</div>
+      </div>
+      <div style="font-family:Arial;font-size:12px;font-weight:700;color:#FFD700;text-align:right">+200🪙<br><span style="color:#0098EA">+0.001💎</span></div>
+    </div>
+
+    <!-- Список друзей -->
+    <div class="friends-list-title">Приглашённые друзья</div>
+    <div id="friends-list"></div>
+
   </div>
 </div>
 
@@ -2268,6 +2363,12 @@ const ACHIEVEMENTS = [
   // Магазин
   { id:'buy_skin',     cat:'Магазин',      icon:'👗', name:'Модник',            desc:'Купи любой скин',                    type:'skins_owned', target:2, reward:{coins:200} },
   { id:'buy_booster',  cat:'Магазин',      icon:'⚡', name:'Прокачка',          desc:'Купи любой бустер',                  type:'boosters_bought', target:1, reward:{coins:150} },
+  // Рефералы
+  { id:'ref_1',    cat:'Друзья',  icon:'👥', name:'Первый друг',    desc:'Пригласи 1 друга',    type:'refs', target:1,   reward:{coins:300,  ton:0.002} },
+  { id:'ref_5',    cat:'Друзья',  icon:'🤝', name:'Компания',       desc:'Пригласи 5 друзей',   type:'refs', target:5,   reward:{coins:800,  ton:0.005} },
+  { id:'ref_10',   cat:'Друзья',  icon:'🎪', name:'Тусовка',        desc:'Пригласи 10 друзей',  type:'refs', target:10,  reward:{coins:2000, ton:0.015} },
+  { id:'ref_25',   cat:'Друзья',  icon:'🌟', name:'Амбассадор',     desc:'Пригласи 25 друзей',  type:'refs', target:25,  reward:{coins:5000, ton:0.05} },
+  { id:'ref_100',  cat:'Друзья',  icon:'👑', name:'Легенда',        desc:'Пригласи 100 друзей', type:'refs', target:100, reward:{coins:20000,ton:0.2} },
 ];
 
 const DAILY_REWARDS = [
@@ -2294,6 +2395,7 @@ function loadAchData() {
       checkpoints:d.checkpoints || 0,
       boosters:  d.boosters   || 0,
       tonCoinsCollected: d.tonCoinsCollected || 0,
+      totalRefs: d.totalRefs  || 0,
     };
   } catch(e) {
     return {progress:{},claimed:[],totalGames:0,totalCoins:0,totalTon:0,checkpoints:0,boosters:0,tonCoinsCollected:0};
@@ -2320,6 +2422,7 @@ function checkAchievements(stats) {
   if (stats.tonCoins)    achData.tonCoinsCollected += stats.tonCoins;
   if (stats.checkpoint)  achData.checkpoints += stats.checkpoint;
   if (stats.boosters)    achData.boosters += stats.boosters;
+  if (stats.refs)        achData.totalRefs += stats.refs;
 
   ACHIEVEMENTS.forEach(ach => {
     if (achData.claimed.includes(ach.id)) return;
@@ -2335,6 +2438,7 @@ function checkAchievements(stats) {
     if (ach.type === 'boosters_bought')cur = achData.boosters;
     if (ach.type === 'streak')         cur = loadDailyData().streak;
     if (ach.type === 'skins_owned')    cur = (d.ownedSkins||[]).length;
+    if (ach.type === 'refs')           cur = achData.totalRefs;
 
     // Прогресс
     achData.progress[ach.id] = Math.min(cur, ach.target);
@@ -2514,6 +2618,178 @@ document.getElementById('btn-claim-daily').onclick = () => {
 };
 
 // ═══════════════════════════════════════
+// РЕФЕРАЛЫ
+// ═══════════════════════════════════════
+const REF_MILESTONES = [
+  { count:1,   coins:300,   ton:0.002, label:'1 друг' },
+  { count:5,   coins:800,   ton:0.005, label:'5 друзей' },
+  { count:10,  coins:2000,  ton:0.015, label:'10 друзей' },
+  { count:25,  coins:5000,  ton:0.05,  label:'25 друзей' },
+  { count:100, coins:20000, ton:0.2,   label:'100 друзей' },
+];
+// Бонус новому игроку при входе по ссылке
+const REF_NEW_USER_BONUS = { coins:200, ton:0.001 };
+
+function loadRefData() {
+  try {
+    const s = localStorage.getItem(`summit_ref_${userId}`);
+    const d = s ? JSON.parse(s) : {};
+    return {
+      friends: Array.isArray(d.friends) ? d.friends : [],
+      claimedMilestones: Array.isArray(d.claimedMilestones) ? d.claimedMilestones : [],
+      earnedCoins: d.earnedCoins || 0,
+      newUserBonusClaimed: d.newUserBonusClaimed || false,
+    };
+  } catch(e) {
+    return { friends:[], claimedMilestones:[], earnedCoins:0, newUserBonusClaimed:false };
+  }
+}
+function saveRefData(d) { try{localStorage.setItem(`summit_ref_${userId}`,JSON.stringify(d));}catch(e){} }
+
+function getRefLink() {
+  const botName = tg?.initDataUnsafe?.via_bot_username || 'Dimaribotbot';
+  return `https://t.me/${botName}?start=ref_${userId}`;
+}
+
+function copyRefLink() {
+  const link = getRefLink();
+  navigator.clipboard?.writeText(link).then(() => showToast('✅ Ссылка скопирована!'));
+}
+
+function shareRefLink() {
+  const link = getRefLink();
+  const text = encodeURIComponent(`🏔️ Играй в Вершину и зарабатывай TON!\nПрисоединяйся по моей ссылке и получи 200 монет + 0.001 TON бонус!\n\n${link}`);
+  if (tg) {
+    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('🏔️ Играй в Вершину и зарабатывай TON! Получи бонус за регистрацию!')}`);
+  } else {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}`, '_blank');
+  }
+}
+
+// Симуляция: проверяем реферала при старте (в реале — через бэкенд)
+function checkIncomingRef() {
+  // TODO: реальная проверка через бэкенд /api/ref/check
+  // Пока читаем из URL параметра (при открытии через реферальную ссылку)
+  const startParam = tg?.initDataUnsafe?.start_param || '';
+  if (startParam.startsWith('ref_') && !loadRefData().newUserBonusClaimed) {
+    const refId = startParam.replace('ref_', '');
+    if (refId !== String(userId)) {
+      // Выдаём бонус новому игроку
+      const rd = loadRefData();
+      rd.newUserBonusClaimed = true;
+      saveRefData(rd);
+      const d = API.load();
+      d.coins += REF_NEW_USER_BONUS.coins;
+      d.tonBalance = +((d.tonBalance + REF_NEW_USER_BONUS.ton).toFixed(9));
+      API.save(d);
+      updateStartScreen();
+      setTimeout(() => showToast(`🎉 Бонус за приглашение: +${REF_NEW_USER_BONUS.coins}🪙 +${REF_NEW_USER_BONUS.ton}💎`), 1500);
+      // TODO: уведомить пригласившего через бэкенд POST /api/ref/register
+    }
+  }
+}
+
+// Добавить друга (вызывается с бэкенда или для теста)
+function addReferral(friendName) {
+  const rd = loadRefData();
+  rd.friends.push({ name: friendName || `Игрок`, date: Date.now() });
+  saveRefData(rd);
+  // Проверяем достижения
+  checkAchievements({ refs: 1 });
+  // Проверяем награды за вехи
+  checkRefMilestones();
+  renderFriendsScreen();
+  updateFriendsBadge();
+}
+
+function checkRefMilestones() {
+  const rd = loadRefData();
+  const count = rd.friends.length;
+  REF_MILESTONES.forEach(m => {
+    if (count >= m.count && !rd.claimedMilestones.includes(m.count)) {
+      // Авто-выдача награды
+      rd.claimedMilestones.push(m.count);
+      rd.earnedCoins += m.coins;
+      saveRefData(rd);
+      const d = API.load();
+      d.coins += m.coins;
+      d.tonBalance = +((d.tonBalance + m.ton).toFixed(9));
+      API.save(d);
+      updateStartScreen();
+      // Красивое уведомление
+      setTimeout(() => showToast(`🎉 ${m.label}: +${m.coins}🪙 +${m.ton}💎`), 500);
+    }
+  });
+}
+
+function updateFriendsBadge() {
+  const rd = loadRefData();
+  const count = rd.friends.length;
+  // Показываем бейдж если есть незабранные награды
+  const hasNew = REF_MILESTONES.some(m => count >= m.count && !rd.claimedMilestones.includes(m.count));
+  const badge = document.getElementById('friends-badge');
+  if (badge) badge.style.display = hasNew ? 'block' : 'none';
+}
+
+function renderFriendsScreen() {
+  const rd = loadRefData();
+  const count = rd.friends.length;
+
+  // Ссылка
+  document.getElementById('ref-link-text').textContent = getRefLink();
+  document.getElementById('ref-count').textContent = count;
+  document.getElementById('ref-earned-coins').textContent = rd.earnedCoins;
+
+  // Таблица наград
+  const list = document.getElementById('ref-rewards-list');
+  list.innerHTML = '';
+  REF_MILESTONES.forEach(m => {
+    const reached  = count >= m.count;
+    const claimed  = rd.claimedMilestones.includes(m.count);
+    const pct      = Math.min(100, Math.round(count / m.count * 100));
+    const el       = document.createElement('div');
+    el.className   = `ref-reward-row${reached?' reached':''}${claimed?' claimed-ref':''}`;
+    el.innerHTML   = `
+      <div class="ref-milestone">${m.count}</div>
+      <div class="ref-reward-info">
+        <div class="ref-reward-name">${m.label}</div>
+        <div class="ref-reward-desc">
+          <span style="color:#FFD700">+${m.coins}🪙</span>
+          <span style="color:#0098EA;margin-left:6px">+${m.ton}💎</span>
+        </div>
+        <div class="ref-progress-row">
+          <div class="ref-progress-track">
+            <div class="ref-progress-fill" style="width:${pct}%"></div>
+          </div>
+          <span style="font-size:10px;color:rgba(255,255,255,0.35);white-space:nowrap;margin-left:6px">${count}/${m.count}</span>
+        </div>
+      </div>
+      <div>${claimed ? '<span class="ref-done-icon">✅</span>' : reached ? '<span style="color:#FFD700;font-size:12px;font-weight:700">Получено!</span>' : ''}</div>`;
+    list.appendChild(el);
+  });
+
+  // Список друзей
+  const fl = document.getElementById('friends-list');
+  if (!rd.friends.length) {
+    fl.innerHTML = '<div class="friends-empty">👥 Пока никого нет<br>Поделись ссылкой — друзья получат бонус!<br><br>🎁 Ты тоже получишь награду за каждого!</div>';
+  } else {
+    fl.innerHTML = rd.friends.slice().reverse().map(f => {
+      const d = new Date(f.date);
+      const dateStr = d.toLocaleDateString('ru', {day:'2-digit', month:'2-digit'});
+      const avatars = ['🧗','🥷','🤖','👨‍🚀','🔥','👻','🪖','🐲'];
+      const av = avatars[Math.floor(Math.random()*avatars.length)];
+      return `<div class="friend-item">
+        <div class="friend-avatar">${av}</div>
+        <div class="friend-name">${f.name}</div>
+        <div class="friend-date">${dateStr}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+document.getElementById('btn-close-friends').onclick = () => showTab('play');
+
+// ═══════════════════════════════════════
 // НАВИГАЦИЯ (ТАБЫ)
 // ═══════════════════════════════════════
 function showTab(tab) {
@@ -2521,6 +2797,7 @@ function showTab(tab) {
   document.getElementById('screen-daily').classList.remove('visible');
   document.getElementById('screen-shop').classList.remove('visible');
   document.getElementById('screen-settings').classList.remove('visible');
+  document.getElementById('screen-friends').classList.remove('visible');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
 
   if (tab === 'play') {
@@ -2533,6 +2810,10 @@ function showTab(tab) {
     renderAchievements();
     document.getElementById('screen-achievements').classList.add('visible');
     document.getElementById('nav-ach').classList.add('active');
+  } else if (tab === 'friends') {
+    renderFriendsScreen();
+    document.getElementById('screen-friends').classList.add('visible');
+    document.getElementById('nav-friends').classList.add('active');
   } else if (tab === 'shop') {
     renderShop();
     document.getElementById('screen-shop').classList.add('visible');
@@ -2650,6 +2931,8 @@ initBottomNav();
 applySettings();
 renderDaily();
 updateAchBadge();
+updateFriendsBadge();
+checkIncomingRef();
 requestAnimationFrame(loop);
 </script>
 </body>
