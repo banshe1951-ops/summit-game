@@ -103,7 +103,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .ctrl-hint { position:absolute; bottom:18px; font-family:Arial,sans-serif; font-size:30px; opacity:0.16; pointer-events:none; }
 #hint-left{left:22px;} #hint-right{right:22px;}
 /* SHOP */
-#screen-shop { position:absolute; inset:0; display:none; flex-direction:column;
+#screen-shop { position:absolute; top:0; left:0; right:0; bottom:60px; display:none; flex-direction:column;
   background:linear-gradient(180deg,#0d0028 0%,#0a0a1a 100%); z-index:20; overflow:hidden; }
 #screen-shop.visible { display:flex; }
 .shop-header { display:flex; align-items:center; justify-content:space-between; padding:14px 14px 8px;
@@ -144,9 +144,9 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .btn-buy:disabled { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.25); cursor:not-allowed; }
 .shop-item-badge { position:absolute; top:7px; right:7px; background:linear-gradient(135deg,#FF6B35,#FF3CAC);
   border-radius:9px; padding:2px 6px; font-size:9px; font-weight:700; color:#fff; }
-#shop-toast { position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:rgba(0,200,100,0.92);
+#shop-toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,200,100,0.92);
   color:#fff; border-radius:18px; padding:9px 22px; font-family:Arial,sans-serif; font-size:13px; font-weight:700;
-  z-index:99; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
+  z-index:200; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
 #shop-toast.show { opacity:1; }
 #shop-toast.err { background:rgba(220,50,50,0.92); }
 /* Чекпоинт */
@@ -176,7 +176,6 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   color:rgba(255,255,255,0.9);
   background:rgba(0,0,0,0.4); border-radius:10px; padding:3px 14px;
 }
-/* Планка чекпоинта снизу экрана */
 #cp-barrier {
   position:absolute; left:0; right:0; height:4px;
   background:linear-gradient(90deg,transparent,#FFD700,#FF8C00,#FFD700,transparent);
@@ -201,7 +200,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .wallet-address-badge{position:relative;z-index:2;display:flex;align-items:center;gap:6px;background:rgba(0,152,234,0.12);border:1px solid rgba(0,152,234,0.3);border-radius:20px;padding:6px 14px;font-family:Arial,sans-serif;font-size:12px;color:#0098EA;font-weight:600;cursor:pointer;}
 .wallet-address-badge .wdot{width:7px;height:7px;border-radius:50%;background:#00d4ff;animation:pulse-dot 2s infinite;}
 @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
-#screen-wallet{position:absolute;inset:0;display:none;flex-direction:column;background:linear-gradient(180deg,#050018 0%,#0a0a1a 100%);z-index:20;overflow:hidden;}
+#screen-wallet{position:absolute;top:0;left:0;right:0;bottom:60px;display:none;flex-direction:column;background:linear-gradient(180deg,#050018 0%,#0a0a1a 100%);z-index:20;overflow:hidden;}
 #screen-wallet.visible{display:flex;}
 .wallet-header{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
 .wallet-title{font-family:'Arial Rounded MT Bold',Arial,sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,#0098EA,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -242,7 +241,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .tx-amt{font-family:Arial,sans-serif;font-size:13px;font-weight:700;}
 .tx-amt.pos{color:#00ff88;}.tx-amt.neg{color:#ff6b6b;}
 /* ══ НАСТРОЙКИ ══ */
-#screen-settings{position:absolute;inset:0;display:none;flex-direction:column;background:linear-gradient(180deg,#0d0028 0%,#0a0a1a 100%);z-index:20;overflow:hidden;}
+#screen-settings{position:absolute;top:0;left:0;right:0;bottom:60px;display:none;flex-direction:column;background:linear-gradient(180deg,#0d0028 0%,#0a0a1a 100%);z-index:20;overflow:hidden;}
 #screen-settings.visible{display:flex;}
 .settings-header{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
 .settings-title{font-family:'Arial Rounded MT Bold',Arial,sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,#7DF9FF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -313,7 +312,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 
 /* ══ НИЖНЕЕ МЕНЮ ══ */
 #bottom-nav {
-  position:absolute; bottom:0; left:0; right:0; z-index:25;
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
   display:none; align-items:center; justify-content:space-around;
   background:rgba(10,8,26,0.97); border-top:1px solid rgba(255,255,255,0.12);
   padding:8px 0 env(safe-area-inset-bottom, 12px); backdrop-filter:blur(10px);
@@ -323,7 +322,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 .nav-btn {
   display:flex; flex-direction:column; align-items:center; gap:3px;
   background:none; border:none; cursor:pointer; padding:4px 12px;
-  transition:transform 0.15s;
+  transition:transform 0.15s; position:relative;
 }
 .nav-btn:active { transform:scale(0.9); }
 .nav-icon { font-size:22px; }
@@ -337,7 +336,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 }
 
 /* ══ ДОСТИЖЕНИЯ ══ */
-#screen-achievements{position:absolute;inset:0;display:none;flex-direction:column;background:linear-gradient(180deg,#0d0028 0%,#0a0a1a 100%);z-index:26;}
+#screen-achievements{position:absolute;top:0;left:0;right:0;bottom:60px;display:none;flex-direction:column;background:linear-gradient(180deg,#0d0028 0%,#0a0a1a 100%);z-index:26;}
 #screen-achievements.visible{display:flex;}
 .ach-header {
   display:flex; align-items:center; justify-content:space-between;
@@ -351,180 +350,88 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.18);
   border-radius:50%; width:32px; height:32px; font-size:15px; color:#fff; cursor:pointer;
 }
-.ach-progress-bar-wrap {
-  padding:10px 16px 6px; flex-shrink:0;
-}
+.ach-progress-bar-wrap { padding:10px 16px 6px; flex-shrink:0; }
 .ach-progress-info {
   display:flex; justify-content:space-between; font-family:Arial,sans-serif;
   font-size:11px; color:rgba(255,255,255,0.45); margin-bottom:5px;
 }
-.ach-progress-track {
-  height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;
-}
-.ach-progress-fill {
-  height:100%; background:linear-gradient(90deg,#FFD700,#FF8C00);
-  border-radius:3px; transition:width 0.5s ease;
-}
+.ach-progress-track { height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden; }
+.ach-progress-fill { height:100%; background:linear-gradient(90deg,#FFD700,#FF8C00); border-radius:3px; transition:width 0.5s ease; }
 .ach-body { flex:1; overflow-y:auto; padding:10px 16px 80px; -webkit-overflow-scrolling:touch; }
 .ach-section-title {
   font-family:Arial,sans-serif; font-size:11px; font-weight:700;
-  color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:2px;
-  margin:14px 0 8px;
+  color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:2px; margin:14px 0 8px;
 }
 .ach-item {
   display:flex; align-items:center; gap:12px;
   background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.08);
-  border-radius:16px; padding:12px 14px; margin-bottom:8px; position:relative;
-  overflow:hidden; transition:border-color 0.3s;
+  border-radius:16px; padding:12px 14px; margin-bottom:8px; position:relative; overflow:hidden;
 }
-.ach-item.done {
-  border-color:rgba(255,215,0,0.35);
-  background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,140,0,0.04));
-}
-.ach-item.claimed {
-  border-color:rgba(255,255,255,0.08);
-  opacity:0.6;
-}
-.ach-icon-wrap {
-  width:48px; height:48px; border-radius:14px; display:flex; align-items:center;
-  justify-content:center; font-size:26px; flex-shrink:0;
-  background:rgba(255,255,255,0.06);
-}
-.ach-item.done .ach-icon-wrap {
-  background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,140,0,0.1));
-  box-shadow:0 0 12px rgba(255,215,0,0.2);
-}
+.ach-item.done { border-color:rgba(255,215,0,0.35); background:linear-gradient(135deg,rgba(255,215,0,0.06),rgba(255,140,0,0.04)); }
+.ach-item.claimed { border-color:rgba(255,255,255,0.08); opacity:0.6; }
+.ach-icon-wrap { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; background:rgba(255,255,255,0.06); }
+.ach-item.done .ach-icon-wrap { background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,140,0,0.1)); box-shadow:0 0 12px rgba(255,215,0,0.2); }
 .ach-info { flex:1; min-width:0; }
 .ach-name { font-family:Arial,sans-serif; font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
 .ach-desc { font-family:Arial,sans-serif; font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:5px; }
 .ach-bar-wrap { height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden; }
 .ach-bar { height:100%; border-radius:2px; background:linear-gradient(90deg,#A78BFA,#7DF9FF); transition:width 0.4s; }
 .ach-item.done .ach-bar { background:linear-gradient(90deg,#FFD700,#FF8C00); width:100% !important; }
-.ach-progress-text {
-  font-family:Arial,sans-serif; font-size:10px; color:rgba(255,255,255,0.35); margin-top:3px;
-}
-.ach-reward {
-  display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0;
-}
-.ach-reward-val {
-  font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#FFD700;
-  white-space:nowrap;
-}
+.ach-progress-text { font-family:Arial,sans-serif; font-size:10px; color:rgba(255,255,255,0.35); margin-top:3px; }
+.ach-reward { display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0; }
+.ach-reward-val { font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#FFD700; white-space:nowrap; }
 .ach-reward-val.ton-clr { color:#0098EA; }
-.btn-ach-claim {
-  background:linear-gradient(135deg,#FFD700,#FF8C00); border:none; border-radius:12px;
-  padding:5px 12px; font-size:11px; font-weight:700; color:#0a0a1a; cursor:pointer;
-  font-family:Arial,sans-serif; white-space:nowrap;
-}
-.ach-done-badge {
-  font-size:18px; filter:drop-shadow(0 0 6px rgba(255,215,0,0.6));
-}
+.btn-ach-claim { background:linear-gradient(135deg,#FFD700,#FF8C00); border:none; border-radius:12px; padding:5px 12px; font-size:11px; font-weight:700; color:#0a0a1a; cursor:pointer; font-family:Arial,sans-serif; white-space:nowrap; }
+.ach-done-badge { font-size:18px; filter:drop-shadow(0 0 6px rgba(255,215,0,0.6)); }
 
 /* ══ УВЕДОМЛЕНИЕ О ДОСТИЖЕНИИ ══ */
 #ach-notify {
-  position:absolute; top:-100px; left:50%; transform:translateX(-50%);
-  z-index:30; pointer-events:none; width:min(340px, 90vw);
+  position:fixed; top:-100px; left:50%; transform:translateX(-50%);
+  z-index:200; pointer-events:none; width:min(340px, 90vw);
   transition:top 0.4s cubic-bezier(0.34,1.56,0.64,1);
 }
 #ach-notify.show { top:16px; }
 .ach-notify-card {
-  background:linear-gradient(135deg,#1a0a3e,#0d1a4a);
-  border:1.5px solid rgba(255,215,0,0.4);
-  border-radius:20px; padding:12px 16px;
-  display:flex; align-items:center; gap:12px;
+  background:linear-gradient(135deg,#1a0a3e,#0d1a4a); border:1.5px solid rgba(255,215,0,0.4);
+  border-radius:20px; padding:12px 16px; display:flex; align-items:center; gap:12px;
   box-shadow:0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(255,215,0,0.2);
 }
-.ach-notify-icon {
-  font-size:32px; flex-shrink:0;
-  filter:drop-shadow(0 0 8px rgba(255,215,0,0.6));
-  animation:ach-icon-pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes ach-icon-pop {
-  0%{transform:scale(0) rotate(-20deg)} 100%{transform:scale(1) rotate(0)}
-}
+.ach-notify-icon { font-size:32px; flex-shrink:0; filter:drop-shadow(0 0 8px rgba(255,215,0,0.6)); animation:ach-icon-pop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes ach-icon-pop { 0%{transform:scale(0) rotate(-20deg)} 100%{transform:scale(1) rotate(0)} }
 .ach-notify-text { flex:1; }
-.ach-notify-label {
-  font-family:Arial,sans-serif; font-size:10px; font-weight:700;
-  color:#FFD700; text-transform:uppercase; letter-spacing:2px; margin-bottom:2px;
-}
-.ach-notify-name {
-  font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:15px; font-weight:900; color:#fff;
-}
-.ach-notify-reward {
-  font-family:Arial,sans-serif; font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px;
-}
-.ach-notify-shine {
-  position:absolute; inset:0; border-radius:20px; overflow:hidden; pointer-events:none;
-}
-.ach-notify-shine::after {
-  content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
-  animation:shine-sweep 1s ease 0.3s forwards;
-}
+.ach-notify-label { font-family:Arial,sans-serif; font-size:10px; font-weight:700; color:#FFD700; text-transform:uppercase; letter-spacing:2px; margin-bottom:2px; }
+.ach-notify-name { font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:15px; font-weight:900; color:#fff; }
+.ach-notify-reward { font-family:Arial,sans-serif; font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px; }
+.ach-notify-shine { position:absolute; inset:0; border-radius:20px; overflow:hidden; pointer-events:none; }
+.ach-notify-shine::after { content:''; position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent); animation:shine-sweep 1s ease 0.3s forwards; }
 @keyframes shine-sweep { to{left:160%} }
 
 /* ══ ЕЖЕДНЕВНЫЕ НАГРАДЫ ══ */
-#screen-daily{position:absolute;inset:0;display:none;flex-direction:column;background:linear-gradient(180deg,#0d1a0a 0%,#0a0a1a 100%);z-index:26;}
+#screen-daily{position:absolute;top:0;left:0;right:0;bottom:60px;display:none;flex-direction:column;background:linear-gradient(180deg,#0d1a0a 0%,#0a0a1a 100%);z-index:26;}
 #screen-daily.visible{display:flex;}
-.daily-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:16px; border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0;
-}
-.daily-title {
-  font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:20px; font-weight:900;
-  background:linear-gradient(135deg,#00FF88,#00C9FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-}
-.btn-close-daily {
-  background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.18);
-  border-radius:50%; width:32px; height:32px; font-size:15px; color:#fff; cursor:pointer;
-}
+.daily-header { display:flex; align-items:center; justify-content:space-between; padding:16px; border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0; }
+.daily-title { font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:20px; font-weight:900; background:linear-gradient(135deg,#00FF88,#00C9FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.btn-close-daily { background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.18); border-radius:50%; width:32px; height:32px; font-size:15px; color:#fff; cursor:pointer; }
 .daily-body { flex:1; overflow-y:auto; padding:16px 16px 80px; -webkit-overflow-scrolling:touch; }
-.daily-streak {
-  background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,201,255,0.1));
-  border:1px solid rgba(0,255,136,0.2); border-radius:20px;
-  padding:16px; text-align:center; margin-bottom:16px;
-}
+.daily-streak { background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,201,255,0.1)); border:1px solid rgba(0,255,136,0.2); border-radius:20px; padding:16px; text-align:center; margin-bottom:16px; }
 .daily-streak-fire { font-size:40px; display:block; animation:fire-pulse 1s ease-in-out infinite alternate; }
 @keyframes fire-pulse { from{transform:scale(1)} to{transform:scale(1.1)} }
-.daily-streak-count {
-  font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:32px; font-weight:900; color:#00FF88;
-  text-shadow:0 0 20px rgba(0,255,136,0.5);
-}
+.daily-streak-count { font-family:'Arial Rounded MT Bold',Arial,sans-serif; font-size:32px; font-weight:900; color:#00FF88; text-shadow:0 0 20px rgba(0,255,136,0.5); }
 .daily-streak-label { font-family:Arial,sans-serif; font-size:13px; color:rgba(255,255,255,0.6); }
 .daily-streak-timer { font-family:Arial,sans-serif; font-size:11px; color:rgba(255,255,255,0.4); margin-top:4px; }
 .daily-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
-.daily-day {
-  display:flex; flex-direction:column; align-items:center; gap:5px;
-  background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.08);
-  border-radius:14px; padding:10px 6px;
-}
-.daily-day.today {
-  border-color:rgba(0,255,136,0.5);
-  background:rgba(0,255,136,0.08);
-  box-shadow:0 0 14px rgba(0,255,136,0.15);
-}
-.daily-day.claimed {
-  border-color:rgba(255,215,0,0.3);
-  background:rgba(255,215,0,0.06);
-  opacity:0.7;
-}
+.daily-day { display:flex; flex-direction:column; align-items:center; gap:5px; background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.08); border-radius:14px; padding:10px 6px; }
+.daily-day.today { border-color:rgba(0,255,136,0.5); background:rgba(0,255,136,0.08); box-shadow:0 0 14px rgba(0,255,136,0.15); }
+.daily-day.claimed { border-color:rgba(255,215,0,0.3); background:rgba(255,215,0,0.06); opacity:0.7; }
 .daily-day.locked { opacity:0.35; }
 .daily-day-num { font-family:Arial,sans-serif; font-size:10px; color:rgba(255,255,255,0.4); }
 .daily-day-icon { font-size:22px; }
 .daily-day-val { font-family:Arial,sans-serif; font-size:10px; font-weight:700; color:#FFD700; }
 .daily-day.today .daily-day-val { color:#00FF88; }
 .daily-day-check { font-size:16px; }
-.btn-claim-daily {
-  width:100%; background:linear-gradient(135deg,#00FF88,#00C9FF); border:none;
-  border-radius:20px; padding:16px; font-size:17px; font-weight:900; color:#0a0a1a;
-  cursor:pointer; font-family:Arial,sans-serif; transition:transform 0.1s;
-  box-shadow:0 6px 20px rgba(0,255,136,0.4);
-}
+.btn-claim-daily { width:100%; background:linear-gradient(135deg,#00FF88,#00C9FF); border:none; border-radius:20px; padding:16px; font-size:17px; font-weight:900; color:#0a0a1a; cursor:pointer; font-family:Arial,sans-serif; transition:transform 0.1s; box-shadow:0 6px 20px rgba(0,255,136,0.4); }
 .btn-claim-daily:active { transform:scale(0.97); }
-.btn-claim-daily:disabled {
-  background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.3);
-  cursor:not-allowed; box-shadow:none;
-}
+.btn-claim-daily:disabled { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.3); cursor:not-allowed; box-shadow:none; }
 </style>
 </head>
 <body>
@@ -605,6 +512,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   <div class="go-buttons">
     <button class="btn-restart" id="btn-restart">▶ Снова</button>
     <button class="btn-go-shop" id="btn-go-shop">🛍 Магазин</button>
+    <button class="btn-go-wallet" id="btn-go-wallet" style="background:linear-gradient(135deg,#0098EA,#0066bb);border:none;border-radius:40px;padding:11px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:Arial,sans-serif;transition:transform 0.1s;">👛 Вывести TON</button>
     <button class="btn-menu" id="btn-menu">🏠 Меню</button>
   </div>
 </div>
@@ -639,8 +547,6 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
     <button class="btn-close-wallet" id="btn-close-wallet">✕</button>
   </div>
   <div class="wallet-body">
-
-    <!-- Баланс -->
     <div class="wallet-balance-card">
       <div class="wallet-balance-label">Игровой баланс TON</div>
       <div class="wallet-balance-amount" id="wbal-amount">0.000000</div>
@@ -650,18 +556,10 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
         <span id="waddr-short">Не подключён</span>
       </div>
     </div>
-
-    <!-- Кнопки -->
     <div class="wallet-actions">
-      <button class="wact dep" id="wbtn-deposit">
-        <span class="wact-icon">💳</span>Пополнить
-      </button>
-      <button class="wact wd" id="wbtn-withdraw" disabled>
-        <span class="wact-icon">💸</span>Вывести
-      </button>
+      <button class="wact dep" id="wbtn-deposit"><span class="wact-icon">💳</span>Пополнить</button>
+      <button class="wact wd" id="wbtn-withdraw" disabled><span class="wact-icon">💸</span>Вывести</button>
     </div>
-
-    <!-- Панель пополнения -->
     <div class="wallet-panel" id="panel-deposit">
       <div class="wallet-panel-title">💳 Пополнение через TON Connect</div>
       <div class="winfo">
@@ -680,8 +578,6 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
       </div>
       <div class="wnote">Транзакция откроется в твоём TON кошельке для подтверждения.</div>
     </div>
-
-    <!-- Панель вывода -->
     <div class="wallet-panel" id="panel-withdraw">
       <div class="wallet-panel-title">💸 Вывод TON</div>
       <div class="winfo">
@@ -706,20 +602,13 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
       </div>
       <div class="wnote" id="wd-note">Итого спишется: сумма + 0.01 TON комиссия</div>
     </div>
-
-    <!-- Отключить -->
     <div id="wallet-connected-block" style="display:none">
       <button class="btn-disconnect" id="btn-disconnect">🔌 Отключить кошелёк</button>
     </div>
-
-    <!-- История -->
     <div class="wallet-section-title" style="margin-top:16px">История</div>
     <div class="tx-list" id="tx-list">
-      <div style="font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.3);text-align:center;padding:16px">
-        История пуста
-      </div>
+      <div style="font-family:Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.3);text-align:center;padding:16px">История пуста</div>
     </div>
-
   </div>
 </div>
 
@@ -730,12 +619,9 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
     <button class="btn-close-settings" id="btn-close-settings">✕</button>
   </div>
   <div class="settings-body">
-
-    <!-- Управление -->
     <div class="settings-section">
       <div class="settings-section-title">🕹️ Управление</div>
       <div class="control-options" id="control-options">
-
         <div class="control-option" data-ctrl="joystick">
           <div class="control-icon">👆</div>
           <div class="control-info">
@@ -744,7 +630,6 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
           </div>
           <div class="control-check">✓</div>
         </div>
-
         <div class="control-option" data-ctrl="gyro">
           <div class="control-icon">📱</div>
           <div class="control-info">
@@ -753,7 +638,6 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
           </div>
           <div class="control-check">✓</div>
         </div>
-
         <div class="control-option" data-ctrl="both">
           <div class="control-icon">🎮</div>
           <div class="control-info">
@@ -762,15 +646,10 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
           </div>
           <div class="control-check">✓</div>
         </div>
-
       </div>
-
-      <!-- Превью -->
       <div class="control-preview">
         <div class="control-preview-text" id="ctrl-preview-text">Выбери вариант управления выше</div>
       </div>
-
-      <!-- Чувствительность акселерометра -->
       <div id="gyro-sensitivity-row" style="margin-top:12px;display:none;">
         <div class="settings-row">
           <div class="settings-row-left">
@@ -780,37 +659,48 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
               <div class="settings-row-desc" id="gyro-sens-label">Угол наклона: 8°</div>
             </div>
           </div>
-          <input type="range" id="gyro-sens-input" min="4" max="20" value="8"
-            style="width:90px;accent-color:#7DF9FF;cursor:pointer;">
+          <input type="range" id="gyro-sens-input" min="4" max="20" value="8" style="width:90px;accent-color:#7DF9FF;cursor:pointer;">
         </div>
       </div>
     </div>
-
-    <!-- Дополнительно (заглушка для будущих настроек) -->
     <div class="settings-section">
       <div class="settings-section-title">🔔 Прочее</div>
       <div class="settings-row">
         <div class="settings-row-left">
           <div class="settings-row-icon">📳</div>
-          <div>
-            <div class="settings-row-name">Вибрация</div>
-            <div class="settings-row-desc">При прыжке и сборе монет</div>
-          </div>
+          <div><div class="settings-row-name">Вибрация</div><div class="settings-row-desc">При прыжке и сборе монет</div></div>
         </div>
         <div class="toggle on" id="toggle-vibro"><div class="toggle-knob"></div></div>
       </div>
       <div class="settings-row">
         <div class="settings-row-left">
           <div class="settings-row-icon">👣</div>
-          <div>
-            <div class="settings-row-name">Трейл персонажа</div>
-            <div class="settings-row-desc">Фиолетовый след при прыжке</div>
-          </div>
+          <div><div class="settings-row-name">Трейл персонажа</div><div class="settings-row-desc">Фиолетовый след при прыжке</div></div>
         </div>
         <div class="toggle on" id="toggle-trail"><div class="toggle-knob"></div></div>
       </div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">🔊</div>
+          <div><div class="settings-row-name">Звуковые эффекты</div><div class="settings-row-desc">Прыжок, монеты, смерть, чекпоинт</div></div>
+        </div>
+        <div class="toggle on" id="toggle-sfx"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">🎵</div>
+          <div><div class="settings-row-name">Фоновая музыка</div><div class="settings-row-desc">Атмосферная мелодия во время игры</div></div>
+        </div>
+        <div class="toggle" id="toggle-music"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="settings-row" id="volume-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">🔉</div>
+          <div><div class="settings-row-name">Громкость музыки</div><div class="settings-row-desc" id="volume-label">50%</div></div>
+        </div>
+        <input type="range" id="volume-input" min="0" max="100" value="50" style="width:90px;accent-color:#A78BFA;cursor:pointer;">
+      </div>
     </div>
-
     <div style="font-family:Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.2);text-align:center;padding:8px">
       Вершина v1.0 · Настройки сохраняются автоматически
     </div>
@@ -896,8 +786,6 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
     <button class="btn-close-friends" id="btn-close-friends">✕</button>
   </div>
   <div class="friends-body">
-
-    <!-- Реферальная ссылка -->
     <div class="ref-card">
       <div class="ref-card-title">🔗 Твоя реферальная ссылка</div>
       <div class="ref-link-wrap">
@@ -906,8 +794,6 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
       </div>
       <button class="btn-share-ref" onclick="shareRefLink()">📤 Поделиться в Telegram</button>
     </div>
-
-    <!-- Статистика -->
     <div class="ref-stats">
       <div class="ref-stat-box">
         <div class="ref-stat-val" id="ref-count">0</div>
@@ -918,12 +804,8 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
         <div class="ref-stat-label">Монет заработано</div>
       </div>
     </div>
-
-    <!-- Таблица наград -->
     <div class="ref-rewards-title">🎁 Награды за приглашённых друзей</div>
     <div id="ref-rewards-list"></div>
-
-    <!-- Бонус новому игроку -->
     <div class="ref-rewards-title" style="margin-top:16px">🎉 Бонус новому игроку</div>
     <div class="ref-reward-row reached">
       <div class="ref-milestone">🆕</div>
@@ -933,11 +815,8 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
       </div>
       <div style="font-family:Arial;font-size:12px;font-weight:700;color:#FFD700;text-align:right">+200🪙<br><span style="color:#0098EA">+0.001💎</span></div>
     </div>
-
-    <!-- Список друзей -->
     <div class="friends-list-title">Приглашённые друзья</div>
     <div id="friends-list"></div>
-
   </div>
 </div>
 
@@ -948,7 +827,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
 // ═══════════════════════════════════════
 // TELEGRAM
 // ═══════════════════════════════════════
-let gameState = 'start'; // объявляем заранее — используется в resize()
+let gameState = 'start';
 
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); tg.enableClosingConfirmation(); }
@@ -957,36 +836,22 @@ const userId = tg?.initDataUnsafe?.user?.id || 'demo';
 // ═══════════════════════════════════════
 // TON CONNECT
 // ═══════════════════════════════════════
-// TON_CONNECT_MANIFEST — создай файл tonconnect-manifest.json на своём сервере
-// и укажи URL ниже. Пример манифеста в конце скрипта.
 const TC_MANIFEST_URL = 'https://YOUR_SERVER/tonconnect-manifest.json';
-const HOT_WALLET      = 'EQxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // адрес горячего кошелька
-const TON_PRICE_USD   = 5.5; // обновляй периодически или подтягивай с API
+const HOT_WALLET      = 'EQxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+const TON_PRICE_USD   = 5.5;
 
 let tonConnectUI = null;
-let connectedWallet = null; // { address, chain }
+let connectedWallet = null;
 
 async function initTonConnect() {
-  if (!window.TON_CONNECT_UI) return; // SDK не загрузился
+  if (!window.TON_CONNECT_UI) return;
   try {
-    tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: TC_MANIFEST_URL,
-      // Без buttonRootId — управляем вручную
-    });
-
-    // Подписываемся на изменения статуса
-    tonConnectUI.onStatusChange(wallet => {
-      connectedWallet = wallet;
-      updateWalletUI();
-    });
-
-    // Восстанавливаем сессию если была
+    tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: TC_MANIFEST_URL });
+    tonConnectUI.onStatusChange(wallet => { connectedWallet = wallet; updateWalletUI(); });
     await tonConnectUI.connectionRestored;
     connectedWallet = tonConnectUI.wallet;
     updateWalletUI();
-  } catch(e) {
-    console.warn('TON Connect init error:', e);
-  }
+  } catch(e) { console.warn('TON Connect init error:', e); }
 }
 
 function walletAddrShort(addr) {
@@ -997,8 +862,6 @@ function walletAddrShort(addr) {
 function updateWalletUI() {
   const connected = !!connectedWallet;
   const addr = connectedWallet?.account?.address || '';
-
-  // Кнопка на старт-экране
   const label = document.getElementById('wallet-btn-label');
   const btn   = document.getElementById('btn-wallet-start');
   if (connected) {
@@ -1008,41 +871,28 @@ function updateWalletUI() {
     label.textContent = 'Подключить кошелёк';
     btn.style.background = '';
   }
-
-  // Экран кошелька
   const d = API.load();
   document.getElementById('wbal-amount').textContent = d.tonBalance.toFixed(6);
   document.getElementById('wbal-usd').textContent    = (d.tonBalance * TON_PRICE_USD).toFixed(2);
-
   const addrRow = document.getElementById('waddr-row');
   document.getElementById('waddr-short').textContent = connected ? walletAddrShort(addr) : 'Не подключён';
   addrRow.style.display = connected ? 'flex' : 'none';
-
   document.getElementById('wbtn-withdraw').disabled = !connected || d.tonBalance < 0.05;
   document.getElementById('wallet-connected-block').style.display = connected ? 'block' : 'none';
   document.getElementById('wd-wallet-addr').textContent = connected ? walletAddrShort(addr) : '—';
   document.getElementById('wd-cur-balance').textContent = d.tonBalance.toFixed(6) + ' TON';
-
-  // История
   renderTxHistory();
 }
 
-// Копировать текст
 function copyText(elementId) {
   const text = document.getElementById(elementId).textContent;
   navigator.clipboard?.writeText(text).then(() => showToast('✅ Скопировано!'));
 }
 
-// ── Подключение / отключение ──────────────────────────
 document.getElementById('btn-wallet-start').onclick = async () => {
   if (!tonConnectUI) { showToast('❌ TON Connect не загружен', true); return; }
-  if (connectedWallet) {
-    openWalletScreen();
-  } else {
-    try {
-      await tonConnectUI.openModal();
-    } catch(e) { showToast('❌ Ошибка подключения', true); }
-  }
+  if (connectedWallet) { openWalletScreen(); }
+  else { try { await tonConnectUI.openModal(); } catch(e) { showToast('❌ Ошибка подключения', true); } }
 };
 
 document.getElementById('btn-disconnect').onclick = async () => {
@@ -1052,9 +902,7 @@ document.getElementById('btn-disconnect').onclick = async () => {
   showToast('Кошелёк отключён');
 };
 
-// ── Открыть / закрыть экран кошелька ─────────────────
 function openWalletScreen() {
-  // Заполняем данные для депозита
   document.getElementById('dep-address').textContent = HOT_WALLET;
   document.getElementById('dep-memo').textContent    = String(userId);
   updateWalletUI();
@@ -1066,17 +914,11 @@ document.getElementById('btn-close-wallet').onclick = () => {
   document.getElementById('panel-withdraw').classList.remove('open');
 };
 
-// Кнопка кошелька в магазине (если нужно добавить позже)
-// Открыть кошелёк из game over
-document.getElementById('btn-go-shop').insertAdjacentHTML('afterend',
-  '<button class="btn-go-shop" id="btn-go-wallet" style="background:linear-gradient(135deg,#0098EA,#0066bb)">👛 Вывести TON</button>'
-);
 document.getElementById('btn-go-wallet').onclick = () => {
   document.getElementById('screen-gameover').classList.remove('visible');
   openWalletScreen();
 };
 
-// ── Кнопки пополнить / вывести ────────────────────────
 document.getElementById('wbtn-deposit').onclick = () => {
   document.getElementById('panel-deposit').classList.toggle('open');
   document.getElementById('panel-withdraw').classList.remove('open');
@@ -1086,65 +928,35 @@ document.getElementById('wbtn-withdraw').onclick = () => {
   document.getElementById('panel-deposit').classList.remove('open');
 };
 
-// ── ПОПОЛНЕНИЕ: отправить транзакцию через TON Connect ─
 document.getElementById('dep-submit').onclick = async () => {
-  if (!connectedWallet) {
-    try { await tonConnectUI.openModal(); } catch(e) {}
-    return;
-  }
+  if (!connectedWallet) { try { await tonConnectUI.openModal(); } catch(e) {} return; }
   const amount = parseFloat(document.getElementById('dep-amount').value);
   if (!amount || amount < 0.01) { showToast('❌ Минимум 0.01 TON', true); return; }
-
   const btn = document.getElementById('dep-submit');
   btn.disabled = true; btn.textContent = '…';
-
   try {
-    // TON Connect транзакция
-    const NANO = 1_000_000_000n;
     const nanoAmount = BigInt(Math.round(amount * 1e9)).toString();
-
-    const tx = {
-      validUntil: Math.floor(Date.now() / 1000) + 300, // 5 минут
-      messages: [{
-        address: HOT_WALLET,
-        amount:  nanoAmount,
-        payload: btoa(String(userId)), // base64(memo)
-      }]
-    };
-
+    const tx = { validUntil: Math.floor(Date.now() / 1000) + 300, messages: [{ address: HOT_WALLET, amount: nanoAmount, payload: btoa(String(userId)) }] };
     const result = await tonConnectUI.sendTransaction(tx);
     showToast(`✅ Отправлено! Зачислим за ~1 мин`);
-
-    // Локально добавляем в историю (реальное зачисление — на бэкенде)
     addLocalTx('deposit', amount, result.boc?.slice(0, 16) + '…');
     document.getElementById('panel-deposit').classList.remove('open');
     document.getElementById('dep-amount').value = '';
   } catch(e) {
     if (e?.message?.includes('User rejects')) showToast('Отменено', false);
     else showToast('❌ Ошибка транзакции', true);
-  } finally {
-    btn.disabled = false; btn.textContent = 'Отправить';
-  }
+  } finally { btn.disabled = false; btn.textContent = 'Отправить'; }
 };
 
-// ── ВЫВОД: запрос к бэкенду, подпись через TON Connect ─
 document.getElementById('wd-submit').onclick = async () => {
   if (!connectedWallet) { showToast('❌ Подключи кошелёк', true); return; }
   const amount = parseFloat(document.getElementById('wd-amount').value);
   const d = API.load();
   if (!amount || amount < 0.05) { showToast('❌ Минимум 0.05 TON', true); return; }
   if (amount > d.tonBalance) { showToast('❌ Недостаточно TON', true); return; }
-
   const btn = document.getElementById('wd-submit');
   btn.disabled = true; btn.textContent = '…';
-
   try {
-    // TODO: заменить на реальный API-запрос:
-    // const res = await fetch('/api/wallet/withdraw', { method:'POST',
-    //   headers:{'Content-Type':'application/json','X-Init-Data': tg?.initData},
-    //   body: JSON.stringify({ amount, to_address: connectedWallet.account.address }) });
-
-    // Mock: списываем локально
     const newBal = Math.round((d.tonBalance - amount) * 1e9) / 1e9;
     const upd = { ...d, tonBalance: newBal };
     API.save(upd);
@@ -1154,14 +966,10 @@ document.getElementById('wd-submit').onclick = async () => {
     showToast(`✅ Вывод ${amount} TON отправлен!`);
     document.getElementById('panel-withdraw').classList.remove('open');
     document.getElementById('wd-amount').value = '';
-  } catch(e) {
-    showToast('❌ Ошибка вывода', true);
-  } finally {
-    btn.disabled = false; btn.textContent = 'Вывести';
-  }
+  } catch(e) { showToast('❌ Ошибка вывода', true); }
+  finally { btn.disabled = false; btn.textContent = 'Вывести'; }
 };
 
-// ── История транзакций ────────────────────────────────
 function addLocalTx(type, amount, ref) {
   const d = API.load();
   if (!d.txHistory) d.txHistory = [];
@@ -1184,19 +992,14 @@ function renderTxHistory() {
     const sign  = t.type === 'withdraw' ? '-' : '+';
     const cls   = t.type === 'withdraw' ? 'neg' : 'pos';
     const date  = new Date(t.date).toLocaleDateString('ru', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
-    return `<div class="tx-item">
-      <div><div class="tx-type">${icons[t.type]||'•'} ${t.type==='deposit'?'Пополнение':t.type==='withdraw'?'Вывод':'Игра'}</div>
-      <div class="tx-date">${date} · ${t.ref||''}</div></div>
-      <div class="tx-amt ${cls}">${sign}${t.amount.toFixed(4)} TON</div>
-    </div>`;
+    return `<div class="tx-item"><div><div class="tx-type">${icons[t.type]||'•'} ${t.type==='deposit'?'Пополнение':t.type==='withdraw'?'Вывод':'Игра'}</div><div class="tx-date">${date} · ${t.ref||''}</div></div><div class="tx-amt ${cls}">${sign}${t.amount.toFixed(4)} TON</div></div>`;
   }).join('');
 }
 
-// Инициализируем TON Connect при загрузке
 initTonConnect();
 
 // ═══════════════════════════════════════
-// API LAYER (mock → заменить на реальный)
+// API LAYER
 // ═══════════════════════════════════════
 const API = {
   _key() { return `summit_v2_${userId}`; },
@@ -1204,7 +1007,6 @@ const API = {
     try {
       const r = localStorage.getItem(this._key());
       const d = r ? JSON.parse(r) : {};
-      // Нормализуем — гарантируем все поля
       return {
         bestScore:      d.bestScore      || 0,
         coins:          d.coins          || 0,
@@ -1220,14 +1022,11 @@ const API = {
         unlimExpiry:    d.unlimExpiry    || 0,
       };
     } catch(e) {
-      return { bestScore:0, coins:0, tonBalance:0, attempts:5, lastAttemptTime:Date.now(),
-               ownedSkins:['skin_default'], activeSkin:'skin_default', ownedBoosters:{},
-               ownedMaps:['map_default'], activeMap:'map_default', txHistory:[], unlimExpiry:0 };
+      return { bestScore:0, coins:0, tonBalance:0, attempts:5, lastAttemptTime:Date.now(), ownedSkins:['skin_default'], activeSkin:'skin_default', ownedBoosters:{}, ownedMaps:['map_default'], activeMap:'map_default', txHistory:[], unlimExpiry:0 };
     }
   },
   save(d) { try { localStorage.setItem(this._key(), JSON.stringify(d)); } catch(e){} },
   async submitGameResult(score, floor, tonEarned, coinsEarned) {
-    // TODO: POST /api/game_over
     const d = this.load();
     d.coins += coinsEarned;
     d.tonBalance = +((d.tonBalance + tonEarned).toFixed(9));
@@ -1236,7 +1035,6 @@ const API = {
     return d;
   },
   async buyItem(itemId, currency, price) {
-    // TODO: POST /api/shop/buy
     const d = this.load();
     if (currency === 'coins') {
       if (d.coins < price) return { ok:false, reason:'Недостаточно монет' };
@@ -1245,58 +1043,26 @@ const API = {
       if (d.tonBalance < price) return { ok:false, reason:'Недостаточно TON' };
       d.tonBalance = +((d.tonBalance - price).toFixed(9));
     }
-    if (itemId.startsWith('skin_')) {
-      if (!d.ownedSkins.includes(itemId)) d.ownedSkins.push(itemId);
-      d.activeSkin = itemId;
-    } else if (itemId.startsWith('boost_')) {
-      d.ownedBoosters[itemId] = (d.ownedBoosters[itemId]||0) + 1;
-    } else if (itemId.startsWith('map_')) {
-      if (!d.ownedMaps) d.ownedMaps = ['map_default'];
-      if (!d.ownedMaps.includes(itemId)) d.ownedMaps.push(itemId);
-      d.activeMap = itemId;
-    } else if (itemId === 'attempt_unlim') {
-      d.unlimExpiry = Date.now() + 60*60*1000;
-    } else if (itemId.startsWith('attempt_')) {
-      d.attempts = Math.min(5, d.attempts + 1);
-    }
+    if (itemId.startsWith('skin_')) { if (!d.ownedSkins.includes(itemId)) d.ownedSkins.push(itemId); d.activeSkin = itemId; }
+    else if (itemId.startsWith('boost_')) { d.ownedBoosters[itemId] = (d.ownedBoosters[itemId]||0) + 1; }
+    else if (itemId.startsWith('map_')) { if (!d.ownedMaps) d.ownedMaps = ['map_default']; if (!d.ownedMaps.includes(itemId)) d.ownedMaps.push(itemId); d.activeMap = itemId; }
+    else if (itemId === 'attempt_unlim') { d.unlimExpiry = Date.now() + 60*60*1000; }
+    else if (itemId.startsWith('attempt_')) { d.attempts = Math.min(5, d.attempts + 1); }
     this.save(d);
     return { ok:true, data:d };
   },
-  selectSkin(skinId) {
-    const d = this.load();
-    if (d.ownedSkins.includes(skinId)) { d.activeSkin = skinId; this.save(d); return true; }
-    return false;
-  },
-  useAttempt() {
-    const d = this.load();
-    if (d.attempts <= 0) return false;
-    d.attempts--;
-    if (d.attempts < 5) d.lastAttemptTime = Date.now();
-    this.save(d); return true;
-  },
+  selectSkin(skinId) { const d = this.load(); if (d.ownedSkins.includes(skinId)) { d.activeSkin = skinId; this.save(d); return true; } return false; },
+  useAttempt() { const d = this.load(); if (d.attempts <= 0) return false; d.attempts--; if (d.attempts < 5) d.lastAttemptTime = Date.now(); this.save(d); return true; },
   tickAttempts() {
     const d = this.load();
     if (d.attempts >= 5) return d;
     const REGEN = 60*60*1000;
     const gained = Math.floor((Date.now() - d.lastAttemptTime) / REGEN);
-    if (gained > 0) {
-      d.attempts = Math.min(5, d.attempts + gained);
-      d.lastAttemptTime = Date.now() - ((Date.now()-d.lastAttemptTime) % REGEN);
-      this.save(d);
-    }
+    if (gained > 0) { d.attempts = Math.min(5, d.attempts + gained); d.lastAttemptTime = Date.now() - ((Date.now()-d.lastAttemptTime) % REGEN); this.save(d); }
     return d;
   },
-  getNextMs() {
-    const d = this.load();
-    if (d.attempts >= 5) return 0;
-    return Math.max(0, 60*60*1000 - ((Date.now()-d.lastAttemptTime) % (60*60*1000)));
-  },
-  useBooster(id) {
-    const d = this.load();
-    if ((d.ownedBoosters[id]||0) <= 0) return false;
-    d.ownedBoosters[id]--;
-    this.save(d); return true;
-  }
+  getNextMs() { const d = this.load(); if (d.attempts >= 5) return 0; return Math.max(0, 60*60*1000 - ((Date.now()-d.lastAttemptTime) % (60*60*1000))); },
+  useBooster(id) { const d = this.load(); if ((d.ownedBoosters[id]||0) <= 0) return false; d.ownedBoosters[id]--; this.save(d); return true; }
 };
 
 // ═══════════════════════════════════════
@@ -1332,41 +1098,9 @@ const ATTEMPTS_ITEMS = [
 ];
 
 const MAPS = [
-  {
-    id: 'map_default',
-    name: 'Горы',       icon: '🏔️',
-    desc: 'Стандартная карта',
-    price: 0, cur: 'coins',
-    sky:   ['#060c28','#050e38','#1a0838','#0d2a6e'],
-    platColors: { normal:'hsl(220,60%,55%)', bounce:'#00E676', crumble:'#FF5252', grass:'#66BB6A' },
-    groundColor: ['#2d5a27','#1e3d1a','#0f1f0d'],
-    gravity: 0.45,
-    playerSpeed: 5.5,
-  },
-  {
-    id: 'map_winter',
-    name: 'Зима',       icon: '❄️',
-    desc: 'Скользкие платформы, снегопад',
-    price: 800, cur: 'coins',
-    sky:   ['#0a1628','#0d1f3c','#1a2a4a','#0a1220'],
-    platColors: { normal:'hsl(200,50%,65%)', bounce:'#80DEEA', crumble:'#EF9A9A', grass:'#B3E5FC' },
-    groundColor: ['#e0f0ff','#b0d0f0','#8aaed0'],
-    gravity: 0.42,
-    playerSpeed: 4.8,
-    snow: true,
-  },
-  {
-    id: 'map_volcano',
-    name: 'Вулкан',     icon: '🌋',
-    desc: 'Горячие платформы, высокая гравитация',
-    price: 0.12, cur: 'ton',
-    sky:   ['#1a0000','#2d0a00','#3d1500','#1a0800'],
-    platColors: { normal:'hsl(15,70%,40%)', bounce:'#FF6F00', crumble:'#B71C1C', grass:'#FF3D00' },
-    groundColor: ['#4a1000','#2d0800','#1a0400'],
-    gravity: 0.52,
-    playerSpeed: 6.2,
-    lava: true,
-  },
+  { id:'map_default', name:'Горы', icon:'🏔️', desc:'Стандартная карта', price:0, cur:'coins', sky:['#060c28','#050e38','#1a0838','#0d2a6e'], platColors:{normal:'hsl(220,60%,55%)',bounce:'#00E676',crumble:'#FF5252',grass:'#66BB6A'}, groundColor:['#2d5a27','#1e3d1a','#0f1f0d'], gravity:0.45, playerSpeed:5.5 },
+  { id:'map_winter', name:'Зима', icon:'❄️', desc:'Скользкие платформы, снегопад', price:800, cur:'coins', sky:['#0a1628','#0d1f3c','#1a2a4a','#0a1220'], platColors:{normal:'hsl(200,50%,65%)',bounce:'#80DEEA',crumble:'#EF9A9A',grass:'#B3E5FC'}, groundColor:['#e0f0ff','#b0d0f0','#8aaed0'], gravity:0.42, playerSpeed:4.8, snow:true },
+  { id:'map_volcano', name:'Вулкан', icon:'🌋', desc:'Горячие платформы, высокая гравитация', price:0.12, cur:'ton', sky:['#1a0000','#2d0a00','#3d1500','#1a0800'], platColors:{normal:'hsl(15,70%,40%)',bounce:'#FF6F00',crumble:'#B71C1C',grass:'#FF3D00'}, groundColor:['#4a1000','#2d0800','#1a0400'], gravity:0.52, playerSpeed:6.2, lava:true },
 ];
 
 // ═══════════════════════════════════════
@@ -1398,11 +1132,12 @@ const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 let W, H;
 function resize(){
-  const navH = (typeof gameState !== 'undefined' && gameState === 'playing') ? 0 : 60;
+  const navH = (gameState === 'playing') ? 0 : 60;
   W = canvas.width  = window.innerWidth;
   H = canvas.height = window.innerHeight - navH;
 }
-resize(); window.addEventListener('resize', resize);
+resize();
+window.addEventListener('resize', resize);
 
 // ═══════════════════════════════════════
 // CONSTANTS
@@ -1431,21 +1166,32 @@ function updateStartScreen(){
   renderDots('start-attempts-dots', userData.attempts);
   updateTimer();
   document.getElementById('btn-play').disabled = userData.attempts<=0;
+  // ✅ ИСПРАВЛЕНИЕ: всегда показываем меню на стартовом экране
+  if (gameState === 'start') setNavVisible(true);
 }
+
 function renderDots(id, count){
   const el=document.getElementById(id); el.innerHTML='';
   for(let i=0;i<5;i++){const d=document.createElement('div');d.className='attempt-dot'+(i<count?' filled':'');el.appendChild(d);}
 }
+
 function updateTimer(){
   const el=document.getElementById('start-attempts-timer'); if(!el) return;
   if(userData.attempts>=5){el.textContent='Все попытки восстановлены';return;}
   const ms=API.getNextMs(), m=Math.floor(ms/60000), s=Math.floor((ms%60000)/1000);
   el.textContent=`Следующая через ${m}:${String(s).padStart(2,'0')}`;
 }
+
 function startAttemptTimer(){
-  setInterval(()=>{ userData=API.tickAttempts(); updateTimer(); renderDots('start-attempts-dots',userData.attempts);
-    document.getElementById('btn-play').disabled=userData.attempts<=0; updateShopBal(); },1000);
+  setInterval(()=>{
+    userData=API.tickAttempts();
+    updateTimer();
+    renderDots('start-attempts-dots',userData.attempts);
+    document.getElementById('btn-play').disabled=userData.attempts<=0;
+    updateShopBal();
+  }, 1000);
 }
+
 function updateHUD(){
   document.getElementById('hud-score').textContent=score;
   document.getElementById('hud-floor').textContent=floor;
@@ -1457,13 +1203,24 @@ function updateHUD(){
   if(activeBoosts.magnet) b.innerHTML+='<div class="booster-badge">🧲</div>';
   if(activeBoosts.ton2x)  b.innerHTML+='<div class="booster-badge">💎 x2</div>';
 }
-function showHUD(v){
-  document.getElementById('hud').classList.toggle('visible',v);
-  document.getElementById('ctrl-zone').style.display=v?'block':'none';
-  document.getElementById('hint-left').style.opacity=v?'0.16':'0';
-  document.getElementById('hint-right').style.opacity=v?'0.16':'0';
-  document.getElementById('hud-boosters').style.display=v?'flex':'none';
+
+// ✅ ИСПРАВЛЕНИЕ: единая функция управления видимостью нижнего меню
+function setNavVisible(v) {
+  const nav = document.getElementById('bottom-nav');
+  if (v) nav.classList.add('visible');
+  else nav.classList.remove('visible');
 }
+
+function showHUD(v){
+  document.getElementById('hud').classList.toggle('visible', v);
+  document.getElementById('ctrl-zone').style.display = v ? 'block' : 'none';
+  document.getElementById('hint-left').style.opacity  = v ? '0.16' : '0';
+  document.getElementById('hint-right').style.opacity = v ? '0.16' : '0';
+  document.getElementById('hud-boosters').style.display = v ? 'flex' : 'none';
+  // ✅ ИСПРАВЛЕНИЕ: во время игры прячем меню, в остальное время — показываем
+  setNavVisible(!v);
+}
+
 function updateShopBal(){
   const d=API.load();
   document.getElementById('shop-coins').textContent=d.coins;
@@ -1471,6 +1228,7 @@ function updateShopBal(){
   document.getElementById('start-coins').textContent=d.coins;
   document.getElementById('start-ton').textContent=d.tonBalance.toFixed(6);
 }
+
 function showToast(msg,err=false){
   const t=document.getElementById('shop-toast');
   t.textContent=msg; t.className=err?'err show':'show';
@@ -1483,15 +1241,13 @@ function showToast(msg,err=false){
 function initGame(){
   score=0;floor=1;cameraY=0;highestY=0;sessionCoins=0;sessionTon=0;gameTimeMs=0;nextTonSpawn=30000;
   particles=[];tonCoins=[];
-  // Чекпоинты
-  window.checkpointFloor = 0;       // последний чекпоинт (этаж)
-  window.checkpointY = H - 40;      // мировая Y чекпоинта (земля = старт)
-  window.nextCheckpoint = 200;      // следующий чекпоинт на этаже
+  window.checkpointFloor = 0;
+  window.checkpointY = H - 40;
+  window.nextCheckpoint = 200;
   document.getElementById('cp-barrier').style.display = 'none';
   document.getElementById('cp-barrier-warn').style.display = 'none';
   document.getElementById('cp-label').style.display = 'none';
 
-  // Применяем активную карту
   const d0=API.load();
   const mapId=d0.activeMap||'map_default';
   const activeMap=MAPS.find(m=>m.id===mapId)||MAPS[0];
@@ -1500,7 +1256,6 @@ function initGame(){
   window.MAP_SPEED=activeMap.playerSpeed||5.5;
   window._snowflakes=null; window._sparks=null;
 
-  // Бонусы скина
   const skinId=d0.activeSkin||'skin_default';
   const activeSkin=SKINS.find(s=>s.id===skinId)||SKINS[0];
   if(activeSkin.lowGravity) window.MAP_GRAVITY*=0.85;
@@ -1533,7 +1288,9 @@ function initGame(){
   for(let i=0;i<25;i++){ py-=PLATFORM_GAP+Math.random()*20; lp=spawnPlatform(py,lp); }
   stars=[];
   for(let i=0;i<5;i++) spawnStar();
-  updateHUD(); showHUD(true);
+  updateHUD();
+  showHUD(true);
+  if(gameSettings.music) { musicBeat=0; musicChordIdx=0; startMusic(); }
 }
 
 // ═══════════════════════════════════════
@@ -1541,13 +1298,9 @@ function initGame(){
 // ═══════════════════════════════════════
 function spawnPlatform(py, prev) {
   const diff = Math.min(floor / 25, 1);
-
-  // Ширина: варьируется сильнее с высотой
   const minW = Math.max(36, 85 - diff * 47);
   const maxW = Math.max(minW + 20, 140 - diff * 50);
   const pw = minW + Math.random() * (maxW - minW);
-
-  // Горизонтальная позиция — гарантируем достижимость и не выходим за экран
   let px;
   if (prev) {
     const cx = prev.x + prev.w / 2;
@@ -1558,39 +1311,26 @@ function spawnPlatform(py, prev) {
   } else {
     px = 10 + Math.random() * (W - pw - 20);
   }
-  // Финальная защита — платформа всегда полностью на экране
   px = Math.max(4, Math.min(W - pw - 4, px));
-
-  // Тип
   const types = ['normal','normal','normal','bounce','crumble'];
   const ti = Math.floor(Math.random() * (2 + Math.floor(diff * 3)));
   const type = types[Math.min(ti, types.length-1)];
-
-  // Движение: шанс растёт с высотой, крошащиеся не двигаются
   const movingChance = diff * 0.55;
   const isMoving = type !== 'crumble' && Math.random() < movingChance;
   const moveSpeed = isMoving ? (0.6 + diff * 2.4) : 0;
   const moveRange = isMoving ? 40 + Math.random() * (60 + diff * 90) : 0;
   const moveDir = Math.random() < 0.5 ? 1 : -1;
-
-  const pl = {
-    x: px, y: py, w: pw, type,
-    crumbling: false, crumbleTimer: 0,
-    moving: isMoving,
-    moveSpeed, moveRange, moveDir,
-    moveOrigin: px + pw/2,
-  };
+  const pl = { x:px, y:py, w:pw, type, crumbling:false, crumbleTimer:0, moving:isMoving, moveSpeed, moveRange, moveDir, moveOrigin:px+pw/2 };
   platforms.push(pl);
   return pl;
 }
+
 function spawnStar(){
-  stars.push({x:30+Math.random()*(W-60),y:cameraY-80-Math.random()*H*3,r:8+Math.random()*6,
-    collected:false,angle:Math.random()*Math.PI*2,value:(Math.floor(Math.random()*3)+1)*10});
+  stars.push({x:30+Math.random()*(W-60),y:cameraY-80-Math.random()*H*3,r:8+Math.random()*6,collected:false,angle:Math.random()*Math.PI*2,value:(Math.floor(Math.random()*3)+1)*10});
 }
 function spawnTonCoin(){
   if(sessionTon>=TON_MAX) return;
-  tonCoins.push({x:40+Math.random()*(W-80),y:cameraY-120-Math.random()*H*1.5,r:13,
-    collected:false,angle:0,bob:Math.random()*Math.PI*2});
+  tonCoins.push({x:40+Math.random()*(W-80),y:cameraY-120-Math.random()*H*1.5,r:13,collected:false,angle:0,bob:Math.random()*Math.PI*2});
 }
 function spawnParticles(x,y,color,n){
   for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*4;
@@ -1617,7 +1357,6 @@ function update(dt){
   gameTimeMs+=16.67*dt;
   if(gameTimeMs>nextTonSpawn&&sessionTon<(activeBoosts.unlim?999:TON_MAX)){ spawnTonCoin(); nextTonSpawn=gameTimeMs+28000+Math.random()*8000; }
 
-  // Движение
   const spd = MAP_S * (activeBoosts.speed?1.5:1);
   if(joystickActive){
     const dx=joystickCurX-joystickStartX;
@@ -1641,7 +1380,6 @@ function update(dt){
   if(player.trail.length>8)player.trail.shift();
   player.trail.forEach(t=>{t.life-=0.12*dt;});
 
-  // Коллизии (мировые координаты)
   player.onGround=false;
   if(player.vy>0){
     const cb=player.y+player.h;
@@ -1654,7 +1392,9 @@ function update(dt){
           player.vy=JUMP_FORCE*(p.type==='bounce'?1.5:1)*(window._jumpBonus||1);
           player.y=p.y-player.h; player.onGround=true;
           if(gameSettings.vibro && navigator.vibrate) navigator.vibrate(p.type==='bounce'?[15,5,15]:8);
+          playSound(p.type==='bounce'?'bounce':'jump');
           if(p.type==='bounce')spawnParticles(player.x+player.w/2,p.y-cameraY,'#00FFCC',8);
+          if(p.type==='crumble')playSound('crumble');
           break;
         }
       }
@@ -1663,29 +1403,23 @@ function update(dt){
 
   platforms.forEach(p => {
     if (p.crumbling) p.crumbleTimer += 0.04 * dt;
-    // Движущиеся платформы
     if (p.moving && !p.crumbling) {
       p.x += p.moveSpeed * p.moveDir * dt;
       const cx = p.x + p.w / 2;
-      // Не выходим за границы экрана
-      if (p.x < 4)         { p.x = 4;         p.moveDir =  1; p.moveOrigin = p.x + p.w/2; }
-      if (p.x + p.w > W-4) { p.x = W-4-p.w;  p.moveDir = -1; p.moveOrigin = p.x + p.w/2; }
+      if (p.x < 4)         { p.x = 4;        p.moveDir =  1; p.moveOrigin = p.x + p.w/2; }
+      if (p.x + p.w > W-4) { p.x = W-4-p.w; p.moveDir = -1; p.moveOrigin = p.x + p.w/2; }
       if (cx > p.moveOrigin + p.moveRange) { p.moveDir = -1; }
       if (cx < p.moveOrigin - p.moveRange) { p.moveDir =  1; }
-      // Игрок стоит на платформе — тащим его вместе
-      if (player.onGround && Math.abs(player.y + player.h - p.y) < 3
-          && player.x + player.w > p.x + 2 && player.x < p.x + p.w - 2) {
+      if (player.onGround && Math.abs(player.y + player.h - p.y) < 3 && player.x + player.w > p.x + 2 && player.x < p.x + p.w - 2) {
         player.x += p.moveSpeed * p.moveDir * dt;
       }
     }
   });
   platforms = platforms.filter(p => p.type==='ground' || p.crumbleTimer < 1);
 
-  // Камера
   const tgt=player.y-H*0.35;
   if(tgt<cameraY)cameraY=tgt;
 
-  // Очки + этаж
   const wy=cameraY+player.y;
   if(wy<highestY){
     const diff=highestY-wy, mult=activeBoosts.x2?2:1;
@@ -1694,14 +1428,12 @@ function update(dt){
     floor=Math.floor(-highestY/PLATFORM_GAP)+1; updateHUD();
   }
 
-  // Новые платформы — разный вертикальный gap
   const top = platforms.reduce((m,p) => Math.min(m,p.y), Infinity);
   if (top - cameraY > -H * 2) {
     let lp = platforms.reduce((m,p) => p.y < m.y ? p : m, platforms[0]);
     let py = top;
     for (let i = 0; i < 5; i++) {
       const diff = Math.min(floor / 25, 1);
-      // Gap: ближе к старту — стабильный, выше — большой разброс
       const minGap = 60 + diff * 20;
       const maxGap = Math.min(MAX_JUMP_H - 10, 80 + diff * 65);
       py -= minGap + Math.random() * (maxGap - minGap);
@@ -1710,17 +1442,15 @@ function update(dt){
   }
   platforms=platforms.filter(p=>p.type==='ground'||p.y-cameraY<H+200);
 
-  // Звёзды
   stars.forEach(s=>{
     if(s.collected)return; s.angle+=0.05*dt;
     const dx=player.x+player.w/2-s.x, dy=player.y+player.h/2-s.y, dist=Math.sqrt(dx*dx+dy*dy);
     if(activeBoosts.magnet&&dist<110){s.x+=dx/dist*3*dt;s.y+=dy/dist*3*dt;}
-    if(dist<s.r+20){s.collected=true;const v=s.value*(activeBoosts.x2?2:1);score+=v;sessionCoins+=v;spawnParticles(s.x,s.y-cameraY,'#FFD700',10);updateHUD();}
+    if(dist<s.r+20){s.collected=true;const v=s.value*(activeBoosts.x2?2:1);score+=v;sessionCoins+=v;spawnParticles(s.x,s.y-cameraY,'#FFD700',10);playSound('coin');updateHUD();}
   });
   stars=stars.filter(s=>!s.collected&&s.y-cameraY<H+100);
   while(stars.length<6)spawnStar();
 
-  // TON монетки
   tonCoins.forEach(tc=>{
     if(tc.collected)return; tc.angle+=0.04*dt; tc.y+=Math.sin(tc.angle+tc.bob)*0.4;
     const dx=player.x+player.w/2-tc.x, dy=player.y+player.h/2-tc.y, dist=Math.sqrt(dx*dx+dy*dy);
@@ -1729,72 +1459,57 @@ function update(dt){
       const mult=activeBoosts.unlim?1:(activeBoosts.ton3x?3:activeBoosts.ton2x?2:1);
       const tonLimit=activeBoosts.unlim?999:TON_MAX;
       sessionTon=Math.min(tonLimit,+((sessionTon+TON_PER_COIN*mult).toFixed(9)));
-      spawnParticles(tc.x,tc.y-cameraY,'#0098EA',14);updateHUD();}
+      spawnParticles(tc.x,tc.y-cameraY,'#0098EA',14);playSound('ton');updateHUD();}
   });
   tonCoins=tonCoins.filter(tc=>!tc.collected&&tc.y-cameraY<H+100);
 
   particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=0.15*dt;p.life-=0.04*dt;p.r*=0.96;});
   particles=particles.filter(p=>p.life>0);
 
-  // Чекпоинт — проверка
   if (floor >= window.nextCheckpoint) {
     window.checkpointFloor = floor;
     window.checkpointY = player.y;
     window.nextCheckpoint = floor + 200;
-    // Баннер
     const banner = document.getElementById('checkpoint-banner');
     document.getElementById('cp-title').textContent = `🏁 ЧЕКПОИНТ! Этаж ${window.checkpointFloor}`;
     document.getElementById('cp-sub').textContent = `Следующий на ${window.nextCheckpoint} этаже`;
     banner.classList.remove('show');
-    void banner.offsetWidth; // reflow
+    void banner.offsetWidth;
     banner.classList.add('show');
     setTimeout(() => banner.classList.remove('show'), 2600);
-    // Частицы салюта
+    playSound('checkpoint');
     for (let i = 0; i < 5; i++) setTimeout(() => {
       spawnParticles(Math.random()*W, H*0.3, ['#FFD700','#FF8C00','#00FF88','#0098EA'][Math.floor(Math.random()*4)], 12);
     }, i * 150);
   }
 
-  // Планка чекпоинта — не даём упасть ниже
   if (window.checkpointFloor > 0) {
     const barrierScreenY = window.checkpointY - cameraY + 30;
     const barrier = document.getElementById('cp-barrier');
     const warn    = document.getElementById('cp-barrier-warn');
     const label   = document.getElementById('cp-label');
-
     if (barrierScreenY < H + 60) {
       barrier.style.display = 'block';
       barrier.style.top = Math.min(H - 4, barrierScreenY) + 'px';
       label.style.display = 'block';
       label.style.top = (Math.min(H - 20, barrierScreenY) - 16) + 'px';
       label.textContent = `🏁 Чекпоинт ${window.checkpointFloor} эт.`;
-
-      // Предупреждение когда близко к планке
       const distToBarrier = barrierScreenY - (player.y - cameraY + player.h);
-      if (distToBarrier < 150) {
-        warn.style.display = 'block';
-        warn.style.opacity = Math.max(0, 1 - distToBarrier / 150);
-      } else {
-        warn.style.display = 'none';
-      }
+      if (distToBarrier < 150) { warn.style.display = 'block'; warn.style.opacity = Math.max(0, 1 - distToBarrier / 150); }
+      else { warn.style.display = 'none'; }
     } else {
-      barrier.style.display = 'none';
-      warn.style.display = 'none';
-      label.style.display = 'none';
+      barrier.style.display = 'none'; warn.style.display = 'none'; label.style.display = 'none';
     }
-
-    // Блокируем падение ниже чекпоинта
     if (player.y > window.checkpointY + 20) {
-      player.y = window.checkpointY + 20;
-      player.vy = JUMP_FORCE * 0.8;
+      player.y = window.checkpointY + 20; player.vy = JUMP_FORCE * 0.8;
       spawnParticles(player.x + player.w/2, player.y - cameraY, '#FFD700', 8);
     }
   }
 
-  // Смерть — только если нет чекпоинта
   if(player.y-cameraY>H+100){
     if(activeBoosts.shield&&shieldHp>0){
       shieldHp=0; activeBoosts.shield=false;
+      playSound('shield');
       const vis=platforms.filter(p=>p.type!=='ground'&&p.y<player.y);
       const near=vis.length>0?vis.reduce((m,p)=>p.y>m.y?p:m,vis[0]):platforms.find(p=>p.type==='ground');
       player.y=near.y-player.h-10; player.x=near.x+near.w/2-player.w/2; player.vy=JUMP_FORCE;
@@ -1811,7 +1526,10 @@ function update(dt){
 // GAME OVER
 // ═══════════════════════════════════════
 async function triggerGameOver(){
-  gameState='gameover'; showHUD(false);
+  gameState='gameover';
+  showHUD(false);
+  playSound('death');
+  stopMusic();
   const result=await API.submitGameResult(score,floor,sessionTon,sessionCoins);
   userData=result;
   document.getElementById('go-score').textContent=score;
@@ -1826,19 +1544,15 @@ async function triggerGameOver(){
   else{const ms=API.getNextMs();ai.textContent=`Попыток нет. Следующая через ${Math.floor(ms/60000)} мин`;}
   document.getElementById('btn-restart').disabled=att<=0;
   document.getElementById('screen-gameover').classList.add('visible');
+  // ✅ ИСПРАВЛЕНИЕ: явно показываем меню на экране game over
+  setNavVisible(true);
   if(tg)tg.sendData(JSON.stringify({action:'game_over',score,floor,tonEarned:sessionTon,coins:sessionCoins}));
   if (sessionTon > 0) addLocalTx('earn', sessionTon, `этаж ${floor}`);
-  // Проверяем достижения
   checkAchievements({
-    floor,
-    coins:    sessionCoins,
-    ton:      sessionTon,
-    games:    1,
-    tonCoins: (tonCoins||[]).filter(t=>t.collected).length,
+    floor, coins:sessionCoins, ton:sessionTon, games:1,
+    tonCoins:(tonCoins||[]).filter(t=>t.collected).length,
     checkpoint: window.checkpointFloor > 0 ? Math.floor(window.checkpointFloor / 200) : 0,
   });
-  // Показываем нижнее меню на экране game over
-  document.getElementById('bottom-nav').classList.add('visible');
 }
 
 // ═══════════════════════════════════════
@@ -1848,8 +1562,6 @@ const bgStars=Array.from({length:120},()=>({x:Math.random(),y:Math.random(),r:Ma
 function genMountain(n,min,max){const p=[];for(let i=0;i<=n;i++)p.push({x:i/n,y:min+Math.random()*(max-min)});return p;}
 const mFar=genMountain(20,0.55,0.88), mNear=genMountain(14,0.70,1.0);
 const clouds=Array.from({length:10},()=>({x:Math.random(),y:0.05+Math.random()*0.5,w:0.025+Math.random()*0.055,spd:0.00004+Math.random()*0.00008,alpha:0.1+Math.random()*0.14,layer:Math.random()<0.5?0:1}));
-
-// TON image
 const tonImg=new Image(); tonImg.src='https://ton.org/download/ton_symbol.svg';
 
 // ═══════════════════════════════════════
@@ -1877,174 +1589,73 @@ function shadeHex(hex,n){
 }
 
 function draw(){
-  const map=window.CURRENT_MAP||MAPS[0];
   const sp=Math.min(Math.max(-cameraY/4000,0),1);
-
-  // ── Небо — розово-фиолетовый градиент как на референсе ──
   const skyG=ctx.createLinearGradient(0,0,0,H);
-  skyG.addColorStop(0,'#5b6ec9');
-  skyG.addColorStop(0.4,'#a07cc5');
-  skyG.addColorStop(0.75,'#e8a87c');
-  skyG.addColorStop(1,'#f0c080');
+  skyG.addColorStop(0,'#5b6ec9'); skyG.addColorStop(0.4,'#a07cc5'); skyG.addColorStop(0.75,'#e8a87c'); skyG.addColorStop(1,'#f0c080');
   ctx.fillStyle=skyG; ctx.fillRect(0,0,W,H);
-
-  // Туманный низ неба
   const fogG=ctx.createLinearGradient(0,H*0.5,0,H);
-  fogG.addColorStop(0,'rgba(240,180,120,0)');
-  fogG.addColorStop(1,'rgba(240,200,150,0.35)');
+  fogG.addColorStop(0,'rgba(240,180,120,0)'); fogG.addColorStop(1,'rgba(240,200,150,0.35)');
   ctx.fillStyle=fogG; ctx.fillRect(0,0,W,H);
 
-  // ── Low-poly облака (многоугольники как на референсе) ──
   clouds.forEach(c=>{
     const par=c.layer===0?0.06:0.15; c.x+=c.spd; if(c.x>1.3)c.x=-0.3;
     const cx=c.x*W, cy=c.y*H*0.55-cameraY*par, cw=c.w*W*1.8;
     ctx.save(); ctx.globalAlpha=c.layer===0?0.75:0.9;
-    // Каждое облако — набор полигонов разных оттенков
-    const polys=[
-      // [offX, offY, scaleX, scaleY, color]
-      [0,      0,    1.0,  0.55, '#dde8f8'],
-      [-cw*0.3,-cw*0.15, 0.55,0.45,'#c8d8f0'],
-      [ cw*0.28,-cw*0.12,0.5, 0.4, '#b8ccec'],
-      [-cw*0.1, cw*0.08, 0.7, 0.35,'#e8f0ff'],
-      [ cw*0.15, cw*0.05,0.6, 0.3, '#d0dcf4'],
-    ];
+    const polys=[[0,0,1.0,0.55,'#dde8f8'],[-cw*0.3,-cw*0.15,0.55,0.45,'#c8d8f0'],[cw*0.28,-cw*0.12,0.5,0.4,'#b8ccec'],[-cw*0.1,cw*0.08,0.7,0.35,'#e8f0ff'],[cw*0.15,cw*0.05,0.6,0.3,'#d0dcf4']];
     polys.forEach(([ox,oy,sx,sy,col])=>{
-      const w2=cw*sx*0.5, h2=cw*sy*0.35;
-      const px=cx+ox, py=cy+oy;
-      // Угловатый полигон
-      ctx.fillStyle=col;
-      ctx.beginPath();
-      ctx.moveTo(px-w2*0.5, py+h2);
-      ctx.lineTo(px-w2,     py+h2*0.3);
-      ctx.lineTo(px-w2*0.6, py-h2*0.5);
-      ctx.lineTo(px-w2*0.1, py-h2);
-      ctx.lineTo(px+w2*0.3, py-h2*0.8);
-      ctx.lineTo(px+w2,     py-h2*0.2);
-      ctx.lineTo(px+w2*0.8, py+h2*0.6);
-      ctx.lineTo(px+w2*0.2, py+h2);
-      ctx.closePath(); ctx.fill();
+      const w2=cw*sx*0.5, h2=cw*sy*0.35, px=cx+ox, py=cy+oy;
+      ctx.fillStyle=col; ctx.beginPath();
+      ctx.moveTo(px-w2*0.5,py+h2); ctx.lineTo(px-w2,py+h2*0.3); ctx.lineTo(px-w2*0.6,py-h2*0.5);
+      ctx.lineTo(px-w2*0.1,py-h2); ctx.lineTo(px+w2*0.3,py-h2*0.8); ctx.lineTo(px+w2,py-h2*0.2);
+      ctx.lineTo(px+w2*0.8,py+h2*0.6); ctx.lineTo(px+w2*0.2,py+h2); ctx.closePath(); ctx.fill();
     });
     ctx.restore();
   });
 
-  // ── Дальние горы low-poly (сиреневые) ──
-  {
-    const oy = -cameraY * 0.06; ctx.save();
-    ctx.globalAlpha=0.45;
-    ctx.fillStyle='#9b8ec4';
-    drawLowPolyMountain(ctx, mFar, W, H, oy*0.5, 0.48, 0.82, '#b8a8d8', '#9b8ec4');
-    ctx.globalAlpha=0.65;
-    drawLowPolyMountain(ctx, mFar, W, H, oy, 0.52, 0.88, '#a090c8', '#7a6aaa');
-    ctx.restore();
-  }
-
-  // ── Ближние горы low-poly (темнее) ──
-  {
-    const oy = -cameraY * 0.14; ctx.save();
-    ctx.globalAlpha=0.85;
-    drawLowPolyMountain(ctx, mNear, W, H, oy, 0.60, 0.97, '#8878b8', '#5a4a90');
-    ctx.restore();
-  }
-
-  // ── Зелёные холмы (2 слоя) ──
-  {
-    const oy = -cameraY * 0.22; ctx.save();
-    // Дальний холм
-    ctx.globalAlpha=0.9;
-    const hg1=ctx.createLinearGradient(0,H*0.65+oy,0,H);
-    hg1.addColorStop(0,'#7ab040'); hg1.addColorStop(1,'#5a8828');
-    ctx.fillStyle=hg1;
-    ctx.beginPath(); ctx.moveTo(0,H);
-    ctx.quadraticCurveTo(W*0.15,H*0.62+oy, W*0.3,H*0.68+oy);
-    ctx.quadraticCurveTo(W*0.45,H*0.58+oy, W*0.6,H*0.65+oy);
-    ctx.quadraticCurveTo(W*0.75,H*0.70+oy, W*0.9,H*0.63+oy);
-    ctx.quadraticCurveTo(W*0.95,H*0.60+oy, W,H*0.64+oy);
-    ctx.lineTo(W,H); ctx.closePath(); ctx.fill();
-    // Тёмная полоска на холме
-    ctx.globalAlpha=0.3; ctx.fillStyle='#3a6818';
-    ctx.beginPath();
-    ctx.moveTo(0,H*0.70+oy);
-    ctx.quadraticCurveTo(W*0.3,H*0.65+oy, W*0.6,H*0.69+oy);
-    ctx.quadraticCurveTo(W*0.8,H*0.72+oy, W,H*0.68+oy);
-    ctx.lineTo(W,H*0.74+oy); ctx.lineTo(0,H*0.76+oy);
-    ctx.closePath(); ctx.fill();
-    ctx.restore();
-  }
+  { const oy=-cameraY*0.06; ctx.save(); ctx.globalAlpha=0.45; drawLowPolyMountain(ctx,mFar,W,H,oy*0.5,0.48,0.82,'#b8a8d8','#9b8ec4'); ctx.globalAlpha=0.65; drawLowPolyMountain(ctx,mFar,W,H,oy,0.52,0.88,'#a090c8','#7a6aaa'); ctx.restore(); }
+  { const oy=-cameraY*0.14; ctx.save(); ctx.globalAlpha=0.85; drawLowPolyMountain(ctx,mNear,W,H,oy,0.60,0.97,'#8878b8','#5a4a90'); ctx.restore(); }
+  { const oy=-cameraY*0.22; ctx.save(); ctx.globalAlpha=0.9;
+    const hg1=ctx.createLinearGradient(0,H*0.65+oy,0,H); hg1.addColorStop(0,'#7ab040'); hg1.addColorStop(1,'#5a8828');
+    ctx.fillStyle=hg1; ctx.beginPath(); ctx.moveTo(0,H);
+    ctx.quadraticCurveTo(W*0.15,H*0.62+oy,W*0.3,H*0.68+oy); ctx.quadraticCurveTo(W*0.45,H*0.58+oy,W*0.6,H*0.65+oy);
+    ctx.quadraticCurveTo(W*0.75,H*0.70+oy,W*0.9,H*0.63+oy); ctx.quadraticCurveTo(W*0.95,H*0.60+oy,W,H*0.64+oy);
+    ctx.lineTo(W,H); ctx.closePath(); ctx.fill(); ctx.restore(); }
 
   if(gameState!=='start'){
-    // Земля
-    const map2=window.CURRENT_MAP||MAPS[0];
     const gy=H-40-cameraY;
     if(gy<H+20){
       ctx.save();
-      // Зелёная трава — полоса
-      const grassG=ctx.createLinearGradient(0,gy-20,0,gy+8);
-      grassG.addColorStop(0,'#5a9e2a'); grassG.addColorStop(1,'#3d7018');
+      const grassG=ctx.createLinearGradient(0,gy-20,0,gy+8); grassG.addColorStop(0,'#5a9e2a'); grassG.addColorStop(1,'#3d7018');
       ctx.fillStyle=grassG; ctx.fillRect(0,gy-14,W,22);
-      // Кирпичная земля
-      const brickG=ctx.createLinearGradient(0,gy+8,0,gy+40);
-      brickG.addColorStop(0,'#7a4a20'); brickG.addColorStop(1,'#4a2808');
+      const brickG=ctx.createLinearGradient(0,gy+8,0,gy+40); brickG.addColorStop(0,'#7a4a20'); brickG.addColorStop(1,'#4a2808');
       ctx.fillStyle=brickG; ctx.fillRect(0,gy+8,W,34);
-      // Кирпичи
       ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=1.5;
       const bh=10, bw=28;
-      for(let row=0;row<3;row++){
-        const by=gy+10+row*bh;
-        const offset=row%2===0?0:bw/2;
-        for(let bx=offset-bw;bx<W+bw;bx+=bw){
-          ctx.strokeRect(bx,by,bw,bh);
-        }
-      }
-      // Густая трава — острые листья
+      for(let row=0;row<3;row++){ const by=gy+10+row*bh; const offset=row%2===0?0:bw/2; for(let bx=offset-bw;bx<W+bw;bx+=bw){ctx.strokeRect(bx,by,bw,bh);} }
       ctx.fillStyle='#1e5c18';
-      for(let gx=0;gx<W;gx+=7){
-        const gh=8+Math.sin(gx*0.4)*5+Math.random()*4;
-        ctx.beginPath();
-        ctx.moveTo(gx,gy-12);
-        ctx.lineTo(gx-3,gy-12-gh);
-        ctx.lineTo(gx+3,gy-12);
-        ctx.closePath(); ctx.fill();
-      }
+      for(let gx=0;gx<W;gx+=7){ const gh=8+Math.sin(gx*0.4)*5+Math.random()*4; ctx.beginPath(); ctx.moveTo(gx,gy-12); ctx.lineTo(gx-3,gy-12-gh); ctx.lineTo(gx+3,gy-12); ctx.closePath(); ctx.fill(); }
       ctx.fillStyle='#2a7820';
-      for(let gx=3;gx<W;gx+=9){
-        const gh=6+Math.cos(gx*0.3)*4;
-        ctx.beginPath();
-        ctx.moveTo(gx,gy-10);
-        ctx.lineTo(gx-2,gy-10-gh);
-        ctx.lineTo(gx+2,gy-10);
-        ctx.closePath(); ctx.fill();
-      }
+      for(let gx=3;gx<W;gx+=9){ const gh=6+Math.cos(gx*0.3)*4; ctx.beginPath(); ctx.moveTo(gx,gy-10); ctx.lineTo(gx-2,gy-10-gh); ctx.lineTo(gx+2,gy-10); ctx.closePath(); ctx.fill(); }
       ctx.restore();
     }
 
-    // Трейл
-    if(gameSettings.trail){
-      player.trail.forEach(t=>{ctx.save();ctx.globalAlpha=t.life*0.3;ctx.fillStyle='#A78BFA';
-        ctx.beginPath();ctx.ellipse(t.x,t.y-cameraY,Math.max(0.1,6*t.life),Math.max(0.1,4*t.life),0,0,Math.PI*2);ctx.fill();ctx.restore();});
-    }
-
+    if(gameSettings.trail){ player.trail.forEach(t=>{ctx.save();ctx.globalAlpha=t.life*0.3;ctx.fillStyle='#A78BFA';ctx.beginPath();ctx.ellipse(t.x,t.y-cameraY,Math.max(0.1,6*t.life),Math.max(0.1,4*t.life),0,0,Math.PI*2);ctx.fill();ctx.restore();}); }
     platforms.forEach(drawPlatform);
     stars.forEach(s=>{if(!s.collected)drawStar(s.x,s.y-cameraY,s.r,s.angle);});
 
-    // TON монетки
     tonCoins.forEach(tc=>{
       if(tc.collected)return;
       const sx=tc.x,sy=tc.y-cameraY;
       ctx.save();ctx.shadowColor='#0098EA';ctx.shadowBlur=18;
       ctx.fillStyle='#0a1a40';ctx.beginPath();ctx.arc(sx,sy,tc.r,0,Math.PI*2);ctx.fill();
       ctx.strokeStyle='#0098EA';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(sx,sy,tc.r,0,Math.PI*2);ctx.stroke();
-      if(tonImg.complete&&tonImg.naturalWidth>0){
-        ctx.drawImage(tonImg,sx-tc.r*0.68,sy-tc.r*0.68,tc.r*1.36,tc.r*1.36);
-      } else {
-        ctx.fillStyle='#0098EA';ctx.font=`bold ${tc.r}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText('💎',sx,sy);
-      }
+      if(tonImg.complete&&tonImg.naturalWidth>0){ ctx.drawImage(tonImg,sx-tc.r*0.68,sy-tc.r*0.68,tc.r*1.36,tc.r*1.36); }
+      else { ctx.fillStyle='#0098EA';ctx.font=`bold ${tc.r}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('💎',sx,sy); }
       ctx.restore();
-      ctx.save();ctx.fillStyle='#0098EA';ctx.font='bold 10px Arial';ctx.textAlign='center';
-      ctx.fillText('+TON',sx,sy-tc.r-6);ctx.restore();
+      ctx.save();ctx.fillStyle='#0098EA';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.fillText('+TON',sx,sy-tc.r-6);ctx.restore();
     });
 
-    // Снег / искры карты
+    const map2=window.CURRENT_MAP||MAPS[0];
     if(map2.snow){
       if(!window._snowflakes){window._snowflakes=Array.from({length:60},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+0.5,spd:0.5+Math.random()*1.5,dx:Math.random()*0.4-0.2}));}
       ctx.save();ctx.fillStyle='rgba(200,230,255,0.8)';
@@ -2056,56 +1667,37 @@ function draw(){
       ctx.save();
       window._sparks.forEach(s=>{s.y+=s.vy;s.x+=s.vx;s.life-=0.02;s.vy+=0.08;
         if(s.life<=0||s.y<0){s.x=Math.random()*W;s.y=H-50-cameraY;s.vy=-2-Math.random()*4;s.vx=Math.random()*2-1;s.life=1;}
-        ctx.globalAlpha=s.life*0.8;ctx.fillStyle=s.life>0.5?'#FF6F00':'#FF3D00';
-        ctx.beginPath();ctx.arc(s.x,s.y,2,0,Math.PI*2);ctx.fill();});
+        ctx.globalAlpha=s.life*0.8;ctx.fillStyle=s.life>0.5?'#FF6F00':'#FF3D00';ctx.beginPath();ctx.arc(s.x,s.y,2,0,Math.PI*2);ctx.fill();});
       ctx.restore();
     }
 
-    particles.forEach(p=>{ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=p.color;
-      ctx.beginPath();ctx.arc(p.x,p.y,Math.max(0.1,p.r),0,Math.PI*2);ctx.fill();ctx.restore();});
-
+    particles.forEach(p=>{ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,Math.max(0.1,p.r),0,Math.PI*2);ctx.fill();ctx.restore();});
     drawPlayer();
 
     if(activeBoosts.shield&&shieldHp>0){
-      ctx.save();ctx.globalAlpha=0.28+Math.sin(Date.now()*0.005)*0.1;
-      ctx.strokeStyle='#00FFCC';ctx.lineWidth=3;
-      ctx.beginPath();ctx.arc(player.x+player.w/2,player.y+player.h/2-cameraY,34,0,Math.PI*2);ctx.stroke();
-      ctx.restore();}
+      ctx.save();ctx.globalAlpha=0.28+Math.sin(Date.now()*0.005)*0.1;ctx.strokeStyle='#00FFCC';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(player.x+player.w/2,player.y+player.h/2-cameraY,34,0,Math.PI*2);ctx.stroke();ctx.restore();
+    }
   }
 }
 
-// Low-poly горы — острые грани как на референсе
-function drawLowPolyMountain(ctx, pts, W, H, oy, minY, maxY, colTop, colBot){
-  const mapped=pts.map(p=>({x:p.x*W, y:p.y*H+oy}));
-  const grad=ctx.createLinearGradient(0,H*minY,0,H*maxY);
-  grad.addColorStop(0,colTop); grad.addColorStop(1,colBot);
-  ctx.fillStyle=grad;
-  ctx.beginPath(); ctx.moveTo(0,H);
-  // Острые зубцы — чередуем острые и плавные точки
+function drawLowPolyMountain(ctx,pts,W,H,oy,minY,maxY,colTop,colBot){
+  const mapped=pts.map(p=>({x:p.x*W,y:p.y*H+oy}));
+  const grad=ctx.createLinearGradient(0,H*minY,0,H*maxY); grad.addColorStop(0,colTop); grad.addColorStop(1,colBot);
+  ctx.fillStyle=grad; ctx.beginPath(); ctx.moveTo(0,H);
   for(let i=0;i<mapped.length-1;i++){
-    const p=mapped[i], n=mapped[i+1];
-    const mx=(p.x+n.x)/2, my=(p.y+n.y)/2+Math.sin(i*1.7)*8;
-    ctx.lineTo(p.x,p.y);
-    ctx.lineTo(mx,my);
+    const p=mapped[i],n=mapped[i+1],mx=(p.x+n.x)/2,my=(p.y+n.y)/2+Math.sin(i*1.7)*8;
+    ctx.lineTo(p.x,p.y); ctx.lineTo(mx,my);
   }
-  ctx.lineTo(mapped[mapped.length-1].x, mapped[mapped.length-1].y);
+  ctx.lineTo(mapped[mapped.length-1].x,mapped[mapped.length-1].y);
   ctx.lineTo(W,H); ctx.closePath(); ctx.fill();
-
-  // Снежные шапки — треугольные белые пятна
   ctx.fillStyle='#dde8ff';
   mapped.forEach((p,i)=>{
     if(i===0||i===mapped.length-1)return;
-    const prev=mapped[i-1], next=mapped[i+1];
-    if(p.y<prev.y&&p.y<next.y&&p.y<H*0.7){
-      ctx.beginPath();
-      ctx.moveTo(p.x,p.y);
-      ctx.lineTo(p.x-18,p.y+22);
-      ctx.lineTo(p.x+18,p.y+22);
-      ctx.closePath(); ctx.fill();
-    }
+    const prev=mapped[i-1],next=mapped[i+1];
+    if(p.y<prev.y&&p.y<next.y&&p.y<H*0.7){ ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-18,p.y+22); ctx.lineTo(p.x+18,p.y+22); ctx.closePath(); ctx.fill(); }
   });
 }
-
 
 function drawPlatform(p){
   if(p.type==='ground')return;
@@ -2122,23 +1714,17 @@ function drawPlatform(p){
   } else if(p.type==='crumble'){
     ctx.fillStyle=pc.crumble||'#FF5252';drawRR(px,py,pw,ph,7);ctx.fill();
     if(pw>10){ctx.fillStyle='#FF8A80';drawRR(px+4,py,pw-8,5,4);ctx.fill();}
-    if(p.crumbling){ctx.strokeStyle='#B71C1C';ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.moveTo(px+pw*0.3,py);ctx.lineTo(px+pw*0.5,py+ph);
-      ctx.moveTo(px+pw*0.6,py);ctx.lineTo(px+pw*0.4,py+ph);ctx.stroke();}
+    if(p.crumbling){ctx.strokeStyle='#B71C1C';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(px+pw*0.3,py);ctx.lineTo(px+pw*0.5,py+ph);ctx.moveTo(px+pw*0.6,py);ctx.lineTo(px+pw*0.4,py+ph);ctx.stroke();}
   } else {
     const shade=Math.sin(p.y*0.01)*20;
     ctx.fillStyle=pc.normal||`hsl(${220+shade},60%,55%)`;drawRR(px,py,pw,ph,7);ctx.fill();
     if(pw>10){ctx.fillStyle=`hsl(${220+shade},60%,70%)`;drawRR(px+4,py,pw-8,5,4);ctx.fill();}
     if(pw>6){ctx.fillStyle=pc.grass||'#66BB6A';drawRR(px+2,py,pw-4,5,4);ctx.fill();}
   }
-  // Стрелки на движущихся платформах
-  if (p.moving) {
-    ctx.globalAlpha = alpha * (0.55 + Math.sin(Date.now()*0.006)*0.3);
-    ctx.fillStyle = '#fff';
-    ctx.font = `bold ${Math.max(9, Math.min(13, pw/5))}px Arial`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const arrow = p.moveDir > 0 ? '▶' : '◀';
-    ctx.fillText(arrow, px + pw/2, py + ph/2);
+  if(p.moving){
+    ctx.globalAlpha=alpha*(0.55+Math.sin(Date.now()*0.006)*0.3);ctx.fillStyle='#fff';
+    ctx.font=`bold ${Math.max(9,Math.min(13,pw/5))}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(p.moveDir>0?'▶':'◀',px+pw/2,py+ph/2);
   }
   ctx.restore();
 }
@@ -2146,10 +1732,8 @@ function drawPlatform(p){
 function drawStar(x,y,r,angle){
   ctx.save();ctx.translate(x,y);ctx.rotate(angle);
   ctx.beginPath();
-  for(let i=0;i<10;i++){const a=(i*Math.PI)/5,rad=i%2===0?r:r*0.45;
-    i===0?ctx.moveTo(Math.cos(a)*rad,Math.sin(a)*rad):ctx.lineTo(Math.cos(a)*rad,Math.sin(a)*rad);}
-  ctx.closePath();ctx.shadowColor='#FFD700';ctx.shadowBlur=12;ctx.fillStyle='#FFD700';ctx.fill();
-  ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();ctx.restore();
+  for(let i=0;i<10;i++){const a=(i*Math.PI)/5,rad=i%2===0?r:r*0.45;i===0?ctx.moveTo(Math.cos(a)*rad,Math.sin(a)*rad):ctx.lineTo(Math.cos(a)*rad,Math.sin(a)*rad);}
+  ctx.closePath();ctx.shadowColor='#FFD700';ctx.shadowBlur=12;ctx.fillStyle='#FFD700';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();ctx.restore();
 }
 
 function drawPlayer(){
@@ -2159,8 +1743,7 @@ function drawPlayer(){
   const px=player.x,py=player.y-cameraY,f=player.facing,fr=player.frame;
   ctx.save();ctx.translate(px+player.w/2,py+player.h/2);
   if(f<0)ctx.scale(-1,1);
-  const bg=ctx.createLinearGradient(-18,-20,18,20);
-  bg.addColorStop(0,c.body);bg.addColorStop(1,shadeHex(c.body,-40));
+  const bg=ctx.createLinearGradient(-18,-20,18,20); bg.addColorStop(0,c.body);bg.addColorStop(1,shadeHex(c.body,-40));
   ctx.fillStyle=bg;ctx.beginPath();ctx.ellipse(0,4,18,22,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle='#4CAF50';
   const lo=fr===0?4:-2;
@@ -2193,7 +1776,6 @@ const DEAD_ZONE=12,MAX_KNOB=40;
 ctrlZone.addEventListener('touchstart',e=>{
   e.preventDefault();
   if(gameState!=='playing') return;
-  // Джойстик работает только если не выбран режим только гироскоп
   if(gameSettings.ctrl==='gyro') return;
   const t=e.changedTouches[0];joystickActive=true;joystickStartX=joystickCurX=t.clientX;
   joyBase.style.left=t.clientX+'px';joyBase.style.top=t.clientY+'px';
@@ -2216,9 +1798,8 @@ ctrlZone.addEventListener('touchmove',e=>{
 
 window.addEventListener('deviceorientation',e=>{
   if(gameState!=='playing') return;
-  // Акселерометр работает только если выбран соответствующий режим
   if(gameSettings.ctrl==='joystick') return;
-  if(joystickActive && gameSettings.ctrl==='both') return; // джойстик имеет приоритет
+  if(joystickActive && gameSettings.ctrl==='both') return;
   const threshold = gameSettings.gyroSens || 8;
   const tilt=e.gamma;
   if(tilt<-threshold){keys.left=true;keys.right=false;}
@@ -2231,7 +1812,6 @@ window.addEventListener('deviceorientation',e=>{
 // ═══════════════════════════════════════
 function renderShop(){
   const d=API.load(); updateShopBal();
-  // Скины
   const sg=document.getElementById('skins-grid'); sg.innerHTML='';
   SKINS.forEach(item=>{
     const owned=d.ownedSkins.includes(item.id)||item.price===0;
@@ -2243,12 +1823,10 @@ function renderShop(){
       <div class="shop-item-name">${item.name}</div>
       <div class="shop-item-desc">${item.desc}</div>
       ${priceHtml}
-      <button class="btn-buy ${isAct?'active-btn':owned?'owned-btn':item.cur+'-buy'}"
-        data-id="${item.id}" data-price="${item.price}" data-cur="${item.cur}">
+      <button class="btn-buy ${isAct?'active-btn':owned?'owned-btn':item.cur+'-buy'}" data-id="${item.id}" data-price="${item.price}" data-cur="${item.cur}">
         ${isAct?'✓ Активен':owned?'▶ Выбрать':'Купить'}</button>`;
     sg.appendChild(el);
   });
-  // Бустеры
   const bg=document.getElementById('boosters-grid'); bg.innerHTML='';
   BOOSTERS.forEach(item=>{
     const cnt=d.ownedBoosters[item.id]||0;
@@ -2261,7 +1839,6 @@ function renderShop(){
       <button class="btn-buy ${item.cur}-buy" data-id="${item.id}" data-price="${item.price}" data-cur="${item.cur}">Купить</button>`;
     bg.appendChild(el);
   });
-  // Попытки
   const ag=document.getElementById('attempts-grid'); ag.innerHTML=`<div style="grid-column:1/-1;text-align:center;font-family:Arial;font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:6px">Попытки: ${d.attempts}/5<br><small>Восполняются раз в 60 мин</small></div>`;
   ATTEMPTS_ITEMS.forEach(item=>{
     const el=document.createElement('div'); el.className='shop-item';
@@ -2272,11 +1849,9 @@ function renderShop(){
       <button class="btn-buy ${item.cur}-buy" data-id="${item.id}" data-price="${item.price}" data-cur="${item.cur}" ${d.attempts>=5?'disabled':''}>Купить</button>`;
     ag.appendChild(el);
   });
-  // Карты
-  const mg2 = document.getElementById('maps-grid'); mg2.innerHTML='';
+  const mg2=document.getElementById('maps-grid'); mg2.innerHTML='';
   MAPS.forEach(item=>{
-    const d2=API.load();
-    if(!d2.ownedMaps)d2.ownedMaps=['map_default'];
+    const d2=API.load(); if(!d2.ownedMaps)d2.ownedMaps=['map_default'];
     const owned=d2.ownedMaps.includes(item.id)||item.price===0;
     const isAct=d2.activeMap===item.id;
     const el=document.createElement('div');
@@ -2285,13 +1860,11 @@ function renderShop(){
       <div class="shop-item-name">${item.name}</div>
       <div class="shop-item-desc">${item.desc}</div>
       ${!owned?`<div class="shop-item-price ${item.cur}-price">${item.price} ${item.cur==='ton'?'TON':'🪙'}</div>`:''}
-      <button class="btn-buy ${isAct?'active-btn':owned?'owned-btn':item.cur+'-buy'}"
-        data-id="${item.id}" data-price="${item.price}" data-cur="${item.cur}">
+      <button class="btn-buy ${isAct?'active-btn':owned?'owned-btn':item.cur+'-buy'}" data-id="${item.id}" data-price="${item.price}" data-cur="${item.cur}">
         ${isAct?'✓ Активна':owned?'▶ Выбрать':'Купить'}</button>`;
     mg2.appendChild(el);
   });
 
-  // Клики
   document.querySelectorAll('#screen-shop .btn-buy').forEach(btn=>{
     if(btn.disabled)return;
     btn.onclick=async()=>{
@@ -2303,16 +1876,10 @@ function renderShop(){
         return;
       }
       const r=await API.buyItem(id,cur,price);
-      if(r.ok){
-        userData=r.data;
-        showToast('✅ Куплено!');
-        renderShop();
-        updateStartScreen();
-        // Достижения за покупки
-        if(id.startsWith('skin_'))    checkAchievements({skins:1});
-        if(id.startsWith('boost_'))   checkAchievements({boosters:1});
-      }
-      else showToast('❌ '+r.reason,true);
+      if(r.ok){ userData=r.data; showToast('✅ Куплено!'); renderShop(); updateStartScreen();
+        if(id.startsWith('skin_')) checkAchievements({skins:1});
+        if(id.startsWith('boost_')) checkAchievements({boosters:1});
+      } else showToast('❌ '+r.reason,true);
     };
   });
 }
@@ -2326,13 +1893,6 @@ document.querySelectorAll('.shop-tab').forEach(tab=>{
   };
 });
 
-function openShop(){renderShop();document.getElementById('screen-shop').classList.add('visible');}
-function closeShop(){document.getElementById('screen-shop').classList.remove('visible');}
-
-document.getElementById('btn-open-shop').onclick=openShop;
-document.getElementById('btn-close-shop').onclick=closeShop;
-document.getElementById('btn-go-shop').onclick=()=>{document.getElementById('screen-gameover').classList.remove('visible');openShop();};
-
 // ═══════════════════════════════════════
 // BUTTONS
 // ═══════════════════════════════════════
@@ -2340,90 +1900,84 @@ document.getElementById('btn-play').onclick=()=>{
   if(!API.useAttempt())return;
   userData=API.load();
   document.getElementById('screen-start').style.display='none';
-  gameState='playing';initGame();
+  gameState='playing';
+  resize(); // пересчитать размер канваса без нижней панели
+  initGame();
 };
+
 document.getElementById('btn-restart').onclick=()=>{
   if(!API.useAttempt())return;
   userData=API.load();
   document.getElementById('screen-gameover').classList.remove('visible');
-  gameState='playing';initGame();
-};
-document.getElementById('btn-menu').onclick=()=>{
-  document.getElementById('screen-gameover').classList.remove('visible');
-  gameState='start';showHUD(false);
-  document.getElementById('screen-start').style.display='flex';
-  updateStartScreen();
+  gameState='playing';
+  resize();
+  initGame();
 };
 
-// ═══════════════════════════════════════
+document.getElementById('btn-menu').onclick=()=>{
+  document.getElementById('screen-gameover').classList.remove('visible');
+  gameState='start';
+  showHUD(false);
+  document.getElementById('screen-start').style.display='flex';
+  updateStartScreen();
+  resize();
+};
+
+document.getElementById('btn-go-shop').onclick=()=>{
+  document.getElementById('screen-gameover').classList.remove('visible');
+  showTab('shop');
+};
+
+document.getElementById('btn-close-shop').onclick=()=>{ showTab('play'); };
+
 // ═══════════════════════════════════════
 // ДОСТИЖЕНИЯ
 // ═══════════════════════════════════════
 const ACHIEVEMENTS = [
-  // Прыжки / высота
-  { id:'first_jump',   cat:'Начало',      icon:'👟', name:'Первый шаг',        desc:'Начни первую игру',                  type:'games',    target:1,    reward:{coins:50} },
-  { id:'floor_10',     cat:'Высота',       icon:'🏠', name:'До небес',          desc:'Достигни 10 этажа',                  type:'floor',    target:10,   reward:{coins:100} },
-  { id:'floor_50',     cat:'Высота',       icon:'🏙️', name:'Городской горизонт',desc:'Достигни 50 этажа',                  type:'floor',    target:50,   reward:{coins:300} },
-  { id:'floor_200',    cat:'Высота',       icon:'⛰️', name:'Альпинист',         desc:'Достигни 200 этажа',                 type:'floor',    target:200,  reward:{coins:500} },
-  { id:'floor_500',    cat:'Высота',       icon:'🌤️', name:'Облака',            desc:'Достигни 500 этажа',                 type:'floor',    target:500,  reward:{coins:1000} },
-  { id:'floor_1000',   cat:'Высота',       icon:'🚀', name:'Космос',            desc:'Достигни 1000 этажа',                type:'floor',    target:1000, reward:{coins:3000, ton:0.01} },
-  // Монеты
-  { id:'coins_100',    cat:'Монеты',       icon:'🪙', name:'Копилка',           desc:'Собери 100 монет за одну игру',       type:'session_coins', target:100,  reward:{coins:150} },
-  { id:'coins_500',    cat:'Монеты',       icon:'💰', name:'Богач',             desc:'Собери 500 монет за одну игру',       type:'session_coins', target:500,  reward:{coins:300} },
-  { id:'coins_total_1000', cat:'Монеты',   icon:'🏦', name:'Банкир',            desc:'Накопи 1000 монет всего',            type:'total_coins', target:1000, reward:{coins:200} },
-  { id:'coins_total_10000',cat:'Монеты',   icon:'💎', name:'Миллионер',         desc:'Накопи 10000 монет всего',           type:'total_coins', target:10000,reward:{coins:1000, ton:0.02} },
-  // TON
-  { id:'ton_first',    cat:'TON',          icon:'💎', name:'TON охотник',       desc:'Собери первую TON монетку',           type:'ton_coins', target:1,    reward:{coins:200} },
-  { id:'ton_005',      cat:'TON',          icon:'🌊', name:'TON волна',         desc:'Заработай 0.005 TON за игру',        type:'session_ton', target:0.005, reward:{coins:500} },
-  { id:'ton_total',    cat:'TON',          icon:'🔷', name:'TON коллекционер',  desc:'Заработай 0.05 TON суммарно',        type:'total_ton', target:0.05, reward:{coins:1000} },
-  // Игры
-  { id:'games_5',      cat:'Игры',         icon:'🎮', name:'Игрок',             desc:'Сыграй 5 игр',                       type:'games',    target:5,    reward:{coins:100} },
-  { id:'games_50',     cat:'Игры',         icon:'🎯', name:'Ветеран',           desc:'Сыграй 50 игр',                      type:'games',    target:50,   reward:{coins:500} },
-  { id:'streak_3',     cat:'Игры',         icon:'🔥', name:'На разогреве',      desc:'3 дня подряд',                       type:'streak',   target:3,    reward:{coins:300} },
-  { id:'streak_7',     cat:'Игры',         icon:'⚡', name:'Неделя',            desc:'7 дней подряд',                      type:'streak',   target:7,    reward:{coins:700, ton:0.01} },
-  // Чекпоинты
-  { id:'checkpoint_1', cat:'Чекпоинты',    icon:'🏁', name:'Первый рубеж',      desc:'Достигни первого чекпоинта (200 эт.)',type:'checkpoint', target:1,  reward:{coins:400} },
-  { id:'checkpoint_3', cat:'Чекпоинты',    icon:'🎌', name:'Марафонец',         desc:'Достигни 3 чекпоинтов',              type:'checkpoint', target:3,  reward:{coins:1000, ton:0.02} },
-  // Магазин
-  { id:'buy_skin',     cat:'Магазин',      icon:'👗', name:'Модник',            desc:'Купи любой скин',                    type:'skins_owned', target:2, reward:{coins:200} },
-  { id:'buy_booster',  cat:'Магазин',      icon:'⚡', name:'Прокачка',          desc:'Купи любой бустер',                  type:'boosters_bought', target:1, reward:{coins:150} },
-  // Рефералы
-  { id:'ref_1',    cat:'Друзья',  icon:'👥', name:'Первый друг',    desc:'Пригласи 1 друга',    type:'refs', target:1,   reward:{coins:300,  ton:0.002} },
-  { id:'ref_5',    cat:'Друзья',  icon:'🤝', name:'Компания',       desc:'Пригласи 5 друзей',   type:'refs', target:5,   reward:{coins:800,  ton:0.005} },
-  { id:'ref_10',   cat:'Друзья',  icon:'🎪', name:'Тусовка',        desc:'Пригласи 10 друзей',  type:'refs', target:10,  reward:{coins:2000, ton:0.015} },
-  { id:'ref_25',   cat:'Друзья',  icon:'🌟', name:'Амбассадор',     desc:'Пригласи 25 друзей',  type:'refs', target:25,  reward:{coins:5000, ton:0.05} },
-  { id:'ref_100',  cat:'Друзья',  icon:'👑', name:'Легенда',        desc:'Пригласи 100 друзей', type:'refs', target:100, reward:{coins:20000,ton:0.2} },
+  { id:'first_jump',   cat:'Начало',    icon:'👟', name:'Первый шаг',        desc:'Начни первую игру',                  type:'games',    target:1,    reward:{coins:50} },
+  { id:'floor_10',     cat:'Высота',    icon:'🏠', name:'До небес',          desc:'Достигни 10 этажа',                  type:'floor',    target:10,   reward:{coins:100} },
+  { id:'floor_50',     cat:'Высота',    icon:'🏙️', name:'Городской горизонт',desc:'Достигни 50 этажа',                  type:'floor',    target:50,   reward:{coins:300} },
+  { id:'floor_200',    cat:'Высота',    icon:'⛰️', name:'Альпинист',         desc:'Достигни 200 этажа',                 type:'floor',    target:200,  reward:{coins:500} },
+  { id:'floor_500',    cat:'Высота',    icon:'🌤️', name:'Облака',            desc:'Достигни 500 этажа',                 type:'floor',    target:500,  reward:{coins:1000} },
+  { id:'floor_1000',   cat:'Высота',    icon:'🚀', name:'Космос',            desc:'Достигни 1000 этажа',                type:'floor',    target:1000, reward:{coins:3000,ton:0.01} },
+  { id:'coins_100',    cat:'Монеты',    icon:'🪙', name:'Копилка',           desc:'Собери 100 монет за одну игру',       type:'session_coins', target:100,  reward:{coins:150} },
+  { id:'coins_500',    cat:'Монеты',    icon:'💰', name:'Богач',             desc:'Собери 500 монет за одну игру',       type:'session_coins', target:500,  reward:{coins:300} },
+  { id:'coins_total_1000', cat:'Монеты',icon:'🏦', name:'Банкир',            desc:'Накопи 1000 монет всего',            type:'total_coins', target:1000, reward:{coins:200} },
+  { id:'coins_total_10000',cat:'Монеты',icon:'💎', name:'Миллионер',         desc:'Накопи 10000 монет всего',           type:'total_coins', target:10000,reward:{coins:1000,ton:0.02} },
+  { id:'ton_first',    cat:'TON',       icon:'💎', name:'TON охотник',       desc:'Собери первую TON монетку',           type:'ton_coins', target:1,    reward:{coins:200} },
+  { id:'ton_005',      cat:'TON',       icon:'🌊', name:'TON волна',         desc:'Заработай 0.005 TON за игру',        type:'session_ton', target:0.005, reward:{coins:500} },
+  { id:'ton_total',    cat:'TON',       icon:'🔷', name:'TON коллекционер',  desc:'Заработай 0.05 TON суммарно',        type:'total_ton', target:0.05, reward:{coins:1000} },
+  { id:'games_5',      cat:'Игры',      icon:'🎮', name:'Игрок',             desc:'Сыграй 5 игр',                       type:'games',    target:5,    reward:{coins:100} },
+  { id:'games_50',     cat:'Игры',      icon:'🎯', name:'Ветеран',           desc:'Сыграй 50 игр',                      type:'games',    target:50,   reward:{coins:500} },
+  { id:'streak_3',     cat:'Игры',      icon:'🔥', name:'На разогреве',      desc:'3 дня подряд',                       type:'streak',   target:3,    reward:{coins:300} },
+  { id:'streak_7',     cat:'Игры',      icon:'⚡', name:'Неделя',            desc:'7 дней подряд',                      type:'streak',   target:7,    reward:{coins:700,ton:0.01} },
+  { id:'checkpoint_1', cat:'Чекпоинты', icon:'🏁', name:'Первый рубеж',      desc:'Достигни первого чекпоинта (200 эт.)',type:'checkpoint', target:1, reward:{coins:400} },
+  { id:'checkpoint_3', cat:'Чекпоинты', icon:'🎌', name:'Марафонец',         desc:'Достигни 3 чекпоинтов',              type:'checkpoint', target:3,  reward:{coins:1000,ton:0.02} },
+  { id:'buy_skin',     cat:'Магазин',   icon:'👗', name:'Модник',            desc:'Купи любой скин',                    type:'skins_owned', target:2, reward:{coins:200} },
+  { id:'buy_booster',  cat:'Магазин',   icon:'⚡', name:'Прокачка',          desc:'Купи любой бустер',                  type:'boosters_bought', target:1, reward:{coins:150} },
+  { id:'ref_1',    cat:'Друзья', icon:'👥', name:'Первый друг',    desc:'Пригласи 1 друга',    type:'refs', target:1,   reward:{coins:300,ton:0.002} },
+  { id:'ref_5',    cat:'Друзья', icon:'🤝', name:'Компания',       desc:'Пригласи 5 друзей',   type:'refs', target:5,   reward:{coins:800,ton:0.005} },
+  { id:'ref_10',   cat:'Друзья', icon:'🎪', name:'Тусовка',        desc:'Пригласи 10 друзей',  type:'refs', target:10,  reward:{coins:2000,ton:0.015} },
+  { id:'ref_25',   cat:'Друзья', icon:'🌟', name:'Амбассадор',     desc:'Пригласи 25 друзей',  type:'refs', target:25,  reward:{coins:5000,ton:0.05} },
+  { id:'ref_100',  cat:'Друзья', icon:'👑', name:'Легенда',        desc:'Пригласи 100 друзей', type:'refs', target:100, reward:{coins:20000,ton:0.2} },
 ];
 
 const DAILY_REWARDS = [
-  { day:1,  icon:'🪙', val:'100',   type:'coins', amount:100 },
-  { day:2,  icon:'🪙', val:'200',   type:'coins', amount:200 },
-  { day:3,  icon:'⚡', val:'Бустер',type:'booster',amount:1 },
-  { day:4,  icon:'🪙', val:'300',   type:'coins', amount:300 },
-  { day:5,  icon:'🪙', val:'500',   type:'coins', amount:500 },
-  { day:6,  icon:'💎', val:'0.005', type:'ton',   amount:0.005 },
-  { day:7,  icon:'🎁', val:'1000+💎',type:'big',  amount:1000 },
+  { day:1, icon:'🪙', val:'100',    type:'coins',   amount:100 },
+  { day:2, icon:'🪙', val:'200',    type:'coins',   amount:200 },
+  { day:3, icon:'⚡', val:'Бустер', type:'booster', amount:1 },
+  { day:4, icon:'🪙', val:'300',    type:'coins',   amount:300 },
+  { day:5, icon:'🪙', val:'500',    type:'coins',   amount:500 },
+  { day:6, icon:'💎', val:'0.005',  type:'ton',     amount:0.005 },
+  { day:7, icon:'🎁', val:'1000+💎',type:'big',     amount:1000 },
 ];
 
 function loadAchData() {
   try {
-    const s = localStorage.getItem(`summit_ach_${userId}`);
-    const d = s ? JSON.parse(s) : {};
-    // Гарантируем все поля
-    return {
-      progress:  d.progress  || {},
-      claimed:   Array.isArray(d.claimed) ? d.claimed : [],
-      totalGames:d.totalGames || 0,
-      totalCoins:d.totalCoins || 0,
-      totalTon:  d.totalTon   || 0,
-      checkpoints:d.checkpoints || 0,
-      boosters:  d.boosters   || 0,
-      tonCoinsCollected: d.tonCoinsCollected || 0,
-      totalRefs: d.totalRefs  || 0,
-    };
-  } catch(e) {
-    return {progress:{},claimed:[],totalGames:0,totalCoins:0,totalTon:0,checkpoints:0,boosters:0,tonCoinsCollected:0};
-  }
+    const s=localStorage.getItem(`summit_ach_${userId}`);
+    const d=s?JSON.parse(s):{};
+    return { progress:d.progress||{}, claimed:Array.isArray(d.claimed)?d.claimed:[], totalGames:d.totalGames||0, totalCoins:d.totalCoins||0, totalTon:d.totalTon||0, checkpoints:d.checkpoints||0, boosters:d.boosters||0, tonCoinsCollected:d.tonCoinsCollected||0, totalRefs:d.totalRefs||0 };
+  } catch(e) { return {progress:{},claimed:[],totalGames:0,totalCoins:0,totalTon:0,checkpoints:0,boosters:0,tonCoinsCollected:0,totalRefs:0}; }
 }
 function saveAchData(d){ try{localStorage.setItem(`summit_ach_${userId}`,JSON.stringify(d));}catch(e){} }
 
@@ -2433,48 +1987,41 @@ function loadDailyData() {
 }
 function saveDailyData(d){ try{localStorage.setItem(`summit_daily_${userId}`,JSON.stringify(d));}catch(e){} }
 
-// Проверить и выдать достижения
 function checkAchievements(stats) {
-  const achData = loadAchData();
-  if (!Array.isArray(achData.claimed)) achData.claimed = [];
-  if (!achData.progress) achData.progress = {};
-  const d = API.load();
-  // Обновляем глобальные счётчики
-  if (stats.games)       achData.totalGames += stats.games;
-  if (stats.coins)       achData.totalCoins += stats.coins;
-  if (stats.ton)         achData.totalTon   = +((achData.totalTon + stats.ton).toFixed(9));
-  if (stats.tonCoins)    achData.tonCoinsCollected += stats.tonCoins;
-  if (stats.checkpoint)  achData.checkpoints += stats.checkpoint;
-  if (stats.boosters)    achData.boosters += stats.boosters;
-  if (stats.refs)        achData.totalRefs += stats.refs;
+  const achData=loadAchData();
+  if(!Array.isArray(achData.claimed)) achData.claimed=[];
+  if(!achData.progress) achData.progress={};
+  const d=API.load();
+  if(stats.games)     achData.totalGames+=stats.games;
+  if(stats.coins)     achData.totalCoins+=stats.coins;
+  if(stats.ton)       achData.totalTon=+((achData.totalTon+stats.ton).toFixed(9));
+  if(stats.tonCoins)  achData.tonCoinsCollected+=stats.tonCoins;
+  if(stats.checkpoint)achData.checkpoints+=stats.checkpoint;
+  if(stats.boosters)  achData.boosters+=stats.boosters;
+  if(stats.refs)      achData.totalRefs+=stats.refs;
 
-  ACHIEVEMENTS.forEach(ach => {
-    if (achData.claimed.includes(ach.id)) return;
-    let cur = 0;
-    if (ach.type === 'floor')          cur = stats.floor || 0;
-    if (ach.type === 'session_coins')  cur = stats.coins || 0;
-    if (ach.type === 'session_ton')    cur = stats.ton || 0;
-    if (ach.type === 'total_coins')    cur = achData.totalCoins;
-    if (ach.type === 'total_ton')      cur = achData.totalTon;
-    if (ach.type === 'games')          cur = achData.totalGames;
-    if (ach.type === 'ton_coins')      cur = achData.tonCoinsCollected;
-    if (ach.type === 'checkpoint')     cur = achData.checkpoints;
-    if (ach.type === 'boosters_bought')cur = achData.boosters;
-    if (ach.type === 'streak')         cur = loadDailyData().streak;
-    if (ach.type === 'skins_owned')    cur = (d.ownedSkins||[]).length;
-    if (ach.type === 'refs')           cur = achData.totalRefs;
-
-    // Прогресс
-    achData.progress[ach.id] = Math.min(cur, ach.target);
-
-    if (cur >= ach.target && !achData.claimed.includes(ach.id)) {
-      // Выдаём награду
+  ACHIEVEMENTS.forEach(ach=>{
+    if(achData.claimed.includes(ach.id)) return;
+    let cur=0;
+    if(ach.type==='floor')           cur=stats.floor||0;
+    if(ach.type==='session_coins')   cur=stats.coins||0;
+    if(ach.type==='session_ton')     cur=stats.ton||0;
+    if(ach.type==='total_coins')     cur=achData.totalCoins;
+    if(ach.type==='total_ton')       cur=achData.totalTon;
+    if(ach.type==='games')           cur=achData.totalGames;
+    if(ach.type==='ton_coins')       cur=achData.tonCoinsCollected;
+    if(ach.type==='checkpoint')      cur=achData.checkpoints;
+    if(ach.type==='boosters_bought') cur=achData.boosters;
+    if(ach.type==='streak')          cur=loadDailyData().streak;
+    if(ach.type==='skins_owned')     cur=(d.ownedSkins||[]).length;
+    if(ach.type==='refs')            cur=achData.totalRefs;
+    achData.progress[ach.id]=Math.min(cur,ach.target);
+    if(cur>=ach.target&&!achData.claimed.includes(ach.id)){
       achData.claimed.push(ach.id);
-      const dUser = API.load();
-      if (ach.reward.coins) dUser.coins += ach.reward.coins;
-      if (ach.reward.ton)   dUser.tonBalance = +((dUser.tonBalance + ach.reward.ton).toFixed(9));
+      const dUser=API.load();
+      if(ach.reward.coins) dUser.coins+=ach.reward.coins;
+      if(ach.reward.ton)   dUser.tonBalance=+((dUser.tonBalance+ach.reward.ton).toFixed(9));
       API.save(dUser);
-      // Показываем уведомление
       showAchNotify(ach);
     }
   });
@@ -2482,74 +2029,51 @@ function checkAchievements(stats) {
   updateAchBadge();
 }
 
-let notifyQueue = [];
-let notifyShowing = false;
-function showAchNotify(ach) {
-  notifyQueue.push(ach);
-  if (!notifyShowing) processNotifyQueue();
-}
-function processNotifyQueue() {
-  if (!notifyQueue.length) { notifyShowing = false; return; }
-  notifyShowing = true;
-  const ach = notifyQueue.shift();
-  document.getElementById('ach-notify-icon').textContent = ach.icon;
-  document.getElementById('ach-notify-name').textContent = ach.name;
-  const r = ach.reward;
-  document.getElementById('ach-notify-reward').textContent =
-    (r.coins ? `+${r.coins} монет` : '') + (r.ton ? ` +${r.ton} TON` : '');
-  const el = document.getElementById('ach-notify');
+let notifyQueue=[], notifyShowing=false;
+function showAchNotify(ach){ notifyQueue.push(ach); if(!notifyShowing)processNotifyQueue(); }
+function processNotifyQueue(){
+  if(!notifyQueue.length){notifyShowing=false;return;}
+  notifyShowing=true;
+  const ach=notifyQueue.shift();
+  playSound('achievement');
+  document.getElementById('ach-notify-icon').textContent=ach.icon;
+  document.getElementById('ach-notify-name').textContent=ach.name;
+  const r=ach.reward;
+  document.getElementById('ach-notify-reward').textContent=(r.coins?`+${r.coins} монет`:'')+(r.ton?` +${r.ton} TON`:'');
+  const el=document.getElementById('ach-notify');
   el.classList.add('show');
-  setTimeout(() => {
-    el.classList.remove('show');
-    setTimeout(processNotifyQueue, 500);
-  }, 3500);
+  setTimeout(()=>{el.classList.remove('show');setTimeout(processNotifyQueue,500);},3500);
 }
 
-function updateAchBadge() {
-  const achData = loadAchData();
-  // Посчитать выполненные но не собранные (у нас авто-выдача, просто считаем готовые)
-  const ready = ACHIEVEMENTS.filter(a => !achData.claimed.includes(a.id) && (achData.progress[a.id]||0) >= a.target).length;
-  const badge = document.getElementById('ach-badge');
-  if (badge) { badge.textContent = ready; badge.style.display = ready > 0 ? 'block' : 'none'; }
+function updateAchBadge(){
+  const achData=loadAchData();
+  const ready=ACHIEVEMENTS.filter(a=>!achData.claimed.includes(a.id)&&(achData.progress[a.id]||0)>=a.target).length;
+  const badge=document.getElementById('ach-badge');
+  if(badge){badge.textContent=ready;badge.style.display=ready>0?'block':'none';}
 }
 
-function renderAchievements() {
-  const achData = loadAchData();
-  const done = achData.claimed.length;
-  const total = ACHIEVEMENTS.length;
-  document.getElementById('ach-done-count').textContent = `${done} выполнено`;
-  document.getElementById('ach-total-count').textContent = `из ${total}`;
-  document.getElementById('ach-progress-fill').style.width = `${Math.round(done/total*100)}%`;
-
-  // Группируем по категориям
-  const cats = {};
-  ACHIEVEMENTS.forEach(a => { if(!cats[a.cat]) cats[a.cat]=[]; cats[a.cat].push(a); });
-
-  const body = document.getElementById('ach-body');
-  body.innerHTML = '';
-  Object.entries(cats).forEach(([cat, list]) => {
-    const title = document.createElement('div');
-    title.className = 'ach-section-title'; title.textContent = cat;
-    body.appendChild(title);
-    list.forEach(ach => {
-      const claimed = achData.claimed.includes(ach.id);
-      const prog = achData.progress[ach.id] || 0;
-      const pct = Math.min(100, Math.round(prog / ach.target * 100));
-      const el = document.createElement('div');
-      el.className = `ach-item${claimed?' claimed':''}`;
-      el.innerHTML = `
-        <div class="ach-icon-wrap">${ach.icon}</div>
-        <div class="ach-info">
-          <div class="ach-name">${ach.name}</div>
-          <div class="ach-desc">${ach.desc}</div>
-          <div class="ach-bar-wrap"><div class="ach-bar" style="width:${pct}%"></div></div>
-          <div class="ach-progress-text">${prog} / ${ach.target}${typeof ach.target==='number'&&ach.target<1?' TON':''}</div>
-        </div>
-        <div class="ach-reward">
-          ${ach.reward.coins?`<div class="ach-reward-val">+${ach.reward.coins}🪙</div>`:''}
-          ${ach.reward.ton?`<div class="ach-reward-val ton-clr">+${ach.reward.ton}💎</div>`:''}
-          ${claimed?'<div class="ach-done-badge">✅</div>':''}
-        </div>`;
+function renderAchievements(){
+  const achData=loadAchData();
+  const done=achData.claimed.length, total=ACHIEVEMENTS.length;
+  document.getElementById('ach-done-count').textContent=`${done} выполнено`;
+  document.getElementById('ach-total-count').textContent=`из ${total}`;
+  document.getElementById('ach-progress-fill').style.width=`${Math.round(done/total*100)}%`;
+  const cats={};
+  ACHIEVEMENTS.forEach(a=>{if(!cats[a.cat])cats[a.cat]=[];cats[a.cat].push(a);});
+  const body=document.getElementById('ach-body'); body.innerHTML='';
+  Object.entries(cats).forEach(([cat,list])=>{
+    const title=document.createElement('div'); title.className='ach-section-title'; title.textContent=cat; body.appendChild(title);
+    list.forEach(ach=>{
+      const claimed=achData.claimed.includes(ach.id);
+      const prog=achData.progress[ach.id]||0;
+      const pct=Math.min(100,Math.round(prog/ach.target*100));
+      const el=document.createElement('div');
+      el.className=`ach-item${claimed?' claimed':''}`;
+      el.innerHTML=`<div class="ach-icon-wrap">${ach.icon}</div>
+        <div class="ach-info"><div class="ach-name">${ach.name}</div><div class="ach-desc">${ach.desc}</div>
+        <div class="ach-bar-wrap"><div class="ach-bar" style="width:${pct}%"></div></div>
+        <div class="ach-progress-text">${prog} / ${ach.target}${typeof ach.target==='number'&&ach.target<1?' TON':''}</div></div>
+        <div class="ach-reward">${ach.reward.coins?`<div class="ach-reward-val">+${ach.reward.coins}🪙</div>`:''}${ach.reward.ton?`<div class="ach-reward-val ton-clr">+${ach.reward.ton}💎</div>`:''}${claimed?'<div class="ach-done-badge">✅</div>':''}</div>`;
       body.appendChild(el);
     });
   });
@@ -2558,400 +2082,324 @@ function renderAchievements() {
 // ═══════════════════════════════════════
 // ЕЖЕДНЕВНЫЕ НАГРАДЫ
 // ═══════════════════════════════════════
-function renderDaily() {
-  const dd = loadDailyData();
-  const now = Date.now();
-  const msDay = 24*60*60*1000;
-  const today = Math.floor(now / msDay);
-  const lastDay = dd.lastDay || 0;
-  const canClaim = today > lastDay;
-  const isMissed = today > lastDay + 1 && lastDay > 0;
-  if (isMissed) { dd.streak = 0; saveDailyData(dd); }
-
-  document.getElementById('streak-count').textContent = dd.streak;
-
-  // Таймер до следующей награды
-  if (!canClaim) {
-    const nextMs = (lastDay + 1) * msDay - now;
-    const h = Math.floor(nextMs/3600000), m = Math.floor((nextMs%3600000)/60000);
-    document.getElementById('streak-timer').textContent = `Следующая через ${h}ч ${m}м`;
-  } else {
-    document.getElementById('streak-timer').textContent = '🎁 Награда доступна!';
-  }
-
-  // Сетка дней
-  const grid = document.getElementById('daily-grid');
-  grid.innerHTML = '';
-  const curStreak = dd.streak;
-  DAILY_REWARDS.forEach(r => {
-    const el = document.createElement('div');
-    const isClaimed = r.day <= curStreak;
-    const isToday = r.day === curStreak + 1 && canClaim;
-    const isLocked = r.day > curStreak + 1;
-    el.className = `daily-day${isToday?' today':isClaimed?' claimed':isLocked?' locked':''}`;
-    el.innerHTML = `
-      <div class="daily-day-num">День ${r.day}</div>
-      <div class="daily-day-icon">${r.icon}</div>
-      <div class="daily-day-val">${r.val}</div>
-      <div class="daily-day-check">${isClaimed?'✅':isToday?'🎁':''}</div>`;
+function renderDaily(){
+  const dd=loadDailyData();
+  const now=Date.now(), msDay=24*60*60*1000;
+  const today=Math.floor(now/msDay), lastDay=dd.lastDay||0;
+  const canClaim=today>lastDay;
+  const isMissed=today>lastDay+1&&lastDay>0;
+  if(isMissed){dd.streak=0;saveDailyData(dd);}
+  document.getElementById('streak-count').textContent=dd.streak;
+  if(!canClaim){
+    const nextMs=(lastDay+1)*msDay-now, h=Math.floor(nextMs/3600000), m=Math.floor((nextMs%3600000)/60000);
+    document.getElementById('streak-timer').textContent=`Следующая через ${h}ч ${m}м`;
+  } else { document.getElementById('streak-timer').textContent='🎁 Награда доступна!'; }
+  const grid=document.getElementById('daily-grid'); grid.innerHTML='';
+  const curStreak=dd.streak;
+  DAILY_REWARDS.forEach(r=>{
+    const el=document.createElement('div');
+    const isClaimed=r.day<=curStreak, isToday=r.day===curStreak+1&&canClaim, isLocked=r.day>curStreak+1;
+    el.className=`daily-day${isToday?' today':isClaimed?' claimed':isLocked?' locked':''}`;
+    el.innerHTML=`<div class="daily-day-num">День ${r.day}</div><div class="daily-day-icon">${r.icon}</div><div class="daily-day-val">${r.val}</div><div class="daily-day-check">${isClaimed?'✅':isToday?'🎁':''}</div>`;
     grid.appendChild(el);
   });
-
-  // Кнопка
-  const btn = document.getElementById('btn-claim-daily');
-  const dayReward = DAILY_REWARDS[(curStreak) % DAILY_REWARDS.length];
-  btn.disabled = !canClaim;
-  btn.textContent = canClaim ? `🎁 Получить: ${dayReward.val} ${dayReward.icon}` : '⏰ Приходи завтра';
-
-  // Бейдж
-  const badge = document.getElementById('daily-badge');
-  if (badge) badge.style.display = canClaim ? 'block' : 'none';
+  const btn=document.getElementById('btn-claim-daily');
+  const dayReward=DAILY_REWARDS[(curStreak)%DAILY_REWARDS.length];
+  btn.disabled=!canClaim;
+  btn.textContent=canClaim?`🎁 Получить: ${dayReward.val} ${dayReward.icon}`:'⏰ Приходи завтра';
+  const badge=document.getElementById('daily-badge');
+  if(badge) badge.style.display=canClaim?'block':'none';
 }
 
-document.getElementById('btn-claim-daily').onclick = () => {
-  const dd = loadDailyData();
-  const now = Date.now();
-  const msDay = 24*60*60*1000;
-  const today = Math.floor(now / msDay);
-  if (today <= dd.lastDay) return;
-
-  dd.streak = (today === dd.lastDay + 1 || dd.lastDay === 0) ? dd.streak + 1 : 1;
-  dd.lastDay = today;
-  dd.lastClaim = now;
-  saveDailyData(dd);
-
-  const dayReward = DAILY_REWARDS[(dd.streak - 1) % DAILY_REWARDS.length];
-  const dUser = API.load();
-  if (dayReward.type === 'coins' || dayReward.type === 'big') {
-    dUser.coins += dayReward.amount;
-    if (dayReward.type === 'big') dUser.coins += 1000;
-  }
-  if (dayReward.type === 'ton') dUser.tonBalance = +((dUser.tonBalance + dayReward.amount).toFixed(9));
-  if (dayReward.type === 'booster') {
-    const inv = JSON.parse(dUser.ownedBoosters||'{}');
-    inv['boost_x2'] = (inv['boost_x2']||0) + 1;
-    dUser.ownedBoosters = JSON.stringify(inv);
-  }
+document.getElementById('btn-claim-daily').onclick=()=>{
+  const dd=loadDailyData(), now=Date.now(), msDay=24*60*60*1000, today=Math.floor(now/msDay);
+  if(today<=dd.lastDay) return;
+  dd.streak=(today===dd.lastDay+1||dd.lastDay===0)?dd.streak+1:1;
+  dd.lastDay=today; dd.lastClaim=now; saveDailyData(dd);
+  const dayReward=DAILY_REWARDS[(dd.streak-1)%DAILY_REWARDS.length];
+  const dUser=API.load();
+  if(dayReward.type==='coins'||dayReward.type==='big'){dUser.coins+=dayReward.amount;if(dayReward.type==='big')dUser.coins+=1000;}
+  if(dayReward.type==='ton') dUser.tonBalance=+((dUser.tonBalance+dayReward.amount).toFixed(9));
+  if(dayReward.type==='booster'){const inv=JSON.parse(dUser.ownedBoosters||'{}');inv['boost_x2']=(inv['boost_x2']||0)+1;dUser.ownedBoosters=JSON.stringify(inv);}
   API.save(dUser);
-  // Проверяем достижение серии
-  checkAchievements({ streak: dd.streak });
+  checkAchievements({streak:dd.streak});
   showToast(`✅ +${dayReward.val} получено!`);
-  updateStartScreen();
-  renderDaily();
-  spawnParticles && spawnParticles(W/2, H/2, '#00FF88', 20);
+  updateStartScreen(); renderDaily();
 };
 
 // ═══════════════════════════════════════
 // РЕФЕРАЛЫ
 // ═══════════════════════════════════════
-const REF_MILESTONES = [
-  { count:1,   coins:300,   ton:0.002, label:'1 друг' },
-  { count:5,   coins:800,   ton:0.005, label:'5 друзей' },
-  { count:10,  coins:2000,  ton:0.015, label:'10 друзей' },
-  { count:25,  coins:5000,  ton:0.05,  label:'25 друзей' },
-  { count:100, coins:20000, ton:0.2,   label:'100 друзей' },
+const REF_MILESTONES=[
+  {count:1,  coins:300,   ton:0.002, label:'1 друг'},
+  {count:5,  coins:800,   ton:0.005, label:'5 друзей'},
+  {count:10, coins:2000,  ton:0.015, label:'10 друзей'},
+  {count:25, coins:5000,  ton:0.05,  label:'25 друзей'},
+  {count:100,coins:20000, ton:0.2,   label:'100 друзей'},
 ];
-// Бонус новому игроку при входе по ссылке
-const REF_NEW_USER_BONUS = { coins:200, ton:0.001 };
+const REF_NEW_USER_BONUS={coins:200,ton:0.001};
 
-function loadRefData() {
-  try {
-    const s = localStorage.getItem(`summit_ref_${userId}`);
-    const d = s ? JSON.parse(s) : {};
-    return {
-      friends: Array.isArray(d.friends) ? d.friends : [],
-      claimedMilestones: Array.isArray(d.claimedMilestones) ? d.claimedMilestones : [],
-      earnedCoins: d.earnedCoins || 0,
-      newUserBonusClaimed: d.newUserBonusClaimed || false,
-    };
-  } catch(e) {
-    return { friends:[], claimedMilestones:[], earnedCoins:0, newUserBonusClaimed:false };
-  }
+function loadRefData(){
+  try{const s=localStorage.getItem(`summit_ref_${userId}`);const d=s?JSON.parse(s):{};return{friends:Array.isArray(d.friends)?d.friends:[],claimedMilestones:Array.isArray(d.claimedMilestones)?d.claimedMilestones:[],earnedCoins:d.earnedCoins||0,newUserBonusClaimed:d.newUserBonusClaimed||false};}
+  catch(e){return{friends:[],claimedMilestones:[],earnedCoins:0,newUserBonusClaimed:false};}
 }
-function saveRefData(d) { try{localStorage.setItem(`summit_ref_${userId}`,JSON.stringify(d));}catch(e){} }
+function saveRefData(d){try{localStorage.setItem(`summit_ref_${userId}`,JSON.stringify(d));}catch(e){}}
 
-function getRefLink() {
-  const botName = tg?.initDataUnsafe?.via_bot_username || 'Dimaribotbot';
+function getRefLink(){
+  const botName=tg?.initDataUnsafe?.via_bot_username||'Dimaribotbot';
   return `https://t.me/${botName}?start=ref_${userId}`;
 }
-
-function copyRefLink() {
-  const link = getRefLink();
-  navigator.clipboard?.writeText(link).then(() => showToast('✅ Ссылка скопирована!'));
+function copyRefLink(){
+  const link=getRefLink();
+  navigator.clipboard?.writeText(link).then(()=>showToast('✅ Ссылка скопирована!'));
+}
+function shareRefLink(){
+  const link=getRefLink();
+  if(tg){tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('🏔️ Играй в Вершину и зарабатывай TON! Получи бонус за регистрацию!')}`);}
+  else{window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}`,'_blank');}
 }
 
-function shareRefLink() {
-  const link = getRefLink();
-  const text = encodeURIComponent(`🏔️ Играй в Вершину и зарабатывай TON!\nПрисоединяйся по моей ссылке и получи 200 монет + 0.001 TON бонус!\n\n${link}`);
-  if (tg) {
-    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('🏔️ Играй в Вершину и зарабатывай TON! Получи бонус за регистрацию!')}`);
-  } else {
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}`, '_blank');
-  }
-}
-
-// Симуляция: проверяем реферала при старте (в реале — через бэкенд)
-function checkIncomingRef() {
-  // TODO: реальная проверка через бэкенд /api/ref/check
-  // Пока читаем из URL параметра (при открытии через реферальную ссылку)
-  const startParam = tg?.initDataUnsafe?.start_param || '';
-  if (startParam.startsWith('ref_') && !loadRefData().newUserBonusClaimed) {
-    const refId = startParam.replace('ref_', '');
-    if (refId !== String(userId)) {
-      // Выдаём бонус новому игроку
-      const rd = loadRefData();
-      rd.newUserBonusClaimed = true;
-      saveRefData(rd);
-      const d = API.load();
-      d.coins += REF_NEW_USER_BONUS.coins;
-      d.tonBalance = +((d.tonBalance + REF_NEW_USER_BONUS.ton).toFixed(9));
-      API.save(d);
+function checkIncomingRef(){
+  const startParam=tg?.initDataUnsafe?.start_param||'';
+  if(startParam.startsWith('ref_')&&!loadRefData().newUserBonusClaimed){
+    const refId=startParam.replace('ref_','');
+    if(refId!==String(userId)){
+      const rd=loadRefData(); rd.newUserBonusClaimed=true; saveRefData(rd);
+      const d=API.load(); d.coins+=REF_NEW_USER_BONUS.coins; d.tonBalance=+((d.tonBalance+REF_NEW_USER_BONUS.ton).toFixed(9)); API.save(d);
       updateStartScreen();
-      setTimeout(() => showToast(`🎉 Бонус за приглашение: +${REF_NEW_USER_BONUS.coins}🪙 +${REF_NEW_USER_BONUS.ton}💎`), 1500);
-      // TODO: уведомить пригласившего через бэкенд POST /api/ref/register
+      setTimeout(()=>showToast(`🎉 Бонус за приглашение: +${REF_NEW_USER_BONUS.coins}🪙 +${REF_NEW_USER_BONUS.ton}💎`),1500);
     }
   }
 }
 
-// Добавить друга (вызывается с бэкенда или для теста)
-function addReferral(friendName) {
-  const rd = loadRefData();
-  rd.friends.push({ name: friendName || `Игрок`, date: Date.now() });
-  saveRefData(rd);
-  // Проверяем достижения
-  checkAchievements({ refs: 1 });
-  // Проверяем награды за вехи
-  checkRefMilestones();
-  renderFriendsScreen();
-  updateFriendsBadge();
-}
-
-function checkRefMilestones() {
-  const rd = loadRefData();
-  const count = rd.friends.length;
-  REF_MILESTONES.forEach(m => {
-    if (count >= m.count && !rd.claimedMilestones.includes(m.count)) {
-      // Авто-выдача награды
-      rd.claimedMilestones.push(m.count);
-      rd.earnedCoins += m.coins;
-      saveRefData(rd);
-      const d = API.load();
-      d.coins += m.coins;
-      d.tonBalance = +((d.tonBalance + m.ton).toFixed(9));
-      API.save(d);
+function checkRefMilestones(){
+  const rd=loadRefData(), count=rd.friends.length;
+  REF_MILESTONES.forEach(m=>{
+    if(count>=m.count&&!rd.claimedMilestones.includes(m.count)){
+      rd.claimedMilestones.push(m.count); rd.earnedCoins+=m.coins; saveRefData(rd);
+      const d=API.load(); d.coins+=m.coins; d.tonBalance=+((d.tonBalance+m.ton).toFixed(9)); API.save(d);
       updateStartScreen();
-      // Красивое уведомление
-      setTimeout(() => showToast(`🎉 ${m.label}: +${m.coins}🪙 +${m.ton}💎`), 500);
+      setTimeout(()=>showToast(`🎉 ${m.label}: +${m.coins}🪙 +${m.ton}💎`),500);
     }
   });
 }
 
-function updateFriendsBadge() {
-  const rd = loadRefData();
-  const count = rd.friends.length;
-  // Показываем бейдж если есть незабранные награды
-  const hasNew = REF_MILESTONES.some(m => count >= m.count && !rd.claimedMilestones.includes(m.count));
-  const badge = document.getElementById('friends-badge');
-  if (badge) badge.style.display = hasNew ? 'block' : 'none';
+function updateFriendsBadge(){
+  const rd=loadRefData(), count=rd.friends.length;
+  const hasNew=REF_MILESTONES.some(m=>count>=m.count&&!rd.claimedMilestones.includes(m.count));
+  const badge=document.getElementById('friends-badge');
+  if(badge) badge.style.display=hasNew?'block':'none';
 }
 
-function renderFriendsScreen() {
-  const rd = loadRefData();
-  const count = rd.friends.length;
-
-  // Ссылка
-  document.getElementById('ref-link-text').textContent = getRefLink();
-  document.getElementById('ref-count').textContent = count;
-  document.getElementById('ref-earned-coins').textContent = rd.earnedCoins;
-
-  // Таблица наград
-  const list = document.getElementById('ref-rewards-list');
-  list.innerHTML = '';
-  REF_MILESTONES.forEach(m => {
-    const reached  = count >= m.count;
-    const claimed  = rd.claimedMilestones.includes(m.count);
-    const pct      = Math.min(100, Math.round(count / m.count * 100));
-    const el       = document.createElement('div');
-    el.className   = `ref-reward-row${reached?' reached':''}${claimed?' claimed-ref':''}`;
-    el.innerHTML   = `
-      <div class="ref-milestone">${m.count}</div>
-      <div class="ref-reward-info">
-        <div class="ref-reward-name">${m.label}</div>
-        <div class="ref-reward-desc">
-          <span style="color:#FFD700">+${m.coins}🪙</span>
-          <span style="color:#0098EA;margin-left:6px">+${m.ton}💎</span>
-        </div>
-        <div class="ref-progress-row">
-          <div class="ref-progress-track">
-            <div class="ref-progress-fill" style="width:${pct}%"></div>
-          </div>
-          <span style="font-size:10px;color:rgba(255,255,255,0.35);white-space:nowrap;margin-left:6px">${count}/${m.count}</span>
-        </div>
-      </div>
-      <div>${claimed ? '<span class="ref-done-icon">✅</span>' : reached ? '<span style="color:#FFD700;font-size:12px;font-weight:700">Получено!</span>' : ''}</div>`;
+function renderFriendsScreen(){
+  const rd=loadRefData(), count=rd.friends.length;
+  document.getElementById('ref-link-text').textContent=getRefLink();
+  document.getElementById('ref-count').textContent=count;
+  document.getElementById('ref-earned-coins').textContent=rd.earnedCoins;
+  const list=document.getElementById('ref-rewards-list'); list.innerHTML='';
+  REF_MILESTONES.forEach(m=>{
+    const reached=count>=m.count, claimed=rd.claimedMilestones.includes(m.count), pct=Math.min(100,Math.round(count/m.count*100));
+    const el=document.createElement('div');
+    el.className=`ref-reward-row${reached?' reached':''}${claimed?' claimed-ref':''}`;
+    el.innerHTML=`<div class="ref-milestone">${m.count}</div>
+      <div class="ref-reward-info"><div class="ref-reward-name">${m.label}</div>
+      <div class="ref-reward-desc"><span style="color:#FFD700">+${m.coins}🪙</span><span style="color:#0098EA;margin-left:6px">+${m.ton}💎</span></div>
+      <div class="ref-progress-row"><div class="ref-progress-track"><div class="ref-progress-fill" style="width:${pct}%"></div></div>
+      <span style="font-size:10px;color:rgba(255,255,255,0.35);white-space:nowrap;margin-left:6px">${count}/${m.count}</span></div></div>
+      <div>${claimed?'<span class="ref-done-icon">✅</span>':reached?'<span style="color:#FFD700;font-size:12px;font-weight:700">Получено!</span>':''}</div>`;
     list.appendChild(el);
   });
-
-  // Список друзей
-  const fl = document.getElementById('friends-list');
-  if (!rd.friends.length) {
-    fl.innerHTML = '<div class="friends-empty">👥 Пока никого нет<br>Поделись ссылкой — друзья получат бонус!<br><br>🎁 Ты тоже получишь награду за каждого!</div>';
+  const fl=document.getElementById('friends-list');
+  if(!rd.friends.length){
+    fl.innerHTML='<div class="friends-empty">👥 Пока никого нет<br>Поделись ссылкой — друзья получат бонус!<br><br>🎁 Ты тоже получишь награду за каждого!</div>';
   } else {
-    fl.innerHTML = rd.friends.slice().reverse().map(f => {
-      const d = new Date(f.date);
-      const dateStr = d.toLocaleDateString('ru', {day:'2-digit', month:'2-digit'});
-      const avatars = ['🧗','🥷','🤖','👨‍🚀','🔥','👻','🪖','🐲'];
-      const av = avatars[Math.floor(Math.random()*avatars.length)];
-      return `<div class="friend-item">
-        <div class="friend-avatar">${av}</div>
-        <div class="friend-name">${f.name}</div>
-        <div class="friend-date">${dateStr}</div>
-      </div>`;
+    fl.innerHTML=rd.friends.slice().reverse().map(f=>{
+      const d=new Date(f.date), dateStr=d.toLocaleDateString('ru',{day:'2-digit',month:'2-digit'});
+      const avatars=['🧗','🥷','🤖','👨‍🚀','🔥','👻','🪖','🐲'];
+      const av=avatars[Math.floor(Math.random()*avatars.length)];
+      return `<div class="friend-item"><div class="friend-avatar">${av}</div><div class="friend-name">${f.name}</div><div class="friend-date">${dateStr}</div></div>`;
     }).join('');
   }
 }
 
-document.getElementById('btn-close-friends').onclick = () => showTab('play');
+document.getElementById('btn-close-friends').onclick=()=>showTab('play');
 
 // ═══════════════════════════════════════
 // НАВИГАЦИЯ (ТАБЫ)
 // ═══════════════════════════════════════
-function showTab(tab) {
+function showTab(tab){
+  // Закрываем все экраны
   document.getElementById('screen-achievements').classList.remove('visible');
   document.getElementById('screen-daily').classList.remove('visible');
   document.getElementById('screen-shop').classList.remove('visible');
   document.getElementById('screen-settings').classList.remove('visible');
   document.getElementById('screen-friends').classList.remove('visible');
+  document.getElementById('screen-wallet').classList.remove('visible');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
 
-  if (tab === 'play') {
+  if(tab==='play'){
     document.getElementById('nav-play').classList.add('active');
-  } else if (tab === 'daily') {
+    // Показываем стартовый экран если не в игре
+    if(gameState!=='playing'){
+      document.getElementById('screen-start').style.display='flex';
+      document.getElementById('screen-gameover').classList.remove('visible');
+    }
+  } else if(tab==='daily'){
     renderDaily();
     document.getElementById('screen-daily').classList.add('visible');
     document.getElementById('nav-daily').classList.add('active');
-  } else if (tab === 'achievements') {
+  } else if(tab==='achievements'){
     renderAchievements();
     document.getElementById('screen-achievements').classList.add('visible');
     document.getElementById('nav-ach').classList.add('active');
-  } else if (tab === 'friends') {
+  } else if(tab==='friends'){
     renderFriendsScreen();
     document.getElementById('screen-friends').classList.add('visible');
     document.getElementById('nav-friends').classList.add('active');
-  } else if (tab === 'shop') {
+  } else if(tab==='shop'){
     renderShop();
     document.getElementById('screen-shop').classList.add('visible');
     document.getElementById('nav-shop').classList.add('active');
-  } else if (tab === 'settings') {
+  } else if(tab==='settings'){
     applySettings();
     document.getElementById('screen-settings').classList.add('visible');
     document.getElementById('nav-settings').classList.add('active');
   }
+
+  // Меню всегда видно вне игры
+  setNavVisible(true);
 }
 
-// Закрыть экраны через кнопки
-document.getElementById('btn-close-ach').onclick   = () => showTab('play');
-document.getElementById('btn-close-daily').onclick = () => showTab('play');
-// Переподключаем старые кнопки к tabам
-document.getElementById('btn-open-shop').onclick = () => showTab('shop');
-document.getElementById('btn-close-settings').onclick = () => showTab('play');
+// Закрыть экраны через ✕ кнопки
+document.getElementById('btn-close-ach').onclick=()=>showTab('play');
+document.getElementById('btn-close-daily').onclick=()=>showTab('play');
+document.getElementById('btn-close-settings').onclick=()=>showTab('play');
 
-
-const CTRL_PREVIEWS = {
-  joystick: '👆 Коснись нижней части экрана\n🕹️ Появится джойстик\n↔️ Двигай палец для управления',
-  gyro:     '📱 Держи телефон вертикально\n↩️ Наклони влево — герой идёт влево\n↪️ Наклони вправо — герой идёт вправо',
-  both:     '🎮 Оба способа работают вместе\n👆 Джойстик — пальцем по экрану\n📱 Акселерометр — наклон телефона',
+// ═══════════════════════════════════════
+// НАСТРОЙКИ
+// ═══════════════════════════════════════
+const CTRL_PREVIEWS={
+  joystick:'👆 Коснись нижней части экрана\n🕹️ Появится джойстик\n↔️ Двигай палец для управления',
+  gyro:    '📱 Держи телефон вертикально\n↩️ Наклони влево — герой идёт влево\n↪️ Наклони вправо — герой идёт вправо',
+  both:    '🎮 Оба способа работают вместе\n👆 Джойстик — пальцем по экрану\n📱 Акселерометр — наклон телефона',
 };
 
-function loadSettings() {
-  try { const s=localStorage.getItem('summit_settings'); return s?JSON.parse(s):{ctrl:'both',gyroSens:8,vibro:true,trail:true}; }
-  catch(e){ return {ctrl:'both',gyroSens:8,vibro:true,trail:true}; }
+let audioCtx=null, musicGain=null, sfxGain=null;
+let musicPlaying=false, musicScheduleTimer=null, musicNodes=[];
+let musicBeat=0, musicChordIdx=0;
+
+function getAudioCtx(){
+  if(!audioCtx){
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    musicGain=audioCtx.createGain(); musicGain.gain.value=(gameSettings?.musicVol||50)/100*0.35; musicGain.connect(audioCtx.destination);
+    sfxGain=audioCtx.createGain(); sfxGain.gain.value=0.5; sfxGain.connect(audioCtx.destination);
+  }
+  return audioCtx;
 }
-function saveSettings(s) { try{localStorage.setItem('summit_settings',JSON.stringify(s));}catch(e){} }
 
-let gameSettings = loadSettings();
+function playSound(type){
+  if(!gameSettings?.sfx) return;
+  try{
+    const ctx=getAudioCtx(); if(ctx.state==='suspended')ctx.resume();
+    const t=ctx.currentTime;
+    const makeOsc=(freq,type2,dur,vol,startFreq)=>{
+      const osc=ctx.createOscillator(),g=ctx.createGain();
+      osc.connect(g);g.connect(sfxGain);osc.type=type2;
+      if(startFreq){osc.frequency.setValueAtTime(startFreq,t);osc.frequency.exponentialRampToValueAtTime(freq,t+dur*0.5);}
+      else osc.frequency.value=freq;
+      g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+      osc.start(t);osc.stop(t+dur);
+    };
+    if(type==='jump')       makeOsc(440,'sine',0.12,0.25,220);
+    else if(type==='bounce')makeOsc(600,'triangle',0.18,0.35,180);
+    else if(type==='crumble')makeOsc(120,'sawtooth',0.15,0.2,200);
+    else if(type==='shield')makeOsc(600,'sine',0.3,0.3,1200);
+    else if(type==='death') makeOsc(55,'sawtooth',0.8,0.3,440);
+    else if(type==='coin'){
+      makeOsc(880,'sine',0.25,0.2);
+      setTimeout(()=>{try{const c=getAudioCtx(),t2=c.currentTime,o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(sfxGain);o.type='sine';o.frequency.value=1320;g.gain.setValueAtTime(0.15,t2);g.gain.exponentialRampToValueAtTime(0.001,t2+0.2);o.start(t2);o.stop(t2+0.2);}catch(e){}},60);
+    }
+    else if(type==='ton'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>{try{const c=getAudioCtx(),t2=c.currentTime,o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(sfxGain);o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0.18,t2);g.gain.exponentialRampToValueAtTime(0.001,t2+0.22);o.start(t2);o.stop(t2+0.22);}catch(e){}},i*70));}
+    else if(type==='checkpoint'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>{try{const c=getAudioCtx(),t2=c.currentTime,o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(sfxGain);o.type='square';o.frequency.value=f;g.gain.setValueAtTime(0.12,t2);g.gain.exponentialRampToValueAtTime(0.001,t2+0.16);o.start(t2);o.stop(t2+0.16);}catch(e){}},i*120));}
+    else if(type==='achievement'){[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>{try{const c=getAudioCtx(),t2=c.currentTime,o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(sfxGain);o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0.16,t2);g.gain.exponentialRampToValueAtTime(0.001,t2+0.4);o.start(t2);o.stop(t2+0.4);}catch(e){}},i*55));}
+  }catch(e){console.warn('SFX:',e);}
+}
 
-function applySettings() {
-  document.querySelectorAll('.control-option').forEach(el=>{
-    el.classList.toggle('selected', el.dataset.ctrl===gameSettings.ctrl);
-  });
-  const prev = document.getElementById('ctrl-preview-text');
-  if(prev) prev.textContent = CTRL_PREVIEWS[gameSettings.ctrl]||'';
-  const sensRow = document.getElementById('gyro-sensitivity-row');
-  if(sensRow) sensRow.style.display=(gameSettings.ctrl==='gyro'||gameSettings.ctrl==='both')?'block':'none';
-  const sensInput = document.getElementById('gyro-sens-input');
-  if(sensInput) sensInput.value=gameSettings.gyroSens;
-  const sensLabel = document.getElementById('gyro-sens-label');
-  if(sensLabel) sensLabel.textContent=`Угол наклона: ${gameSettings.gyroSens}°`;
-  const tv=document.getElementById('toggle-vibro');
-  const tt=document.getElementById('toggle-trail');
-  if(tv) tv.classList.toggle('on',gameSettings.vibro);
-  if(tt) tt.classList.toggle('on',gameSettings.trail);
+const MUSIC_SCALE=[261.63,293.66,329.63,349.23,392.00,440.00,493.88,523.25];
+const MUSIC_CHORDS=[[0,2,4],[5,0,2],[3,5,0],[4,6,1]];
+
+function startMusic(){
+  if(!gameSettings?.music||musicPlaying)return;
+  try{const ctx=getAudioCtx();if(ctx.state==='suspended')ctx.resume();musicPlaying=true;musicBeat=0;scheduleMusicBeat();}
+  catch(e){console.warn('Music:',e);}
+}
+function stopMusic(){
+  musicPlaying=false;
+  if(musicScheduleTimer){clearTimeout(musicScheduleTimer);musicScheduleTimer=null;}
+  musicNodes.forEach(n=>{try{n.stop();}catch(e){}});
+  musicNodes=[];
+}
+function scheduleMusicBeat(){
+  if(!musicPlaying||!gameSettings?.music)return;
+  const ctx=getAudioCtx(),t=ctx.currentTime,beat=60/90;
+  if(musicBeat%4===0){musicChordIdx=(musicChordIdx+1)%MUSIC_CHORDS.length;playMusicNote(MUSIC_SCALE[MUSIC_CHORDS[musicChordIdx][0]]/2,beat*3.8,0.15,'sine',t);}
+  const chord=MUSIC_CHORDS[musicChordIdx];
+  if(musicBeat%2===0){playMusicNote(MUSIC_SCALE[chord[Math.floor(Math.random()*chord.length)]]*(Math.random()<0.3?2:1),beat*0.7,0.07,'triangle',t);}
+  playMusicNote(MUSIC_SCALE[chord[musicBeat%chord.length]],beat*0.35,0.04,'sine',t+beat*0.5);
+  musicBeat++;
+  musicScheduleTimer=setTimeout(scheduleMusicBeat,beat*950);
+}
+function playMusicNote(freq,dur,vol,type,st){
+  if(!musicPlaying)return;
+  try{const ctx=getAudioCtx(),osc=ctx.createOscillator(),g=ctx.createGain();osc.connect(g);g.connect(musicGain);osc.type=type;osc.frequency.value=freq;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(vol,st+0.02);g.gain.exponentialRampToValueAtTime(0.001,st+dur);osc.start(st);osc.stop(st+dur+0.05);musicNodes.push(osc);if(musicNodes.length>60)musicNodes=musicNodes.slice(-40);}catch(e){}
+}
+function updateMusicVolume(){ if(musicGain)musicGain.gain.value=(gameSettings.musicVol||50)/100*0.35; }
+
+function loadSettings(){
+  try{const s=localStorage.getItem('summit_settings');const d=s?JSON.parse(s):{};return{ctrl:d.ctrl||'both',gyroSens:d.gyroSens||8,vibro:d.vibro!==false,trail:d.trail!==false,sfx:d.sfx!==false,music:d.music||false,musicVol:d.musicVol||50};}
+  catch(e){return{ctrl:'both',gyroSens:8,vibro:true,trail:true,sfx:true,music:false,musicVol:50};}
+}
+function saveSettings(s){try{localStorage.setItem('summit_settings',JSON.stringify(s));}catch(e){}}
+
+let gameSettings=loadSettings();
+
+function applySettings(){
+  document.querySelectorAll('.control-option').forEach(el=>{el.classList.toggle('selected',el.dataset.ctrl===gameSettings.ctrl);});
+  const prev=document.getElementById('ctrl-preview-text'); if(prev)prev.textContent=CTRL_PREVIEWS[gameSettings.ctrl]||'';
+  const sensRow=document.getElementById('gyro-sensitivity-row'); if(sensRow)sensRow.style.display=(gameSettings.ctrl==='gyro'||gameSettings.ctrl==='both')?'block':'none';
+  const sensInput=document.getElementById('gyro-sens-input'); if(sensInput)sensInput.value=gameSettings.gyroSens;
+  const sensLabel=document.getElementById('gyro-sens-label'); if(sensLabel)sensLabel.textContent=`Угол наклона: ${gameSettings.gyroSens}°`;
+  const tv=document.getElementById('toggle-vibro'),tt=document.getElementById('toggle-trail'),ts=document.getElementById('toggle-sfx'),tm=document.getElementById('toggle-music'),vi=document.getElementById('volume-input'),vl=document.getElementById('volume-label');
+  if(tv)tv.classList.toggle('on',gameSettings.vibro);
+  if(tt)tt.classList.toggle('on',gameSettings.trail);
+  if(ts)ts.classList.toggle('on',gameSettings.sfx);
+  if(tm)tm.classList.toggle('on',gameSettings.music);
+  if(vi)vi.value=gameSettings.musicVol||50;
+  if(vl)vl.textContent=(gameSettings.musicVol||50)+'%';
 }
 
 document.querySelectorAll('.control-option').forEach(el=>{
   el.onclick=()=>{
     gameSettings.ctrl=el.dataset.ctrl; saveSettings(gameSettings); applySettings();
-    if((gameSettings.ctrl==='gyro'||gameSettings.ctrl==='both')&&typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
-      DeviceMotionEvent.requestPermission().catch(()=>{});
-    }
+    if((gameSettings.ctrl==='gyro'||gameSettings.ctrl==='both')&&typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){DeviceMotionEvent.requestPermission().catch(()=>{});}
   };
 });
-
 const gyroInput=document.getElementById('gyro-sens-input');
-if(gyroInput) gyroInput.oninput=function(){
-  gameSettings.gyroSens=parseInt(this.value);
-  document.getElementById('gyro-sens-label').textContent=`Угол наклона: ${gameSettings.gyroSens}°`;
-  saveSettings(gameSettings);
-};
-
+if(gyroInput)gyroInput.oninput=function(){gameSettings.gyroSens=parseInt(this.value);document.getElementById('gyro-sens-label').textContent=`Угол наклона: ${gameSettings.gyroSens}°`;saveSettings(gameSettings);};
 document.getElementById('toggle-vibro').onclick=function(){gameSettings.vibro=!gameSettings.vibro;saveSettings(gameSettings);applySettings();};
 document.getElementById('toggle-trail').onclick=function(){gameSettings.trail=!gameSettings.trail;saveSettings(gameSettings);applySettings();};
-// btn-open-settings теперь через нижнее меню — но оставим на случай прямого вызова
-document.getElementById('btn-close-settings').onclick=()=>showTab('play');
+document.getElementById('toggle-sfx').onclick=function(){gameSettings.sfx=!gameSettings.sfx;saveSettings(gameSettings);applySettings();if(gameSettings.sfx)playSound('coin');};
+document.getElementById('toggle-music').onclick=function(){gameSettings.music=!gameSettings.music;saveSettings(gameSettings);applySettings();if(gameSettings.music&&gameState==='playing')startMusic();else stopMusic();};
+const volInput=document.getElementById('volume-input');
+if(volInput)volInput.oninput=function(){gameSettings.musicVol=parseInt(this.value);document.getElementById('volume-label').textContent=this.value+'%';saveSettings(gameSettings);updateMusicVolume();};
 
 // ═══════════════════════════════════════
-// ИНИЦИАЛИЗАЦИЯ НИЖНЕГО МЕНЮ
-// ═══════════════════════════════════════
-function initBottomNav() {
-  // Показываем нижнее меню на старт-экране
-  document.getElementById('bottom-nav').classList.add('visible');
-  // Проверяем доступность ежедневной награды
-  const dd = loadDailyData();
-  const msDay = 24*60*60*1000;
-  const today = Math.floor(Date.now()/msDay);
-  const canClaim = today > (dd.lastDay||0);
-  const badge = document.getElementById('daily-badge');
-  if (badge) badge.style.display = canClaim ? 'block' : 'none';
-  updateAchBadge();
-}
-
-// Скрываем нижнее меню во время игры
-const origShowHUD = showHUD;
-showHUD = function(v) {
-  origShowHUD(v);
-  const nav = document.getElementById('bottom-nav');
-  if (v) {
-    nav.classList.remove('visible'); // во время игры меню скрыто
-  } else {
-    if (gameState !== 'playing') nav.classList.add('visible');
-  }
-};
-
-// Показываем меню когда возвращаемся в главный экран
-document.getElementById('btn-menu').addEventListener('click', () => {
-  setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 50);
-});
-document.getElementById('btn-go-shop').addEventListener('click', () => {
-  setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 50);
-});
-
-// ═══════════════════════════════════════
-// START
+// ИНИЦИАЛИЗАЦИЯ
 // ═══════════════════════════════════════
 updateStartScreen();
 startAttemptTimer();
-initBottomNav();
+// ✅ Показываем нижнее меню сразу при загрузке
+setNavVisible(true);
 applySettings();
 renderDaily();
 updateAchBadge();
