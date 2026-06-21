@@ -96,7 +96,7 @@ canvas { display:block; image-rendering:pixelated; touch-action:none; }
   font-size:13px; font-weight:700; color:#fff; cursor:pointer; font-family:Arial,sans-serif; transition:transform 0.1s; }
 .btn-go-shop:active { transform:scale(0.95); }
 /* Joystick */
-#ctrl-zone { position:absolute; bottom:0; left:0; right:0; height:35%; z-index:4; -webkit-user-select:none; user-select:none; }
+#ctrl-zone { position:absolute; bottom:0; left:0; right:0; height:35%; z-index:4; -webkit-user-select:none; user-select:none; display:none; }
 #joystick-base { position:absolute; width:88px; height:88px; border-radius:50%; background:rgba(255,255,255,0.07);
   border:2px solid rgba(255,255,255,0.18); transform:translate(-50%,-50%); pointer-events:none; display:none; }
 #joystick-knob { position:absolute; width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,0.32);
@@ -3418,6 +3418,7 @@ document.getElementById('btn-close-settings').onclick=()=>showTab('play');
 // ═══════════════════════════════════════
 // ЗАПУСК
 // ═══════════════════════════════════════
+showHUD(false); // гарантируем, что ctrl-zone/hints выключены и не перехватывают клики по меню
 updateStartScreen();
 startAttemptTimer();
 setNavVisible(true);
